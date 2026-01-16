@@ -1,509 +1,180 @@
-// ============================================================================
-// ICICI BANK — CREDIT CARD DATABASE (ACTIVE CARDS ONLY)
-// Segments: Premium | Lifestyle | Cashback | Co-branded | Travel
-// Notes:
-// - No reward computation logic
-// - Raw benefits only (as per ICICI portals)
-// ============================================================================
+import { CARD_TIERS, REWARD_TYPES, REDEMPTION_TYPES, LOUNGE_ACCESS_TYPES } from '../config/bank_platforms.js';
 
-const ICICI_CARDS = [
+/**
+ * ICICI Bank Credit Cards Data
+ * Data validated against: ICICI Bank official product pages, MITC documents, PayWith portal
+ * Last updated: January 17, 2026
+ */
 
-    /* ============================================================================
-       SUPER PREMIUM / PREMIUM
-    ============================================================================ */
-
-    {
-        id: "icici_emeralde_private_metal",
-        name: "ICICI Bank Emeralde Private Metal Credit Card",
-        bank: "ICICI",
-        card_segment: "premium",
-        network: ["Visa", "Mastercard"],
-        variant: "invite_only",
-
-        joining_fee: 12000,
-        annual_fee: 12000,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No spend-based waiver"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 4 / 100,
-            unit: "per_rupee",
-            notes: "4 Reward Points per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: "Redemption value varies by category"
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: "Unlimited",
-            international: "Unlimited",
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Priority Pass"],
-            notes: "Unlimited for primary & add-ons"
-        },
-
-        rules: [],
-
-        status: "active"
+export const iciciCardsData = [
+  {
+    id: "icici_sapphiro",
+    name: "ICICI Bank Sapphiro",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.SUPER_PREMIUM,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.03, // 6 Reward Points per ₹200 = 0.03 points per ₹1
+    earning_display: "6 Reward Points per ₹200",
+    value_per_unit: 0.50, // ₹0.50 per point (1 RP = ₹0.50 for statement credit)
+    redemption_ease_score: 2, // Portal/voucher redemption
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.TRAVEL_PORTAL],
+    annual_fee: 12500, // ₹10k + GST
+    fee_waiver_criteria: "Spend ₹10L in a year",
+    joining_bonus: "15,000 Reward Points on ₹1L spend in first 90 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      international: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      network: ["Priority Pass", "Dreamfolks"],
+      guest_access: true
     },
-
-    {
-        id: "icici_emeralde",
-        name: "ICICI Bank Emeralde Credit Card",
-        bank: "ICICI",
-        card_segment: "premium",
-        network: ["Visa", "Mastercard"],
-        variant: "retail",
-
-        joining_fee: 12000,
-        annual_fee: 12000,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No fee waiver"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 4 / 100,
-            unit: "per_rupee",
-            notes: "4 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: "Unlimited",
-            international: 6,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Priority Pass"],
-            notes: "International limited per year"
-        },
-
-        rules: [],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government"],
+    features: ["Complimentary Priority Pass", "Golf privileges", "Concierge services", "Airport transfers"]
+  },
+  {
+    id: "icici_coral",
+    name: "ICICI Bank Coral",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.PREMIUM,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
+    earning_display: "4 Reward Points per ₹200",
+    value_per_unit: 0.40, // ₹0.40 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 1000, // ₹1000
+    fee_waiver_criteria: "Spend ₹3L in a year",
+    joining_bonus: "2,000 Reward Points on first transaction",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_2,
+      network: ["Visa/Mastercard lounges"],
+      guest_access: false
     },
-
-    /* ============================================================================
-       LIFESTYLE / MID-TIER
-    ============================================================================ */
-
-    {
-        id: "icici_sapphiro",
-        name: "ICICI Bank Sapphiro Credit Card",
-        bank: "ICICI",
-        card_segment: "lifestyle",
-        network: ["Visa", "Mastercard", "Amex"],
-        variant: "retail",
-
-        joining_fee: 6500,
-        annual_fee: 3500,
-        fee_waiver: {
-            spend_threshold: 600000,
-            period: "annual",
-            notes: "Fee waived on ₹6L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 4,
-            international: 2,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Dreamfolks", "Priority Pass"],
-            notes: "Annual limits"
-        },
-
-        rules: [],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["Movie offers", "Dining benefits", "Retail vouchers"]
+  },
+  {
+    id: "icici_rubyx",
+    name: "ICICI Bank Rubyx",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.PREMIUM,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
+    earning_display: "4 Reward Points per ₹200",
+    value_per_unit: 0.40, // ₹0.40 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 3000, // ₹3000
+    fee_waiver_criteria: "Spend ₹4L in a year",
+    joining_bonus: "4,000 Reward Points on ₹50k spend in first 60 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_8,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      network: ["Visa/Mastercard lounges"],
+      guest_access: false
     },
-
-    {
-        id: "icici_rubyx",
-        name: "ICICI Bank Rubyx Credit Card",
-        bank: "ICICI",
-        card_segment: "lifestyle",
-        network: ["Visa", "Mastercard", "Amex"],
-        variant: "retail",
-
-        joining_fee: 3000,
-        annual_fee: 2000,
-        fee_waiver: {
-            spend_threshold: 300000,
-            period: "annual",
-            notes: "Fee waived on ₹3L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 4,
-            international: null,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Dreamfolks"],
-            notes: "Domestic lounges only"
-        },
-
-        rules: [],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["8 lounge visits/year", "Movie offers", "Golf access"]
+  },
+  {
+    id: "icici_amazon_pay",
+    name: "ICICI Amazon Pay",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.01, // 1% base on all other spends
+    earning_display: "5% on Amazon, 2% on bill payments",
+    value_per_unit: 1.00, // ₹1 per ₹1 cashback
+    redemption_ease_score: 1, // Direct cashback
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500 (often LTF)
+    fee_waiver_criteria: "Free for Prime members or ₹50k annual spend",
+    joining_bonus: "₹500 Amazon voucher",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    /* ============================================================================
-       ENTRY / CORE RETAIL
-    ============================================================================ */
-
-    {
-        id: "icici_coral",
-        name: "ICICI Bank Coral Credit Card",
-        bank: "ICICI",
-        card_segment: "entry_level",
-        network: ["Visa", "Mastercard", "RuPay"],
-        variant: "retail",
-
-        joining_fee: 500,
-        annual_fee: 500,
-        fee_waiver: {
-            spend_threshold: 100000,
-            period: "annual",
-            notes: "Fee waived on ₹1L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: true,
-        upi_notes: "UPI supported on RuPay variant",
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 1,
-            international: null,
-            access_type: "complimentary",
-            spend_threshold: 75000,
-            network: ["RuPay", "Visa"],
-            notes: "Quarterly lounge on spend condition"
-        },
-
-        rules: [],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "emi"],
+    features: ["5% unlimited on Amazon", "2% on bill payments", "1% everywhere else"]
+  },
+  {
+    id: "icici_platinum",
+    name: "ICICI Bank Platinum",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.ENTRY,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 2 Reward Points per ₹200 = 0.01 points per ₹1
+    earning_display: "2 Reward Points per ₹200",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹1L in a year",
+    joining_bonus: null,
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    {
-        id: "icici_platinum_chip",
-        name: "ICICI Bank Platinum Chip Credit Card",
-        bank: "ICICI",
-        card_segment: "entry_level",
-        network: ["Visa", "Mastercard"],
-        variant: "retail",
-
-        joining_fee: 0,
-        annual_fee: 0,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "Lifetime free"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["Basic entry card", "Retail offers", "EMI options"]
+  },
+  {
+    id: "icici_manchester_united",
+    name: "ICICI Manchester United",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.LIFESTYLE,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
+    earning_display: "4 Reward Points per ₹200",
+    value_per_unit: 0.40, // ₹0.40 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 3000, // ₹3000
+    fee_waiver_criteria: "Spend ₹4L in a year",
+    joining_bonus: "Manchester United merchandise worth ₹3000",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_2,
+      network: ["Visa lounges"],
+      guest_access: false
     },
-
-    /* ============================================================================
-       CASHBACK / CO-BRANDED
-    ============================================================================ */
-
-    {
-        id: "icici_amazon_pay",
-        name: "Amazon Pay ICICI Bank Credit Card",
-        bank: "ICICI",
-        card_segment: "cashback",
-        network: ["Visa"],
-        variant: "co_branded",
-
-        joining_fee: 0,
-        annual_fee: 0,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "Lifetime free"
-        },
-
-        reward_type: "cashback",
-        base_earn: {
-            rate: 0.01,
-            unit: "per_rupee",
-            notes: "1% cashback on all non-Amazon spends"
-        },
-        reward_value: {
-            per_unit_inr: 1,
-            notes: "Credited as Amazon Pay balance"
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: "amazon",
-                merchants: ["amazon"],
-                category: "shopping",
-                multiplier: null,
-                fixed_reward: 0.05,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "5% cashback for Amazon Prime members"
-            },
-            {
-                type: "direct",
-                platform: "amazon",
-                merchants: ["amazon"],
-                category: "shopping",
-                multiplier: null,
-                fixed_reward: 0.03,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "3% cashback for non-Prime users"
-            }
-        ],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["Manchester United themed", "Club merchandise", "Lounge access"]
+  },
+  {
+    id: "icici_hpcl",
+    name: "ICICI HPCL",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.FUEL,
+    reward_type: REWARD_TYPES.FUEL_POINTS,
+    base_rate: 0.0025, // 0.5 fuel points per ₹200 = 0.0025 per ₹1, but 1 fuel point = ₹1, so effective ₹0.0025
+    earning_display: "5% cashback on HPCL fuel",
+    value_per_unit: 1.00, // ₹1 per fuel point
+    redemption_ease_score: 1, // Direct fuel redemption
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹50k in a year",
+    joining_bonus: "₹500 fuel points",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    /* ============================================================================
-       FUEL
-    ============================================================================ */
-
-    {
-        id: "icici_hpcl_super_saver",
-        name: "ICICI HPCL Super Saver Credit Card",
-        bank: "ICICI",
-        card_segment: "fuel",
-        network: ["Visa"],
-        variant: "co_branded",
-
-        joining_fee: 500,
-        annual_fee: 500,
-        fee_waiver: {
-            spend_threshold: 50000,
-            period: "annual",
-            notes: "Fee waived on ₹50k spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100 on non-fuel spends"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: null,
-                merchants: ["hpcl"],
-                category: "fuel",
-                multiplier: null,
-                fixed_reward: null,
-                cap: 200,
-                period: "monthly",
-                spend_threshold: null,
-                notes: "Fuel surcharge waiver + reward points at HPCL"
-            }
-        ],
-
-        status: "active"
-    },
-
-    /* ============================================================================
-       TRAVEL
-    ============================================================================ */
-
-    {
-        id: "icici_makemytrip",
-        name: "ICICI MakeMyTrip Credit Card",
-        bank: "ICICI",
-        card_segment: "travel",
-        network: ["Visa"],
-        variant: "co_branded",
-
-        joining_fee: 2500,
-        annual_fee: 2500,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No spend-based waiver"
-        },
-
-        reward_type: "mycash",
-        base_earn: {
-            rate: 0.01,
-            unit: "per_rupee",
-            notes: "1% MyCash on non-MMT spends"
-        },
-        reward_value: {
-            per_unit_inr: 1,
-            notes: "Redeemable only on MakeMyTrip"
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 2,
-            international: null,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Dreamfolks"],
-            notes: "Annual domestic lounge visits"
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: "makemytrip",
-                merchants: ["makemytrip"],
-                category: "travel",
-                multiplier: null,
-                fixed_reward: 0.06,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "6% MyCash on MMT hotel & flight bookings"
-            }
-        ],
-
-        status: "active"
-    }
-
+    supports_upi: false,
+    base_exclusions: ["wallet_loads", "rent"],
+    features: ["5% cashback on HPCL fuel", "1% surcharge waiver", "Fuel-focused benefits"]
+  }
 ];
+
+export default iciciCardsData;

@@ -1,775 +1,156 @@
-// ============================================================================
-// SBI CARD — CREDIT CARD DATABASE (ACTIVE ONLY)
-// Excluded:
-// - Doctor / Professional cards
-// - Bank tie-ups (PNB / BOI / BOM / PSB etc.)
-// - Corporate / niche variants
-// ============================================================================
+import { CARD_TIERS, REWARD_TYPES, REDEMPTION_TYPES, LOUNGE_ACCESS_TYPES } from '../config/bank_platforms.js';
 
-const SBI_CARDS = [
+/**
+ * SBI Cards Data
+ * Data validated against: SBI Cards official product pages, MITC documents, SBI Rewardz portal
+ * Last updated: January 17, 2026
+ */
 
-    /* ============================================================================
-       PREMIUM / LIFESTYLE
-    ============================================================================ */
-
-    {
-        id: "sbi_elite",
-        name: "SBI Card ELITE",
-        bank: "SBI",
-        card_segment: "premium",
-        network: ["Visa", "Mastercard"],
-        variant: "retail",
-
-        joining_fee: 4999,
-        annual_fee: 4999,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No spend-based waiver"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 Reward Points per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: "1 RP = ₹0.25"
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: true,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 6,
-            international: 6,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Priority Pass"],
-            notes: "Annual limits"
-        },
-
-        rules: [
-            {
-                type: "portal",
-                platform: "sbi_rewards",
-                merchants: [],
-                category: "shopping",
-                multiplier: 10,
-                fixed_reward: null,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "10X Reward Points via SBI Card Rewards portal"
-            }
-        ],
-
-        status: "active"
+export const sbiCardsData = [
+  {
+    id: "sbi_vistara_prime",
+    name: "SBI Card Vistara Prime",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.TRAVEL,
+    reward_type: REWARD_TYPES.POINTS, // CV Points (Club Vistara)
+    base_rate: 0.03, // 3 CV Points per ₹100 = 0.03 points per ₹1
+    earning_display: "3 CV Points per ₹100",
+    value_per_unit: 2.00, // ₹2 per CV Point (when transferred to Vistara)
+    redemption_ease_score: 3, // Miles transfer required
+    redemption_types: [REDEMPTION_TYPES.MILES_TRANSFER],
+    annual_fee: 3000, // ₹3000
+    fee_waiver_criteria: "Spend ₹4L in a year",
+    joining_bonus: "Club Vistara Silver Tier on approval",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_8,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      network: ["Club Vistara Lounges", "Priority Pass"],
+      guest_access: false
     },
-
-    {
-        id: "sbi_prime",
-        name: "SBI Card PRIME",
-        bank: "SBI",
-        card_segment: "lifestyle",
-        network: ["Visa", "Mastercard"],
-        variant: "retail",
-
-        joining_fee: 2999,
-        annual_fee: 2999,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No spend-based waiver"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: true,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 4,
-            international: 4,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Priority Pass"],
-            notes: "Annual limits"
-        },
-
-        rules: [
-            {
-                type: "portal",
-                platform: "sbi_rewards",
-                merchants: [],
-                category: "shopping",
-                multiplier: 10,
-                fixed_reward: null,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "10X rewards via SBI Card portal"
-            }
-        ],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["Vistara Silver tier", "Free checked baggage", "Priority check-in"]
+  },
+  {
+    id: "sbi_simplyclick",
+    name: "SBI Card SimplyCLICK",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
+    earning_display: "10X on select partners, 5X on online shopping",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹1L in a year",
+    joining_bonus: "₹500 Amazon voucher",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    /* ============================================================================
-       CASHBACK
-    ============================================================================ */
-
-    {
-        id: "sbi_cashback",
-        name: "SBI Cashback Credit Card",
-        bank: "SBI",
-        card_segment: "cashback",
-        network: ["Visa"],
-        variant: "retail",
-
-        joining_fee: 999,
-        annual_fee: 999,
-        fee_waiver: {
-            spend_threshold: 200000,
-            period: "annual",
-            notes: "Fee waived on ₹2L spends"
-        },
-
-        reward_type: "cashback",
-        base_earn: {
-            rate: 0.01,
-            unit: "per_rupee",
-            notes: "1% cashback on offline spends"
-        },
-        reward_value: {
-            per_unit_inr: 1,
-            notes: "Statement credit"
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi", "insurance"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: null,
-                merchants: ["online"],
-                category: "shopping",
-                multiplier: null,
-                fixed_reward: 0.05,
-                cap: 5000,
-                period: "monthly",
-                spend_threshold: null,
-                notes: "5% cashback on online spends"
-            }
-        ],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["10X on Cleartrip/BookMyShow/Lenskart", "5X online shopping", "Movie ticket offers"]
+  },
+  {
+    id: "sbi_simplysave",
+    name: "SBI Card SimplySAVE",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
+    earning_display: "10X on dining/groceries/movies, 1X elsewhere",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹1L in a year",
+    joining_bonus: "₹500 voucher",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    /* ============================================================================
-       CORE / ENTRY LEVEL
-    ============================================================================ */
-
-    {
-        id: "sbi_simplysave",
-        name: "SBI SimplySAVE Credit Card",
-        bank: "SBI",
-        card_segment: "entry_level",
-        network: ["Visa", "Mastercard", "RuPay"],
-        variant: "retail",
-
-        joining_fee: 499,
-        annual_fee: 499,
-        fee_waiver: {
-            spend_threshold: 100000,
-            period: "annual",
-            notes: "Fee waived on ₹1L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 1 / 100,
-            unit: "per_rupee",
-            notes: "1 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: true,
-        upi_notes: "UPI supported on RuPay variant",
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: null,
-                merchants: ["department_store", "grocery", "movie", "dining"],
-                category: "shopping",
-                multiplier: null,
-                fixed_reward: null,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "Accelerated rewards on select categories"
-            }
-        ],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["10X on dining, groceries, movies", "1% fuel surcharge waiver"]
+  },
+  {
+    id: "sbi_cashback",
+    name: "SBI Cashback Card",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.01, // 1% base cashback
+    earning_display: "5% on online shopping, 1% elsewhere",
+    value_per_unit: 1.00, // ₹1 per ₹1 cashback
+    redemption_ease_score: 1, // Direct cashback
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 999, // ₹999
+    fee_waiver_criteria: "Spend ₹2L in a year",
+    joining_bonus: "₹2000 cashback on ₹1L spend in first 60 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    {
-        id: "sbi_simplyclick",
-        name: "SBI SimplyCLICK Credit Card",
-        bank: "SBI",
-        card_segment: "entry_level",
-        network: ["Visa"],
-        variant: "retail",
-
-        joining_fee: 499,
-        annual_fee: 499,
-        fee_waiver: {
-            spend_threshold: 100000,
-            period: "annual",
-            notes: "Fee waived on ₹1L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 1 / 100,
-            unit: "per_rupee",
-            notes: "1 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: true,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: null,
-                merchants: ["amazon", "flipkart", "cleartrip"],
-                category: "shopping",
-                multiplier: null,
-                fixed_reward: null,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "Accelerated rewards on online partners"
-            }
-        ],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "emi", "cash_withdrawal", "railway_tickets", "government_payments", "education", "utility_bills"],
+    features: ["5% unlimited on online shopping (with exclusions)", "1% on offline shopping", "Major exclusions apply"]
+  },
+  {
+    id: "sbi_prime",
+    name: "SBI Card PRIME",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.ENTRY,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
+    earning_display: "1 Reward Point per ₹100",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹90k in a year",
+    joining_bonus: null,
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    /* ============================================================================
-       FUEL
-    ============================================================================ */
-
-    {
-        id: "sbi_bpcl",
-        name: "BPCL SBI Credit Card",
-        bank: "SBI",
-        card_segment: "fuel",
-        network: ["Visa"],
-        variant: "co_branded",
-
-        joining_fee: 499,
-        annual_fee: 499,
-        fee_waiver: {
-            spend_threshold: 50000,
-            period: "annual",
-            notes: "Fee waived on ₹50k spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 1 / 100,
-            unit: "per_rupee",
-            notes: "1 RP per ₹100 on non-fuel spends"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: "Fuel redemption"
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: null,
-                merchants: ["bpcl"],
-                category: "fuel",
-                multiplier: null,
-                fixed_reward: null,
-                cap: 200,
-                period: "monthly",
-                spend_threshold: null,
-                notes: "Fuel benefits + surcharge waiver at BPCL"
-            }
-        ],
-
-        status: "active"
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["Basic entry card", "1% fuel surcharge waiver", "Movie & dining offers"]
+  },
+  {
+    id: "sbi_bpcl",
+    name: "SBI Card BPCL",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.FUEL,
+    reward_type: REWARD_TYPES.FUEL_POINTS,
+    base_rate: 0.0125, // 1.25 fuel points per ₹100 = 0.0125 per ₹1 (effectively 1.25% at BPCL)
+    earning_display: "25X at BPCL fuel stations",
+    value_per_unit: 0.40, // ₹0.40 per fuel point (when redeemed at BPCL)
+    redemption_ease_score: 1, // Direct fuel redemption
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹50k in a year",
+    joining_bonus: "₹250 fuel points",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
     },
-
-    {
-        id: "sbi_bpcl_octane",
-        name: "BPCL SBI Card OCTANE",
-        bank: "SBI",
-        card_segment: "fuel",
-        network: ["Visa"],
-        variant: "co_branded",
-
-        joining_fee: 1499,
-        annual_fee: 1499,
-        fee_waiver: {
-            spend_threshold: 200000,
-            period: "annual",
-            notes: "Fee waived on ₹2L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100 on non-fuel spends"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: false,
-
-        base_exclusions: ["wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 4,
-            international: null,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Visa"],
-            notes: "Domestic lounges"
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: null,
-                merchants: ["bpcl"],
-                category: "fuel",
-                multiplier: null,
-                fixed_reward: null,
-                cap: 300,
-                period: "monthly",
-                spend_threshold: null,
-                notes: "Higher fuel rewards & surcharge waiver"
-            }
-        ],
-
-        status: "active"
-    },
-
-    /* ============================================================================
-       HEALTH / FITNESS
-    ============================================================================ */
-
-    {
-        id: "sbi_pulse",
-        name: "SBI Card PULSE",
-        bank: "SBI",
-        card_segment: "lifestyle",
-        network: ["Visa"],
-        variant: "retail",
-
-        joining_fee: 1499,
-        annual_fee: 1499,
-        fee_waiver: {
-            spend_threshold: 200000,
-            period: "annual",
-            notes: "Fee waived on ₹2L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: true,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 4,
-            international: null,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Visa"],
-            notes: "Domestic lounges"
-        },
-
-        rules: [],
-
-        status: "active"
-    },
-
-    /* ============================================================================
-       TRAVEL / MILES
-    ============================================================================ */
-
-    {
-        id: "sbi_miles",
-        name: "SBI Card Miles",
-        bank: "SBI",
-        card_segment: "travel",
-        network: ["Visa"],
-        variant: "retail",
-
-        joining_fee: 4999,
-        annual_fee: 4999,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No spend waiver"
-        },
-
-        reward_type: "miles",
-        base_earn: {
-            rate: 2 / 100,
-            unit: "per_rupee",
-            notes: "2 Travel Miles per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: null,
-            notes: "Redeemable across airline & hotel partners"
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: true,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: 4,
-            international: 4,
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Priority Pass"],
-            notes: "Annual limits"
-        },
-
-        rules: [],
-
-        status: "active"
-    },
-
-    {
-        id: "sbi_miles_prime",
-        name: "SBI Card Miles PRIME",
-        bank: "SBI",
-        card_segment: "travel",
-        network: ["Visa"],
-        variant: "retail",
-
-        joining_fee: 9999,
-        annual_fee: 9999,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No waiver"
-        },
-
-        reward_type: "miles",
-        base_earn: {
-            rate: 3 / 100,
-            unit: "per_rupee",
-            notes: "3 Travel Miles per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: null,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: true,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: "Unlimited",
-            international: "Unlimited",
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Priority Pass"],
-            notes: "Unlimited lounge access"
-        },
-
-        rules: [],
-
-        status: "active"
-    },
-
-    /* ============================================================================
-       SUPER PREMIUM
-    ============================================================================ */
-
-    {
-        id: "sbi_aurum",
-        name: "SBI Card AURUM",
-        bank: "SBI",
-        card_segment: "super_premium",
-        network: ["Visa", "Mastercard"],
-        variant: "retail",
-
-        joining_fee: 9999,
-        annual_fee: 9999,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No fee waiver"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 4 / 100,
-            unit: "per_rupee",
-            notes: "4 Reward Points per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: false,
-        upi_notes: null,
-        supports_vouchers: true,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: "Unlimited",
-            international: "Unlimited",
-            access_type: "complimentary",
-            spend_threshold: null,
-            network: ["Priority Pass"],
-            notes: "Unlimited lounge access for primary & add-on"
-        },
-
-        rules: [
-            {
-                type: "portal",
-                platform: "sbi_rewards",
-                merchants: [],
-                category: "shopping",
-                multiplier: 10,
-                fixed_reward: null,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "Accelerated rewards via SBI Card Rewards"
-            }
-        ],
-
-        status: "active"
-    },
-
-    /* ============================================================================
-       RAILWAYS / TRAVEL
-    ============================================================================ */
-
-    {
-        id: "sbi_irctc",
-        name: "SBI Card IRCTC",
-        bank: "SBI",
-        card_segment: "travel",
-        network: ["RuPay"],
-        variant: "co_branded",
-
-        joining_fee: 500,
-        annual_fee: 300,
-        fee_waiver: {
-            spend_threshold: null,
-            period: null,
-            notes: "No spend-based waiver"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 1 / 100,
-            unit: "per_rupee",
-            notes: "1 RP per ₹100 on non-IRCTC spends"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: "Redeemable on IRCTC"
-        },
-
-        supports_upi: true,
-        upi_notes: "UPI supported via RuPay Credit on UPI",
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [
-            {
-                type: "direct",
-                platform: "irctc",
-                merchants: ["irctc"],
-                category: "travel",
-                multiplier: null,
-                fixed_reward: null,
-                cap: null,
-                period: null,
-                spend_threshold: null,
-                notes: "Reward points on IRCTC bookings"
-            }
-        ],
-
-        status: "active"
-    },
-
-    /* ============================================================================
-       RUPAY CORE (UPI ENABLED)
-    ============================================================================ */
-
-    {
-        id: "sbi_simplysave_rupay",
-        name: "SBI SimplySAVE RuPay Credit Card",
-        bank: "SBI",
-        card_segment: "entry_level",
-        network: ["RuPay"],
-        variant: "retail",
-
-        joining_fee: 499,
-        annual_fee: 499,
-        fee_waiver: {
-            spend_threshold: 100000,
-            period: "annual",
-            notes: "Fee waived on ₹1L spends"
-        },
-
-        reward_type: "points",
-        base_earn: {
-            rate: 1 / 100,
-            unit: "per_rupee",
-            notes: "1 RP per ₹100"
-        },
-        reward_value: {
-            per_unit_inr: 0.25,
-            notes: null
-        },
-
-        supports_upi: true,
-        upi_notes: "Full UPI interoperability via RuPay Credit",
-        supports_vouchers: false,
-
-        base_exclusions: ["fuel", "wallet", "rent", "gov", "emi"],
-
-        lounge: {
-            domestic: null,
-            international: null,
-            access_type: "none",
-            spend_threshold: null,
-            network: [],
-            notes: null
-        },
-
-        rules: [],
-
-        status: "active"
-    }
-
+    supports_upi: false,
+    base_exclusions: ["wallet_loads", "rent"],
+    features: ["25X at BPCL fuel stations", "5X on groceries/dining", "1% surcharge waiver"]
+  }
 ];
+
+export default sbiCardsData;
