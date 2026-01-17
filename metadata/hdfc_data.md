@@ -23,8 +23,10 @@
 
 ### 2. Voucher Multipliers (GyFTR)
 *   **Merchants:** Amazon, Flipkart, Swiggy, Zomato, BigBasket
-*   **Multiplier:** 3x - 5x RP (Infinia/DCB heavily favored)
-*   **Cap:** Specific monthly caps apply
+*   **Multiplier:**
+    *   **5X:** Infinia (Cap: 15k RP), Regalia Gold (Cap: 4k RP)
+    *   **3X:** Diners Black Metal (Cap: 10k RP)
+*   **Cap:** Specific monthly caps apply per card variant.
 
 ### 3. Special Features
 *   **Swiggy HDFC:** 10% direct cashback on Swiggy app.

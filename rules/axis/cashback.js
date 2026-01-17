@@ -33,7 +33,7 @@ export const axisCashbackRules = [
     priority: 10,
     notes: "5% unlimited cashback on bill payments via Google Pay and PhonePe. No upper limit."
   },
-  
+
   // Ace Card - Utilities (2%)
   {
     id: "axis_ace_utilities",
@@ -142,7 +142,7 @@ export const axisCashbackRules = [
     merchants: ["Flipkart", "Myntra"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.05], // 5% cashback (CORRECTED)
+    cashback_rates: [0.04], // 4% cashback
     applies_to_cards: ["axis_flipkart"],
     constraints: {
       platforms: ["Flipkart", "Myntra"]

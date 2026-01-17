@@ -4,12 +4,12 @@
 
 | Card Name | Tier | Base Rate | Reward Currency | Value per Unit | Annual Fee | Fee Waiver Criteria | Lounge Access |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **SBI Vistara Prime** | Travel | 3.00% (3CV/₹100) | CV Points | ₹2.00 | ₹3,000 | ₹4L spend | 8 Dom / 4 Int |
-| **SBI SimplyCLICK** | Cashback | 0.25% (1RP/₹100) | Points | ₹0.25 | ₹500 | ₹1L spend | None |
-| **SBI SimplySAVE** | Cashback | 0.25% (1RP/₹100) | Points | ₹0.25 | ₹500 | ₹1L spend | None |
+| **SBI Vistara Prime** | Travel | 0.03 (3CV/₹100) | CV Points | ₹2.00 | ₹3,000 | ₹4L spend | 8 Dom / 4 Int |
+| **SBI SimplyCLICK** | Cashback | 0.01 (1RP/₹100) | Points | ₹0.25 | ₹500 | ₹1L spend | None |
+| **SBI SimplySAVE** | Cashback | 0.01 (1RP/₹100) | Points | ₹0.25 | ₹500 | ₹1L spend | None |
 | **SBI Cashback** | Cashback | 1.00% | Cashback | ₹1.00 | ₹999 | ₹2L spend | None |
-| **SBI Prime** | Entry | 0.25% (1RP/₹100) | Points | ₹0.25 | ₹500 | ₹90k spend | None |
-| **SBI BPCL** | Fuel | 1.25% (1.25FP/₹100) | Fuel Points | ₹0.40 | ₹500 | ₹50k spend | None |
+| **SBI Prime** | Entry | 0.02 (2RP/₹100) | Points | ₹0.25 | ₹500 | ₹90k spend | None |
+| **SBI BPCL** | Fuel | 0.01 (1FP/₹100) | Fuel Points | ₹0.40 | ₹500 | ₹50k spend | None |
 
 ## 📐 Rules & Logic
 

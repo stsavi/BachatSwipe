@@ -4,7 +4,9 @@
 
 | Card Name | Tier | Base Rate | Reward Currency | Value per Unit | Annual Fee | Fee Waiver Criteria | Lounge Access |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **ICICI Sapphiro** | Super Premium | 1.50% (6RP/₹200) | Points | ₹0.50 | ₹12,500 | ₹10L spend | Unlimited |
+| **ICICI Emeralde Private Metal** | Super Premium | 3.00% | Points | ₹1.00 | ₹12,500 | ₹10L spend | Unlimited |
+| **ICICI Emeralde** | Super Premium | 1.00% | Points | ₹1.00 | ₹12,000 | ₹15L spend | Unlimited |
+| **ICICI Sapphiro** | Super Premium | 1.50% (6RP/₹200) | Points | ₹0.25 | ₹12,500 | ₹10L spend | Unlimited |
 | **ICICI Coral** | Premium | 1.00% (4RP/₹200) | Points | ₹0.40 | ₹1,000 | ₹3L spend | 4 Dom / 2 Int |
 | **ICICI Rubyx** | Premium | 1.00% (4RP/₹200) | Points | ₹0.40 | ₹3,000 | ₹4L spend | 8 Dom / 4 Int |
 | **ICICI Amazon Pay** | Cashback | 1.00% | Cashback | ₹1.00 | ₹500 | Lifetime Free (Prime) | None |

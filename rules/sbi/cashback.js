@@ -32,7 +32,7 @@ export const sbiCashbackRules = [
     priority: 10,
     notes: "5% unlimited cashback on all online spends. MAJOR EXCLUSIONS: wallet loads, rent, fuel, insurance, EMI, cash, railway, government, education, utility bills."
   },
-  
+
   // SBI Cashback Card - Offline Shopping (1%)
   {
     id: "sbi_cashback_offline_shopping",
@@ -154,13 +154,13 @@ export const sbiCashbackRules = [
     bank: "SBI Card",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
-    merchants: ["Cleartrip", "BookMyShow", "Lenskart"],
+    merchants: ["Cleartrip", "BookMyShow", "Lenskart", "Apollo 24/7", "Domino's", "Myntra", "Netmeds", "Yatra", "Swiggy"],
     platform: "online",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
     reward_multipliers: [10], // 10X reward points
     applies_to_cards: ["sbi_simplyclick"],
     constraints: {
-      platforms: ["Cleartrip", "BookMyShow", "Lenskart"]
+      platforms: ["Cleartrip", "BookMyShow", "Lenskart", "Apollo 24/7", "Domino's", "Myntra", "Netmeds", "Yatra", "Swiggy"]
     },
     cap: null,
     cap_period: null,
@@ -169,7 +169,7 @@ export const sbiCashbackRules = [
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "10X Reward Points on Cleartrip, BookMyShow, Lenskart. Base 1 per ₹100 becomes 10 per ₹100."
+    notes: "10X Reward Points on exclusive partners (Cleartrip, BookMyShow, Lenskart, Apollo 24/7, Domino's, Myntra, Netmeds, Yatra, Swiggy)."
   },
 
   // BPCL Card - Fuel (25X = 25 fuel points per ₹100)
@@ -181,19 +181,19 @@ export const sbiCashbackRules = [
     merchants: ["BPCL"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [25], // 25X fuel points
+    reward_multipliers: [13], // 13X fuel points
     applies_to_cards: ["sbi_bpcl"],
     constraints: {
       merchant: "BPCL petrol pumps only"
     },
-    cap: null,
-    cap_period: null,
+    cap: 1300, // 1300 points per month max (from search results)
+    cap_period: CAP_PERIODS.MONTHLY,
     min_transaction: 100,
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "25X fuel points at BPCL. Base 1.25 per ₹100 becomes 31.25 per ₹100 (worth ₹12.5)."
+    notes: "13X fuel points at BPCL. 13 points per ₹100. Value: 13 * 0.25 = ₹3.25 (3.25%) + 1% surcharge waiver = 4.25% total."
   }
 ];
 

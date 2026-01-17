@@ -28,7 +28,7 @@ export const sbiCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "government", "education"],
     features: ["Vistara Silver tier", "Free checked baggage", "Priority check-in"]
   },
   {
@@ -37,8 +37,8 @@ export const sbiCardsData = [
     bank: "SBI Card",
     card_tier: CARD_TIERS.CASHBACK,
     reward_type: REWARD_TYPES.POINTS,
-    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
-    earning_display: "10X on select partners, 5X on online shopping",
+    base_rate: 0.01, // 1 Reward Point per ₹100
+    earning_display: "1 Reward Point per ₹100",
     value_per_unit: 0.25, // ₹0.25 per point
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
@@ -52,7 +52,7 @@ export const sbiCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "government", "education", "utility"],
     features: ["10X on Cleartrip/BookMyShow/Lenskart", "5X online shopping", "Movie ticket offers"]
   },
   {
@@ -61,8 +61,8 @@ export const sbiCardsData = [
     bank: "SBI Card",
     card_tier: CARD_TIERS.CASHBACK,
     reward_type: REWARD_TYPES.POINTS,
-    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
-    earning_display: "10X on dining/groceries/movies, 1X elsewhere",
+    base_rate: 0.01, // 1 Reward Point per ₹100
+    earning_display: "1 Reward Point per ₹100",
     value_per_unit: 0.25, // ₹0.25 per point
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
@@ -76,7 +76,7 @@ export const sbiCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "government", "education", "utility"],
     features: ["10X on dining, groceries, movies", "1% fuel surcharge waiver"]
   },
   {
@@ -86,7 +86,7 @@ export const sbiCardsData = [
     card_tier: CARD_TIERS.CASHBACK,
     reward_type: REWARD_TYPES.CASHBACK,
     base_rate: 0.01, // 1% base cashback
-    earning_display: "5% on online shopping, 1% elsewhere",
+    earning_display: "1% on offline shopping",
     value_per_unit: 1.00, // ₹1 per ₹1 cashback
     redemption_ease_score: 1, // Direct cashback
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
@@ -109,8 +109,8 @@ export const sbiCardsData = [
     bank: "SBI Card",
     card_tier: CARD_TIERS.ENTRY,
     reward_type: REWARD_TYPES.POINTS,
-    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
-    earning_display: "1 Reward Point per ₹100",
+    base_rate: 0.02, // 2 Reward Points per ₹100
+    earning_display: "2 Reward Points per ₹100",
     value_per_unit: 0.25, // ₹0.25 per point
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.VOUCHERS],
@@ -124,7 +124,7 @@ export const sbiCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "government", "education"],
     features: ["Basic entry card", "1% fuel surcharge waiver", "Movie & dining offers"]
   },
   {
@@ -133,8 +133,8 @@ export const sbiCardsData = [
     bank: "SBI Card",
     card_tier: CARD_TIERS.FUEL,
     reward_type: REWARD_TYPES.FUEL_POINTS,
-    base_rate: 0.0125, // 1.25 fuel points per ₹100 = 0.0125 per ₹1 (effectively 1.25% at BPCL)
-    earning_display: "25X at BPCL fuel stations",
+    base_rate: 0.01, // 1 Reward Point per ₹100
+    earning_display: "1 Reward Point per ₹100",
     value_per_unit: 0.40, // ₹0.40 per fuel point (when redeemed at BPCL)
     redemption_ease_score: 1, // Direct fuel redemption
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
@@ -148,7 +148,7 @@ export const sbiCardsData = [
       guest_access: false
     },
     supports_upi: false,
-    base_exclusions: ["wallet_loads", "rent"],
+    base_exclusions: ["wallet_loads", "rent", "government", "education"],
     features: ["25X at BPCL fuel stations", "5X on groceries/dining", "1% surcharge waiver"]
   }
 ];

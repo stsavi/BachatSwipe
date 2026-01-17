@@ -28,7 +28,7 @@ export const axisCardsData = [
       guest_access: true
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government", "education", "emi"],
     features: ["Complimentary Priority Pass", "Golf privileges", "Concierge services", "Milestone benefits"]
   },
   {
@@ -52,7 +52,7 @@ export const axisCardsData = [
       guest_access: true
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government", "education", "emi"],
     features: ["Premium concierge", "Complimentary night stays", "Spa access", "Golf worldwide"]
   },
   {
@@ -60,10 +60,10 @@ export const axisCardsData = [
     name: "Axis Bank Vistara Infinite",
     bank: "Axis Bank",
     card_tier: CARD_TIERS.TRAVEL,
-    reward_type: REWARD_TYPES.POINTS, // CV Points (Club Vistara)
-    base_rate: 0.04, // 4 CV Points per ₹200 = 0.02 points per ₹1, but 1 CV Point ≈ ₹2, so 0.04
+    reward_type: REWARD_TYPES.CV_POINTS, // CV Points (Club Vistara)
+    base_rate: 0.02, // 4 CV Points per ₹200
     earning_display: "4 CV Points per ₹200",
-    value_per_unit: 0.2, // ₹0.2 per CV Point (when transferred to Vistara)
+    value_per_unit: 1.0, // ₹1 per CV Point (optimal for flights)
     redemption_ease_score: 3, // Miles transfer required
     redemption_types: [REDEMPTION_TYPES.MILES_TRANSFER],
     annual_fee: 10000, // ₹10k + GST
@@ -76,7 +76,7 @@ export const axisCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government", "education"],
     features: ["Vistara Gold tier", "Free Vistara tickets on milestones", "Complimentary Priority Pass"]
   },
   {
@@ -100,7 +100,7 @@ export const axisCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government", "education"],
     features: ["Priority Pass", "1% fuel surcharge waiver", "Airport meet & greet"]
   },
   {
@@ -109,8 +109,8 @@ export const axisCardsData = [
     bank: "Axis Bank",
     card_tier: CARD_TIERS.CASHBACK,
     reward_type: REWARD_TYPES.CASHBACK,
-    base_rate: 0.01, // 1% on other spends (excluding base_exclusions)
-    earning_display: "2% on bill payments, 5% on select categories",
+    base_rate: 0.02, // 2% on other spends
+    earning_display: "5% on Google Pay, 2% elsewhere",
     value_per_unit: 1.00, // ₹1 per ₹1 cashback
     redemption_ease_score: 1, // Direct cashback
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
@@ -124,7 +124,7 @@ export const axisCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "rent", "insurance", "wallet_loads", "emi"],
+    base_exclusions: ["fuel", "rent", "insurance", "wallet_loads", "emi", "government", "education", "utilities"],
     features: ["5% cashback on bill payments via Google Pay, PhonePe", "2% on utilities", "No upper cap"]
   },
   {
@@ -148,7 +148,7 @@ export const axisCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "government", "education", "utilities"],
     features: ["10% cashback on Airtel bills", "25% cashback for Airtel Black", "4% on utilities"]
   },
   {
@@ -172,7 +172,7 @@ export const axisCardsData = [
       guest_access: false
     },
     supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "emi"],
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "emi", "government", "education", "utilities"],
     features: ["4% unlimited on Flipkart/Myntra", "1.5% everywhere else", "No upper limit"]
   },
   {
@@ -180,10 +180,10 @@ export const axisCardsData = [
     name: "Axis Bank Neo",
     bank: "Axis Bank",
     card_tier: CARD_TIERS.ENTRY,
-    reward_type: REWARD_TYPES.CASHBACK,
-    base_rate: 0.01, // 1% base (as Edge Rewards that can be redeemed)
-    earning_display: "1% Edge Rewards on all spends",
-    value_per_unit: 1.00,
+    reward_type: REWARD_TYPES.EDGE_REWARDS, // Edge Rewards
+    base_rate: 0.005, // 1 Point per ₹200
+    earning_display: "1 Edge Reward per ₹200",
+    value_per_unit: 0.2, // ₹0.2 per Point
     redemption_ease_score: 1,
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
     annual_fee: 250, // ₹250

@@ -2,16 +2,16 @@
 
 ## 💳 Card Portfolio
 
-| Card Name | Tier | Base Rate | Reward Currency | Value per Unit | Annual Fee | Fee Waiver Criteria | Lounge Access |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **Axis Magnus** | Super Premium | 6.00% (12EM/₹200) | Edge Miles | ₹1.00 | ₹12,500 | ₹25L spend | Unlimited |
-| **Axis Reserve** | Super Premium | 7.50% (15EM/₹200) | Edge Miles | ₹1.00 | ₹50,000 | N/A | Unlimited |
-| **Axis Vistara Infinite** | Travel | 2.00% (4CV/₹200) | CV Points | ₹2.00 | ₹10,000 | ₹4L spend | Unlimited Dom / 4 Int |
-| **Axis Atlas** | Travel | 2.00% (2EM/₹100) | Edge Miles | ₹1.00 | ₹5,000 | ₹5L spend | Unlimited Dom / 4 Int |
-| **Axis Ace** | Cashback | 2.00% | Cashback | ₹1.00 | ₹499 | ₹2L spend | None |
-| **Axis Airtel** | Cashback | 1.00% | Cashback | ₹1.00 | ₹500 | Airtel Black / ₹2L | None |
-| **Axis Flipkart** | Cashback | 1.50% | Cashback | ₹1.00 | ₹500 | ₹3L spend | None |
-| **Axis Neo** | Entry | 1.00% | Edge Rewards | ₹1.00 | ₹250 | ₹50k spend | None |
+| Card Name | Reward Currency | Base Rate (Unit/₹1) | Value per Unit | Effective Return | Annual Fee | Fee Waiver |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **Axis Magnus** | Edge Miles | 0.06 | ₹1.00 | 6.0% | ₹12,500 | ₹25L spend |
+| **Axis Reserve** | Edge Miles | 0.075 | ₹1.00 | 7.5% | ₹50,000 | N/A |
+| **Axis Vistara Infinite** | CV Points | 0.02 | ₹1.00 | 2.0% | ₹10,000 | ₹4L spend |
+| **Axis Atlas** | Edge Miles | 0.02 | ₹1.00 | 2.0% | ₹5,000 | ₹5L spend |
+| **Axis Ace** | INR | 0.02 | ₹1.00 | 2.0% | ₹499 | ₹2L spend |
+| **Axis Airtel** | INR | 0.01 | ₹1.00 | 1.0% | ₹500 | ₹2L spend |
+| **Axis Flipkart** | INR | 0.015 | ₹1.00 | 1.5% | ₹500 | ₹3L spend |
+| **Axis Neo** | Edge Rewards | 0.005 | ₹0.20 | 0.1% | ₹250 | ₹50k spend |
 
 ## 📐 Rules & Logic
 
