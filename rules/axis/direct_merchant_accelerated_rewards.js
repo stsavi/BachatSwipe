@@ -14,7 +14,7 @@ export const axisDirectAcceleratedRules = [
   {
     id: "axis_magnus_reserve_dining_direct",
     bank: "Axis Bank",
-    rule_type: RULE_TYPES.DIRECT_ACCELERATED,
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
     category: EXPENSE_CATEGORIES.DINING,
     merchants: [],
     platform: "direct",
@@ -38,7 +38,7 @@ export const axisDirectAcceleratedRules = [
   {
     id: "axis_vistara_infinite_vistara_spends",
     bank: "Axis Bank",
-    rule_type: RULE_TYPES.DIRECT_ACCELERATED,
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
     category: EXPENSE_CATEGORIES.TRAVEL,
     merchants: ["Vistara"],
     platform: "direct",

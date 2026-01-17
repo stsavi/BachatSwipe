@@ -1,0 +1,4852 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BachatSwipe (Standalone)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #0b1121; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .input-dark { background: #1e293b; border: 1px solid #334155; color: white; transition: 0.2s; }
+        .input-dark:focus { border-color: #f59e0b; outline: none; }
+        .strategies-box { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out, padding 0.3s ease; }
+        .strategies-box.open { max-height: 800px; padding-top: 0.75rem; padding-bottom: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); }
+        .chevron { transition: transform 0.3s; }
+        .chevron.open { transform: rotate(180deg); }
+        .loading { display: none; }
+        .loading.active { display: inline-block; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8 flex flex-col items-center">
+    <div id="error-banner" class="hidden w-full max-w-4xl bg-red-900/50 border border-red-500 text-red-200 p-4 rounded-xl mb-6 text-center">
+        <p class="font-bold"><i class="fas fa-exclamation-triangle"></i> Error</p>
+        <p class="text-sm mt-1" id="error-message"></p>
+    </div>
+    <div class="w-full max-w-4xl">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl md:text-5xl font-black mb-2 tracking-tight">
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-600">ðŸ’³ BachatSwipe</span>
+                <span class="text-xs text-blue-400 bg-blue-900/30 px-2 py-1 rounded ml-2 align-top">STANDALONE</span>
+            </h1>
+            <p class="text-slate-400 text-sm">Smart Card Optimizer â€¢ Single File Mode</p>
+        </div>
+        <div class="glass p-6 rounded-2xl shadow-xl mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Expense Amount (â‚¹)</label>
+                    <input type="number" id="amount" value="10000" min="1" max="10000000" class="input-dark w-full p-3 rounded-lg text-lg font-mono" required>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Merchant</label>
+                    <select id="merchant" class="input-dark w-full p-3 rounded-lg">
+                        <option value="">Any Merchant</option>
+                        <option value="amazon">Amazon</option>
+                        <option value="flipkart">Flipkart</option>
+                        <option value="swiggy">Swiggy</option>
+                        <option value="zomato">Zomato</option>
+                        <option value="bigbasket">BigBasket</option>
+                        <option value="tata_neu">Tata Neu</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Category</label>
+                    <select id="category" class="input-dark w-full p-3 rounded-lg" required>
+                        <option value="shopping">Shopping ðŸ›ï¸</option>
+                        <option value="dining">Dining ðŸ”</option>
+                        <option value="grocery">Grocery ðŸ›’</option>
+                        <option value="electronics">Electronics ðŸ“±</option>
+                        <option value="pharmacy">Pharmacy / Medicine ðŸ’Š</option>
+                        <option value="travel">Travel (Flight/Hotel) âœˆï¸</option>
+                        <option value="flights">Flights âœˆï¸</option>
+                        <option value="hotels">Hotels ðŸ¨</option>
+                        <option value="fuel">Fuel / Petrol â›½</option>
+                        <option value="utility">Utility (Electricity/Water) ðŸ’¡</option>
+                        <option value="bills">Broadband / Mobile Bills ðŸ“±</option>
+                        <option value="upi">UPI / Scan & Pay ðŸ“¸</option>
+                        <option value="wallet">Wallet Load ðŸ‘›</option>
+                        <option value="rent">Rent ðŸ </option>
+                        <option value="education">Education / Fees ðŸŽ“</option>
+                        <option value="government">Government / Tax ðŸ›ï¸</option>
+                    </select>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-700/50 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="w-full md:w-auto flex-1">
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">
+                        <i class="fas fa-credit-card mr-1"></i> Search Specific Card (Optional)
+                    </label>
+                    <input type="text" id="card_search" list="card_list" placeholder="âš¡ Leave empty for Top 10 Cards" class="input-dark w-full p-2 rounded-lg text-sm border-slate-600 font-bold text-yellow-400 bg-slate-800">
+                    <datalist id="card_list"></datalist>
+                </div>
+                <button id="submit-button" onclick="window.app.analyze()" class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-400 hover:to-orange-500 text-black font-bold rounded-xl shadow-lg transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <i class="fas fa-search mr-2"></i>Analyze Rewards
+                    <i class="fas fa-spinner loading ml-2" id="loading-spinner"></i>
+                </button>
+            </div>
+        </div>
+        <div id="results" class="space-y-3"></div>
+    </div>
+    <script>
+        window.BachatSwipe = {};
+/* --- Source: config/bank_platforms.js --- */
+// config/bank_platforms.js
+// Central configuration for bank portals, categories, and constants
+
+// ============================================================
+// BANK PORTAL NAMES
+// ============================================================
+
+window.BANK_PORTALS = {
+    HDFC: {
+        portal: "SmartBuy",
+        voucher_platform: "SmartBuy (GyFTR)",
+        url: "https://offers.smartbuy.hdfcbank.com/"
+    },
+    AXIS: {
+        portal: "Travel Edge",
+        voucher_platform: "EDGE Rewards (GyFTR)",
+        url: "https://www.traveledge.axisbank.com/"
+    },
+    ICICI: {
+        portal: "PayWith Rewards",
+        voucher_platform: "PayWith Rewards",
+        url: "https://www.icicibank.com/personal-banking/cards/credit-card/paywith-rewards"
+    },
+    SBI: {
+        portal: "SBI Rewardz",
+        voucher_platform: "SBI Rewardz",
+        url: "https://www.sbirewardz.com/"
+    }
+};
+
+// ============================================================
+// VOUCHER MERCHANTS (Restricted List)
+// ============================================================
+
+window.VOUCHER_MERCHANTS = [
+    "amazon",
+    "flipkart",
+    "swiggy",
+    "zomato",
+    "tata_neu",
+    "bigbasket"
+];
+
+// Human-readable merchant names
+window.MERCHANT_DISPLAY_NAMES = {
+    amazon: "Amazon",
+    flipkart: "Flipkart",
+    swiggy: "Swiggy",
+    zomato: "Zomato",
+    tata_neu: "Tata Neu",
+    bigbasket: "BigBasket"
+};
+
+// ============================================================
+// EXPENSE CATEGORIES
+// ============================================================
+
+window.EXPENSE_CATEGORIES = {
+    // Shopping
+    SHOPPING: "shopping",
+    ONLINE_SHOPPING: "online_shopping",
+    GROCERY: "grocery",
+    OFFLINE_SHOPPING: "offline_shopping",
+    
+    // Food & Dining
+    DINING: "dining",
+    FOOD_DELIVERY: "food_delivery",
+    
+    // Travel
+    TRAVEL: "travel",
+    FLIGHTS: "flights",
+    HOTELS: "hotels",
+    
+    // Fuel & Transportation
+    FUEL: "fuel",
+    TRANSPORTATION: "transportation",
+    
+    // Entertainment
+    ENTERTAINMENT: "entertainment",
+    MOVIES: "movies",
+    STREAMING: "streaming",
+    
+    // Utilities & Bills
+    UTILITIES: "utilities",
+    BILL_PAYMENTS: "bill_payments",
+    MOBILE_RECHARGE: "mobile_recharge",
+    
+    // Others
+    EDUCATION: "education",
+    HEALTHCARE: "healthcare",
+    INSURANCE: "insurance",
+    RENT: "rent",
+    GOVERNMENT: "government",
+    WALLET: "wallet",
+    EMI: "emi",
+    
+    // Special
+    VOUCHER: "voucher",
+    UPI: "upi"
+};
+
+// ============================================================
+// CARD TIERS
+// ============================================================
+
+window.CARD_TIERS = {
+    SUPER_PREMIUM: "super_premium",
+    PREMIUM: "premium",
+    CASHBACK: "cashback",
+    TRAVEL: "travel",
+    LIFESTYLE: "lifestyle",
+    UPI: "upi",
+    FUEL: "fuel",
+    ENTRY: "entry"
+};
+
+// ============================================================
+// REWARD TYPES
+// ============================================================
+
+window.REWARD_TYPES = {
+    POINTS: "points",              // Generic reward points
+    CASHBACK: "cashback",          // Direct cashback
+    MILES: "miles",                // Airline miles
+    EDGE_MILES: "edge_miles",      // Axis Edge Miles
+    EDGE_REWARDS: "edge_rewards",  // Axis Edge Reward Points
+    NEUCOINS: "neucoins",          // Tata NeuCoins
+    CV_POINTS: "cv_points",        // Club Vistara Points
+    FUEL_POINTS: "fuel_points"     // Fuel-specific points
+};
+
+// ============================================================
+// REDEMPTION TYPES
+// ============================================================
+
+window.REDEMPTION_TYPES = {
+    PORTAL: "portal",                    // Redeem via bank portal (SmartBuy, etc.)
+    TRANSFER: "transfer",                // Transfer to partners (airlines, hotels)
+    CASH: "cash",                        // Direct cash/wallet credit
+    STATEMENT_CREDIT: "statement_credit", // Statement balance adjustment
+    VOUCHERS: "vouchers",                // Redeem for vouchers
+    SHOPPING: "shopping"                 // Redeem for products
+};
+
+// ============================================================
+// REDEMPTION EASE SCORES
+// ============================================================
+
+window.REDEMPTION_EASE = {
+    EASIEST: 1,      // Direct cashback, statement credit, wallet credit
+    MODERATE: 2,     // Portal redemption, vouchers, shopping
+    COMPLEX: 3       // Miles transfer, limited partners, manual booking
+};
+
+// ============================================================
+// LOUNGE ACCESS TYPES
+// ============================================================
+
+window.LOUNGE_ACCESS_TYPES = {
+    COMPLIMENTARY: "complimentary",  // Free with card
+    SPEND_BASED: "spend_based",      // Based on quarterly/annual spend
+    NONE: "none"                     // No lounge access
+};
+
+// ============================================================
+// BENEFIT TYPES (for rules)
+// ============================================================
+
+window.BENEFIT_TYPES = {
+    REWARD_MULTIPLIER: "reward_multiplier",   // Multiplies base rate
+    CASHBACK: "cashback",                     // Fixed cashback percentage
+    INSTANT_DISCOUNT: "instant_discount"      // Instant discount at checkout
+};
+
+// ============================================================
+// RULE TYPES
+// ============================================================
+
+window.RULE_TYPES = {
+    CASHBACK: "cashback",
+    DIRECT_MERCHANT_ACCELERATED: "direct_merchant_accelerated",
+    PORTAL: "portal",
+    VOUCHER: "voucher"
+};
+
+// ============================================================
+// CAP PERIODS
+// ============================================================
+
+window.CAP_PERIODS = {
+    PER_TRANSACTION: "per_transaction",
+    DAILY: "daily",
+    WEEKLY: "weekly",
+    MONTHLY: "monthly",
+    QUARTERLY: "quarterly",
+    ANNUAL: "annual"
+};
+
+// ============================================================
+// BASE EXCLUSIONS (Common across most cards)
+// ============================================================
+
+window.COMMON_EXCLUSIONS = [
+    "fuel",
+    "wallet",
+    "rent",
+    "government",
+    "emi",
+    "utility"
+];
+
+// ============================================================
+// RULE PRIORITIES (Default)
+// ============================================================
+
+window.RULE_PRIORITY = {
+    PROMOTIONAL: 200,    // Time-limited promotional offers
+    STANDARD: 100,       // Regular ongoing offers
+    BASE: 50             // Fallback base rates
+};
+
+// ============================================================
+// HELPER FUNCTIONS
+// ============================================================
+
+/**
+ * Get portal name for a bank
+ */
+window.getPortalName = function getPortalName(bank) {
+    return BANK_PORTALS[bank.toUpperCase()]?.portal || "Portal";
+}
+
+/**
+ * Get voucher platform name for a bank
+ */
+window.getVoucherPlatform = function getVoucherPlatform(bank) {
+    return BANK_PORTALS[bank.toUpperCase()]?.voucher_platform || "Voucher Platform";
+}
+
+/**
+ * Check if merchant is eligible for voucher rules
+ */
+window.isVoucherMerchant = function isVoucherMerchant(merchant) {
+    return VOUCHER_MERCHANTS.includes(merchant.toLowerCase());
+}
+
+/**
+ * Validate category
+ */
+window.isValidCategory = function isValidCategory(category) {
+    return Object.values(EXPENSE_CATEGORIES).includes(category);
+}
+
+/**
+ * Get display name for merchant
+ */
+window.getMerchantDisplayName = function getMerchantDisplayName(merchant) {
+    return MERCHANT_DISPLAY_NAMES[merchant.toLowerCase()] || 
+           merchant.charAt(0).toUpperCase() + merchant.slice(1);
+}
+
+/* --- Source: cards_data/hdfc_cards_data.js --- */
+// cards_data/hdfc_cards_data.js
+// HDFC Bank Credit Cards - Validated as of January 2026
+
+window.HDFC_CARDS = [
+    // ============================================================
+    // SUPER PREMIUM (2 Cards)
+    // ============================================================
+    {
+        // IDENTITY
+        id: "hdfc_infinia",
+        name: "HDFC Infinia Metal",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "super_premium",
+        reward_type: "points",
+        
+        // EARNING (Validated: 5 RP per ₹150 on non-SmartBuy spends)
+        base_rate: 0.0333,  // 5/150 = 0.0333 per ₹1
+        earning_display: "5 RP per ₹150",
+        reward_currency: "RP",
+        
+        // REDEMPTION (Validated: 1 RP = ₹1 on SmartBuy flights/hotels)
+        value_per_unit: 1.0,
+        optimal_redemption: {
+            method: "SmartBuy Flights/Hotels",
+            redemption_type: "portal",
+            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹1. Alternate: Apple products at 1 RP = ₹0.50, statement adjustment at 1 RP = ₹0.30."
+        },
+        redemption_ease_score: 2,  // Moderate (portal booking required)
+        
+        // FEES (Validated)
+        joining_fee: 12500,
+        annual_fee: 12500,
+        fee_waiver: {
+            spend_threshold: 1000000,
+            period: "annual",
+            notes: "Annual fee waived on ₹10L+ annual spends."
+        },
+        
+        // BENEFITS (Validated)
+        lounge: {
+            domestic: "Unlimited",
+            international: "Unlimited",
+            access_type: "complimentary",
+            spend_threshold: 0,
+            network: ["Priority Pass", "Diners Club", "Visa/Mastercard"],
+            notes: "Unlimited complimentary lounge access globally for primary and add-on cardholders."
+        },
+        
+        // FEATURES
+        supports_upi: false,
+        
+        // EXCLUSIONS (Validated from HDFC MITC)
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "utility"]
+    },
+    {
+        // IDENTITY
+        id: "hdfc_dcb_metal",
+        name: "HDFC Diners Black Metal",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "super_premium",
+        reward_type: "points",
+        
+        // EARNING (Validated: Same as Infinia)
+        base_rate: 0.0333,
+        earning_display: "5 RP per ₹150",
+        reward_currency: "RP",
+        
+        // REDEMPTION (Validated: Same as Infinia)
+        value_per_unit: 1.0,
+        optimal_redemption: {
+            method: "SmartBuy Flights/Hotels",
+            redemption_type: "portal",
+            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹1."
+        },
+        redemption_ease_score: 2,
+        
+        // FEES (Validated)
+        joining_fee: 10000,
+        annual_fee: 10000,
+        fee_waiver: {
+            spend_threshold: 800000,
+            period: "annual",
+            notes: "Annual fee waived on ₹8L+ annual spends."
+        },
+        
+        // BENEFITS (Validated)
+        lounge: {
+            domestic: "Unlimited",
+            international: "Unlimited",
+            access_type: "complimentary",
+            spend_threshold: 0,
+            network: ["Diners Club", "Priority Pass"],
+            notes: "Unlimited complimentary Diners Club and Priority Pass lounge access."
+        },
+        
+        // FEATURES
+        supports_upi: false,
+        
+        // EXCLUSIONS
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "utility"]
+    },
+
+    // ============================================================
+    // PREMIUM / LIFESTYLE (2 Cards)
+    // ============================================================
+    {
+        // IDENTITY
+        id: "hdfc_regalia_gold",
+        name: "HDFC Regalia Gold",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "premium",
+        reward_type: "points",
+        
+        // EARNING (Validated: 4 RP per ₹150)
+        base_rate: 0.0267,  // 4/150 = 0.0267
+        earning_display: "4 RP per ₹150",
+        reward_currency: "RP",
+        
+        // REDEMPTION (Validated: Lower redemption value than Infinia)
+        value_per_unit: 0.50,
+        optimal_redemption: {
+            method: "SmartBuy Flights/Hotels",
+            redemption_type: "portal",
+            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹0.50. Statement adjustment at 1 RP = ₹0.30."
+        },
+        redemption_ease_score: 2,
+        
+        // FEES (Validated)
+        joining_fee: 2500,
+        annual_fee: 2500,
+        fee_waiver: {
+            spend_threshold: 400000,
+            period: "annual",
+            notes: "Annual fee waived on ₹4L+ annual spends."
+        },
+        
+        // BENEFITS (Validated)
+        lounge: {
+            domestic: 12,
+            international: 6,
+            access_type: "complimentary",
+            spend_threshold: 0,
+            network: ["Priority Pass", "Visa/Mastercard"],
+            notes: "12 domestic and 6 international lounge visits per year."
+        },
+        
+        // FEATURES
+        supports_upi: false,
+        
+        // EXCLUSIONS
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi"]
+    },
+    {
+        // IDENTITY
+        id: "hdfc_dcp",
+        name: "HDFC Diners Privilege",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "premium",
+        reward_type: "points",
+        
+        // EARNING (Validated: 4 RP per ₹150)
+        base_rate: 0.0267,
+        earning_display: "4 RP per ₹150",
+        reward_currency: "RP",
+        
+        // REDEMPTION (Validated: Same as Regalia)
+        value_per_unit: 0.50,
+        optimal_redemption: {
+            method: "SmartBuy Flights/Hotels",
+            redemption_type: "portal",
+            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹0.50."
+        },
+        redemption_ease_score: 2,
+        
+        // FEES (Validated)
+        joining_fee: 2500,
+        annual_fee: 2500,
+        fee_waiver: {
+            spend_threshold: 300000,
+            period: "annual",
+            notes: "Annual fee waived on ₹3L+ annual spends."
+        },
+        
+        // BENEFITS (Validated: Spend-based lounge)
+        lounge: {
+            domestic: 8,
+            international: 8,
+            access_type: "spend_based",
+            spend_threshold: 15000,
+            network: ["Diners Club"],
+            notes: "2 domestic and 2 international visits per quarter on spending ₹15k in previous quarter (8 visits/year total)."
+        },
+        
+        // FEATURES
+        supports_upi: false,
+        
+        // EXCLUSIONS
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi"]
+    },
+
+    // ============================================================
+    // CASHBACK / MID-RANGE (2 Cards)
+    // ============================================================
+    {
+        // IDENTITY
+        id: "hdfc_millennia",
+        name: "HDFC Millennia",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "cashback",
+        reward_type: "cashback",
+        
+        // EARNING (Validated: 1% base cashback = 1 per ₹100)
+        base_rate: 0.01,
+        earning_display: "1% Cashback",
+        reward_currency: "Cashback",
+        
+        // REDEMPTION (Validated: Cashback = direct money)
+        value_per_unit: 1.0,
+        optimal_redemption: {
+            method: "Statement Credit",
+            redemption_type: "statement_credit",
+            annotation: "Cashback automatically credited as statement credit. 1 cashback unit = ₹1."
+        },
+        redemption_ease_score: 1,  // Easiest - automatic statement credit
+        
+        // FEES (Validated)
+        joining_fee: 1000,
+        annual_fee: 1000,
+        fee_waiver: {
+            spend_threshold: 100000,
+            period: "annual",
+            notes: "Annual fee waived on ₹1L+ annual spends."
+        },
+        
+        // BENEFITS (Validated)
+        lounge: {
+            domestic: 4,
+            international: 0,
+            access_type: "spend_based",
+            spend_threshold: 100000,
+            network: ["Visa/Mastercard"],
+            notes: "1 domestic lounge visit per quarter on spending ₹1L in previous quarter (4 visits/year total)."
+        },
+        
+        // FEATURES
+        supports_upi: false,
+        
+        // EXCLUSIONS
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi"]
+    },
+    {
+        // IDENTITY
+        id: "hdfc_swiggy",
+        name: "Swiggy HDFC Bank Credit Card",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "cashback",
+        reward_type: "cashback",
+        
+        // EARNING (Validated: 1% base as Swiggy Money)
+        base_rate: 0.01,
+        earning_display: "1% Swiggy Money",
+        reward_currency: "Swiggy Money",
+        
+        // REDEMPTION (Validated: Swiggy Money = usable on Swiggy)
+        value_per_unit: 1.0,
+        optimal_redemption: {
+            method: "Swiggy Wallet",
+            redemption_type: "cash",
+            annotation: "Cashback credited to Swiggy Money wallet. 1 unit = ₹1 on Swiggy platform."
+        },
+        redemption_ease_score: 1,  // Easiest - automatic wallet credit
+        
+        // FEES (Validated)
+        joining_fee: 500,
+        annual_fee: 500,
+        fee_waiver: {
+            spend_threshold: 200000,
+            period: "annual",
+            notes: "Annual fee waived on ₹2L+ annual spends."
+        },
+        
+        // BENEFITS (Validated: No lounge access)
+        lounge: {
+            domestic: 0,
+            international: 0,
+            access_type: "none",
+            spend_threshold: 0,
+            network: [],
+            notes: "No lounge access provided."
+        },
+        
+        // FEATURES
+        supports_upi: false,
+        
+        // EXCLUSIONS (Validated: Broader exclusions)
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "jewellery"]
+    },
+
+    // ============================================================
+    // UPI / CO-BRANDED (2 Cards)
+    // ============================================================
+    {
+        // IDENTITY
+        id: "hdfc_tataneu_infinity",
+        name: "Tata Neu Infinity HDFC Bank Credit Card",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "upi",
+        reward_type: "neucoins",
+        
+        // EARNING (Validated: 1.5% base NeuCoins)
+        base_rate: 0.015,
+        earning_display: "1.5% NeuCoins",
+        reward_currency: "NeuCoins",
+        
+        // REDEMPTION (Validated: 1 NeuCoin = ₹1 on Tata Neu)
+        value_per_unit: 1.0,
+        optimal_redemption: {
+            method: "Tata Neu App",
+            redemption_type: "cash",
+            annotation: "Redeem on Tata Neu ecosystem (BigBasket, Tata CLiQ, 1mg, etc.). 1 NeuCoin = ₹1."
+        },
+        redemption_ease_score: 1,  // Easiest - direct ecosystem wallet
+        
+        // FEES (Validated)
+        joining_fee: 1499,
+        annual_fee: 1499,
+        fee_waiver: {
+            spend_threshold: 300000,
+            period: "annual",
+            notes: "Annual fee waived on ₹3L+ annual spends."
+        },
+        
+        // BENEFITS (Validated)
+        lounge: {
+            domestic: 8,
+            international: 4,
+            access_type: "complimentary",
+            spend_threshold: 0,
+            network: ["Visa/RuPay", "Priority Pass"],
+            notes: "2 domestic visits per quarter (8/year) + 4 international visits per year via Priority Pass."
+        },
+        
+        // FEATURES (Validated: Supports UPI)
+        supports_upi: true,
+        
+        // EXCLUSIONS
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi"]
+    },
+    {
+        // IDENTITY
+        id: "hdfc_tataneu_plus",
+        name: "Tata Neu Plus HDFC Bank Credit Card",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "upi",
+        reward_type: "neucoins",
+        
+        // EARNING (Validated: 1% base NeuCoins)
+        base_rate: 0.01,
+        earning_display: "1% NeuCoins",
+        reward_currency: "NeuCoins",
+        
+        // REDEMPTION (Validated: Same as Infinity)
+        value_per_unit: 1.0,
+        optimal_redemption: {
+            method: "Tata Neu App",
+            redemption_type: "cash",
+            annotation: "Redeem on Tata Neu ecosystem. 1 NeuCoin = ₹1."
+        },
+        redemption_ease_score: 1,
+        
+        // FEES (Validated)
+        joining_fee: 499,
+        annual_fee: 499,
+        fee_waiver: {
+            spend_threshold: 100000,
+            period: "annual",
+            notes: "Annual fee waived on ₹1L+ annual spends."
+        },
+        
+        // BENEFITS (Validated)
+        lounge: {
+            domestic: 4,
+            international: 0,
+            access_type: "complimentary",
+            spend_threshold: 0,
+            network: ["Visa/RuPay"],
+            notes: "1 domestic lounge visit per quarter (4 visits/year total)."
+        },
+        
+        // FEATURES
+        supports_upi: true,
+        
+        // EXCLUSIONS
+        base_exclusions: ["fuel", "wallet", "rent", "government", "emi"]
+    },
+    
+    // ============================================================
+    // FUEL CARDS (1 Card)
+    // ============================================================
+    {
+        // IDENTITY
+        id: "hdfc_indianoil",
+        name: "IndianOil HDFC Bank Credit Card",
+        bank: "HDFC",
+        
+        // CLASSIFICATION
+        card_tier: "fuel",
+        reward_type: "fuel_points",
+        
+        // EARNING (Validated: 1 Fuel Point per ₹150)
+        base_rate: 0.0067,  // 1/150 = 0.0067
+        earning_display: "1 Fuel Point per ₹150",
+        reward_currency: "Fuel Points",
+        
+        // REDEMPTION (Validated: 1 FP = ₹0.96 at IOCL)
+        value_per_unit: 0.96,
+        optimal_redemption: {
+            method: "Fuel at IndianOil Stations",
+            redemption_type: "cash",
+            annotation: "Redeem for free fuel at IndianOil outlets. 1 Fuel Point = ₹0.96 worth of fuel."
+        },
+        redemption_ease_score: 2,  // Moderate - need to redeem at IOCL
+        
+        // FEES (Validated)
+        joining_fee: 500,
+        annual_fee: 500,
+        fee_waiver: {
+            spend_threshold: 50000,
+            period: "annual",
+            notes: "Annual fee waived on ₹50k+ annual spends."
+        },
+        
+        // BENEFITS (Validated: No lounge)
+        lounge: {
+            domestic: 0,
+            international: 0,
+            access_type: "none",
+            spend_threshold: 0,
+            network: [],
+            notes: "No lounge access provided."
+        },
+        
+        // FEATURES
+        supports_upi: false,
+        
+        // EXCLUSIONS (Validated: Minimal exclusions for fuel card)
+        base_exclusions: ["wallet"]
+    }
+];
+/* --- Source: cards_data/axis_cards_data.js --- */
+
+
+/**
+ * Axis Bank Credit Cards Data
+ * Data validated against: Axis Bank official product pages, MITC documents, Travel Edge portal
+ * Last updated: January 17, 2026
+ */
+
+window.axisCardsData = [
+  {
+    id: "axis_magnus",
+    name: "Axis Bank Magnus",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.SUPER_PREMIUM,
+    reward_type: REWARD_TYPES.EDGE_MILES,
+    base_rate: 0.06, // 12 Edge Miles per ₹200 = 0.06 miles per ₹1
+    earning_display: "12 Edge Miles per ₹200",
+    value_per_unit: 1.00, // ₹1 per Edge Mile
+    redemption_ease_score: 2, // Portal redemption
+    redemption_types: [REDEMPTION_TYPES.TRAVEL_PORTAL, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.MILES_TRANSFER],
+    annual_fee: 12500, // ₹10k + GST
+    fee_waiver_criteria: "Spend ₹25L in a year to get annual fee waived as Edge Miles",
+    joining_bonus: "25,000 Edge Miles on ₹1L spend in first 45 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      international: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      network: ["Priority Pass", "Dreamfolks"],
+      guest_access: true
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government"],
+    features: ["Complimentary Priority Pass", "Golf privileges", "Concierge services", "Milestone benefits"]
+  },
+  {
+    id: "axis_reserve",
+    name: "Axis Bank Reserve",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.SUPER_PREMIUM,
+    reward_type: REWARD_TYPES.EDGE_MILES,
+    base_rate: 0.075, // 15 Edge Miles per ₹200 = 0.075 miles per ₹1
+    earning_display: "15 Edge Miles per ₹200",
+    value_per_unit: 1.00, // ₹1 per Edge Mile
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.TRAVEL_PORTAL, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.MILES_TRANSFER],
+    annual_fee: 50000, // ₹50k (non-waivable)
+    fee_waiver_criteria: null,
+    joining_bonus: "1,00,000 Edge Miles on card issuance",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      international: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      network: ["Priority Pass", "Dreamfolks", "LoungeKey"],
+      guest_access: true
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government"],
+    features: ["Premium concierge", "Complimentary night stays", "Spa access", "Golf worldwide"]
+  },
+  {
+    id: "axis_vistara_infinite",
+    name: "Axis Bank Vistara Infinite",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.TRAVEL,
+    reward_type: REWARD_TYPES.POINTS, // CV Points (Club Vistara)
+    base_rate: 0.04, // 4 CV Points per ₹200 = 0.02 points per ₹1, but 1 CV Point ≈ ₹2, so 0.04
+    earning_display: "4 CV Points per ₹200",
+    value_per_unit: 2.00, // ₹2 per CV Point (when transferred to Vistara)
+    redemption_ease_score: 3, // Miles transfer required
+    redemption_types: [REDEMPTION_TYPES.MILES_TRANSFER],
+    annual_fee: 10000, // ₹10k + GST
+    fee_waiver_criteria: "Spend ₹4L in a year",
+    joining_bonus: "Club Vistara Gold Tier on approval",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      network: ["Priority Pass", "Club Vistara Lounges"],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities"],
+    features: ["Vistara Gold tier", "Free Vistara tickets on milestones", "Complimentary Priority Pass"]
+  },
+  {
+    id: "axis_atlas",
+    name: "Axis Bank Atlas",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.TRAVEL,
+    reward_type: REWARD_TYPES.EDGE_MILES,
+    base_rate: 0.02, // 2 Edge Miles per ₹100 = 0.02 miles per ₹1
+    earning_display: "2 Edge Miles per ₹100",
+    value_per_unit: 1.00, // ₹1 per Edge Mile
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.TRAVEL_PORTAL, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 5000, // ₹5k + GST (₹5,900 total)
+    fee_waiver_criteria: "Spend ₹5L in a year",
+    joining_bonus: "8,000 Edge Miles on first transaction",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      network: ["Priority Pass"],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities"],
+    features: ["Priority Pass", "1% fuel surcharge waiver", "Airport meet & greet"]
+  },
+  {
+    id: "axis_ace",
+    name: "Axis Bank Ace",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.01, // 1% on other spends (excluding base_exclusions)
+    earning_display: "2% on bill payments, 5% on select categories",
+    value_per_unit: 1.00, // ₹1 per ₹1 cashback
+    redemption_ease_score: 1, // Direct cashback
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 499, // ₹499 (waived on annual spends)
+    fee_waiver_criteria: "Spend ₹2L in a year",
+    joining_bonus: "₹500 cashback via Amazon voucher on ₹10k spend in first 45 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "rent", "insurance", "wallet_loads", "emi"],
+    features: ["5% cashback on bill payments via Google Pay, PhonePe", "2% on utilities", "No upper cap"]
+  },
+  {
+    id: "axis_airtel",
+    name: "Axis Bank Airtel",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.01, // 1% base cashback
+    earning_display: "10% on Airtel, 25% on Airtel Black, 1% elsewhere",
+    value_per_unit: 1.00,
+    redemption_ease_score: 1,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500 (waived if Airtel Black customer)
+    fee_waiver_criteria: "Free for Airtel Black customers, or spend ₹2L annually",
+    joining_bonus: null,
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["10% cashback on Airtel bills", "25% cashback for Airtel Black", "4% on utilities"]
+  },
+  {
+    id: "axis_flipkart",
+    name: "Axis Bank Flipkart",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.015, // 1.5% base on non-Flipkart spends
+    earning_display: "4% on Flipkart/Myntra, 1.5% elsewhere",
+    value_per_unit: 1.00,
+    redemption_ease_score: 1,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹3L in a year",
+    joining_bonus: "₹500 cashback via Flipkart voucher",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "emi"],
+    features: ["4% unlimited on Flipkart/Myntra", "1.5% everywhere else", "No upper limit"]
+  },
+  {
+    id: "axis_neo",
+    name: "Axis Bank Neo",
+    bank: "Axis Bank",
+    card_tier: CARD_TIERS.ENTRY,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.01, // 1% base (as Edge Rewards that can be redeemed)
+    earning_display: "1% Edge Rewards on all spends",
+    value_per_unit: 1.00,
+    redemption_ease_score: 1,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 250, // ₹250
+    fee_waiver_criteria: "Spend ₹50k in a year",
+    joining_bonus: null,
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["1% Edge Rewards", "Low annual fee", "Entry-level card"]
+  }
+];
+
+if (typeof axisCardsData !== "undefined") window.axisCardsData = axisCardsData;
+/* --- Source: cards_data/icici_cards_data.js --- */
+
+
+/**
+ * ICICI Bank Credit Cards Data
+ * Data validated against: ICICI Bank official product pages, MITC documents, PayWith portal
+ * Last updated: January 17, 2026
+ */
+
+window.iciciCardsData = [
+  {
+    id: "icici_sapphiro",
+    name: "ICICI Bank Sapphiro",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.SUPER_PREMIUM,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.03, // 6 Reward Points per ₹200 = 0.03 points per ₹1
+    earning_display: "6 Reward Points per ₹200",
+    value_per_unit: 0.50, // ₹0.50 per point (1 RP = ₹0.50 for statement credit)
+    redemption_ease_score: 2, // Portal/voucher redemption
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.TRAVEL_PORTAL],
+    annual_fee: 12500, // ₹10k + GST
+    fee_waiver_criteria: "Spend ₹10L in a year",
+    joining_bonus: "15,000 Reward Points on ₹1L spend in first 90 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      international: LOUNGE_ACCESS_TYPES.UNLIMITED,
+      network: ["Priority Pass", "Dreamfolks"],
+      guest_access: true
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government"],
+    features: ["Complimentary Priority Pass", "Golf privileges", "Concierge services", "Airport transfers"]
+  },
+  {
+    id: "icici_coral",
+    name: "ICICI Bank Coral",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.PREMIUM,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
+    earning_display: "4 Reward Points per ₹200",
+    value_per_unit: 0.40, // ₹0.40 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 1000, // ₹1000
+    fee_waiver_criteria: "Spend ₹3L in a year",
+    joining_bonus: "2,000 Reward Points on first transaction",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_2,
+      network: ["Visa/Mastercard lounges"],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["Movie offers", "Dining benefits", "Retail vouchers"]
+  },
+  {
+    id: "icici_rubyx",
+    name: "ICICI Bank Rubyx",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.PREMIUM,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
+    earning_display: "4 Reward Points per ₹200",
+    value_per_unit: 0.40, // ₹0.40 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 3000, // ₹3000
+    fee_waiver_criteria: "Spend ₹4L in a year",
+    joining_bonus: "4,000 Reward Points on ₹50k spend in first 60 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_8,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      network: ["Visa/Mastercard lounges"],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["8 lounge visits/year", "Movie offers", "Golf access"]
+  },
+  {
+    id: "icici_amazon_pay",
+    name: "ICICI Amazon Pay",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.01, // 1% base on all other spends
+    earning_display: "5% on Amazon, 2% on bill payments",
+    value_per_unit: 1.00, // ₹1 per ₹1 cashback
+    redemption_ease_score: 1, // Direct cashback
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500 (often LTF)
+    fee_waiver_criteria: "Free for Prime members or ₹50k annual spend",
+    joining_bonus: "₹500 Amazon voucher",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "emi"],
+    features: ["5% unlimited on Amazon", "2% on bill payments", "1% everywhere else"]
+  },
+  {
+    id: "icici_platinum",
+    name: "ICICI Bank Platinum",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.ENTRY,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 2 Reward Points per ₹200 = 0.01 points per ₹1
+    earning_display: "2 Reward Points per ₹200",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹1L in a year",
+    joining_bonus: null,
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["Basic entry card", "Retail offers", "EMI options"]
+  },
+  {
+    id: "icici_manchester_united",
+    name: "ICICI Manchester United",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.LIFESTYLE,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
+    earning_display: "4 Reward Points per ₹200",
+    value_per_unit: 0.40, // ₹0.40 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 3000, // ₹3000
+    fee_waiver_criteria: "Spend ₹4L in a year",
+    joining_bonus: "Manchester United merchandise worth ₹3000",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_2,
+      network: ["Visa lounges"],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["Manchester United themed", "Club merchandise", "Lounge access"]
+  },
+  {
+    id: "icici_hpcl",
+    name: "ICICI HPCL",
+    bank: "ICICI Bank",
+    card_tier: CARD_TIERS.FUEL,
+    reward_type: REWARD_TYPES.FUEL_POINTS,
+    base_rate: 0.0025, // 0.5 fuel points per ₹200 = 0.0025 per ₹1, but 1 fuel point = ₹1, so effective ₹0.0025
+    earning_display: "5% cashback on HPCL fuel",
+    value_per_unit: 1.00, // ₹1 per fuel point
+    redemption_ease_score: 1, // Direct fuel redemption
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹50k in a year",
+    joining_bonus: "₹500 fuel points",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: false,
+    base_exclusions: ["wallet_loads", "rent"],
+    features: ["5% cashback on HPCL fuel", "1% surcharge waiver", "Fuel-focused benefits"]
+  }
+];
+
+if (typeof iciciCardsData !== "undefined") window.iciciCardsData = iciciCardsData;
+/* --- Source: cards_data/sbi_cards_data.js --- */
+
+
+/**
+ * SBI Cards Data
+ * Data validated against: SBI Cards official product pages, MITC documents, SBI Rewardz portal
+ * Last updated: January 17, 2026
+ */
+
+window.sbiCardsData = [
+  {
+    id: "sbi_vistara_prime",
+    name: "SBI Card Vistara Prime",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.TRAVEL,
+    reward_type: REWARD_TYPES.POINTS, // CV Points (Club Vistara)
+    base_rate: 0.03, // 3 CV Points per ₹100 = 0.03 points per ₹1
+    earning_display: "3 CV Points per ₹100",
+    value_per_unit: 2.00, // ₹2 per CV Point (when transferred to Vistara)
+    redemption_ease_score: 3, // Miles transfer required
+    redemption_types: [REDEMPTION_TYPES.MILES_TRANSFER],
+    annual_fee: 3000, // ₹3000
+    fee_waiver_criteria: "Spend ₹4L in a year",
+    joining_bonus: "Club Vistara Silver Tier on approval",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.LIMITED_8,
+      international: LOUNGE_ACCESS_TYPES.LIMITED_4,
+      network: ["Club Vistara Lounges", "Priority Pass"],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance"],
+    features: ["Vistara Silver tier", "Free checked baggage", "Priority check-in"]
+  },
+  {
+    id: "sbi_simplyclick",
+    name: "SBI Card SimplyCLICK",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
+    earning_display: "10X on select partners, 5X on online shopping",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹1L in a year",
+    joining_bonus: "₹500 Amazon voucher",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["10X on Cleartrip/BookMyShow/Lenskart", "5X online shopping", "Movie ticket offers"]
+  },
+  {
+    id: "sbi_simplysave",
+    name: "SBI Card SimplySAVE",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
+    earning_display: "10X on dining/groceries/movies, 1X elsewhere",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹1L in a year",
+    joining_bonus: "₹500 voucher",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["10X on dining, groceries, movies", "1% fuel surcharge waiver"]
+  },
+  {
+    id: "sbi_cashback",
+    name: "SBI Cashback Card",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.CASHBACK,
+    reward_type: REWARD_TYPES.CASHBACK,
+    base_rate: 0.01, // 1% base cashback
+    earning_display: "5% on online shopping, 1% elsewhere",
+    value_per_unit: 1.00, // ₹1 per ₹1 cashback
+    redemption_ease_score: 1, // Direct cashback
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 999, // ₹999
+    fee_waiver_criteria: "Spend ₹2L in a year",
+    joining_bonus: "₹2000 cashback on ₹1L spend in first 60 days",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "emi", "cash_withdrawal", "railway_tickets", "government_payments", "education", "utility_bills"],
+    features: ["5% unlimited on online shopping (with exclusions)", "1% on offline shopping", "Major exclusions apply"]
+  },
+  {
+    id: "sbi_prime",
+    name: "SBI Card PRIME",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.ENTRY,
+    reward_type: REWARD_TYPES.POINTS,
+    base_rate: 0.01, // 1 Reward Point per ₹100 = 0.01 points per ₹1
+    earning_display: "1 Reward Point per ₹100",
+    value_per_unit: 0.25, // ₹0.25 per point
+    redemption_ease_score: 2,
+    redemption_types: [REDEMPTION_TYPES.VOUCHERS],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹90k in a year",
+    joining_bonus: null,
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: true,
+    base_exclusions: ["fuel", "wallet_loads", "rent"],
+    features: ["Basic entry card", "1% fuel surcharge waiver", "Movie & dining offers"]
+  },
+  {
+    id: "sbi_bpcl",
+    name: "SBI Card BPCL",
+    bank: "SBI Card",
+    card_tier: CARD_TIERS.FUEL,
+    reward_type: REWARD_TYPES.FUEL_POINTS,
+    base_rate: 0.0125, // 1.25 fuel points per ₹100 = 0.0125 per ₹1 (effectively 1.25% at BPCL)
+    earning_display: "25X at BPCL fuel stations",
+    value_per_unit: 0.40, // ₹0.40 per fuel point (when redeemed at BPCL)
+    redemption_ease_score: 1, // Direct fuel redemption
+    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
+    annual_fee: 500, // ₹500
+    fee_waiver_criteria: "Spend ₹50k in a year",
+    joining_bonus: "₹250 fuel points",
+    lounge: {
+      domestic: LOUNGE_ACCESS_TYPES.NONE,
+      international: LOUNGE_ACCESS_TYPES.NONE,
+      network: [],
+      guest_access: false
+    },
+    supports_upi: false,
+    base_exclusions: ["wallet_loads", "rent"],
+    features: ["25X at BPCL fuel stations", "5X on groceries/dining", "1% surcharge waiver"]
+  }
+];
+
+if (typeof sbiCardsData !== "undefined") window.sbiCardsData = sbiCardsData;
+/* --- Source: rules/hdfc/cashback.js --- */
+// rules/hdfc/cashback.js
+// HDFC Bank - Direct Cashback Rules
+// Validated as of January 2026
+
+window.HDFC_CASHBACK_RULES = [
+
+    // ============================================================
+    // MILLENNIA - SMARTBUY PORTAL CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_millennia_smartbuy_shopping_5pct",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "online_shopping",
+        merchants: ["amazon", "flipkart"],
+        platform: "SmartBuy",
+
+        applies_to_cards: ["hdfc_millennia"],
+        cashback_rates: [0.05],  // 5% cashback
+
+        cap: 1000,
+        cap_period: "monthly",
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% cashback on Amazon/Flipkart purchases via HDFC SmartBuy portal (₹1000 cap/month)",
+        priority: 150  // Higher than base
+    },
+
+    {
+        id: "hdfc_millennia_smartbuy_dining_5pct",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "dining",
+        merchants: ["swiggy", "zomato"],
+        platform: "SmartBuy",
+
+        applies_to_cards: ["hdfc_millennia"],
+        cashback_rates: [0.05],
+
+        cap: 1000,
+        cap_period: "monthly",
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% cashback on Swiggy/Zomato orders via SmartBuy portal (₹1000 cap/month)",
+        priority: 150
+    },
+
+    // ============================================================
+    // SWIGGY HDFC - DIRECT MERCHANT CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_swiggy_direct_10pct",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "dining",
+        merchants: ["swiggy"],
+        platform: null,  // Direct swipe
+
+        applies_to_cards: ["hdfc_swiggy"],
+        cashback_rates: [0.10],  // 10% on Swiggy
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "10% Swiggy Money on all Swiggy orders (direct payment)",
+        priority: 150
+    },
+
+    {
+        id: "hdfc_swiggy_dining_5pct",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "dining",
+        merchants: [],  // All dining merchants
+        platform: null,
+
+        applies_to_cards: ["hdfc_swiggy"],
+        cashback_rates: [0.05],  // 5% on other dining
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% Swiggy Money on all other dining merchants (restaurants, food delivery)",
+        priority: 100
+    },
+
+    // ============================================================
+    // TATA NEU CARDS - TATA BRAND CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_tataneu_infinity_tata_brands_5pct",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: ["shopping", "grocery", "electronics", "pharmacy", "medicine"],
+        merchants: ["tata_neu", "bigbasket", "tata_cliq", "1mg", "croma"],
+        platform: null,
+
+        applies_to_cards: ["hdfc_tataneu_infinity"],
+        cashback_rates: [0.05],  // 5% NeuCoins
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% NeuCoins on Tata brand purchases (BigBasket, Tata CLiQ, 1mg, Croma, etc.)",
+        priority: 150
+    },
+
+    {
+        id: "hdfc_tataneu_plus_tata_brands_5pct",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: ["shopping", "grocery", "electronics", "pharmacy", "medicine"],
+        merchants: ["tata_neu", "bigbasket", "tata_cliq", "1mg", "croma"],
+        platform: null,
+
+        applies_to_cards: ["hdfc_tataneu_plus"],
+        cashback_rates: [0.05],
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% NeuCoins on Tata brand purchases",
+        priority: 150
+    },
+
+    {
+        id: "hdfc_tataneu_cards_upi_5pct",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "upi",
+        merchants: [],  // All UPI
+        platform: null,
+
+        applies_to_cards: ["hdfc_tataneu_infinity", "hdfc_tataneu_plus"],
+        cashback_rates: [0.05, 0.05],  // Both get 5% on UPI
+
+        cap: 250,
+        cap_period: "monthly",
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% NeuCoins on UPI transactions (₹250 cap/month)",
+        priority: 150
+    },
+
+    // ============================================================
+    // INDIANOIL - FUEL CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_indianoil_fuel_surcharge_waiver",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "fuel",
+        merchants: ["indianoil"],
+        platform: null,
+
+        applies_to_cards: ["hdfc_indianoil"],
+        cashback_rates: [0.01],  // Effective 1% via surcharge waiver
+
+        cap: 250,
+        cap_period: "monthly",
+        min_transaction: 400,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "1% fuel surcharge waiver at IndianOil stations (₹250 cap/month, min ₹400 txn)",
+        priority: 100
+    },
+
+    // ============================================================
+    // DCP (DINERS PRIVILEGE) - FOOD DELIVERY 5X
+    // ============================================================
+    {
+        id: "hdfc_dcp_zomato_swiggy_5x",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "dining",
+        merchants: ["zomato", "swiggy"],
+        platform: null,
+
+        applies_to_cards: ["hdfc_dcp"],
+
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [5],  // 5x RP on Zomato/Swiggy
+        cashback_rates: null,
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5x Reward Points on Zomato and Swiggy orders (20 RP per ₹150 spent)",
+        priority: 150
+    },
+
+    // ============================================================
+    // DCP (DINERS PRIVILEGE) - BOOKMYSHOW DISCOUNT
+    // ============================================================
+    {
+        id: "hdfc_dcp_bookmyshow_discount",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "entertainment",
+        merchants: ["bookmyshow"],
+        platform: null,
+
+        applies_to_cards: ["hdfc_dcp"],
+        cashback_rates: [0.25],  // Effective 25% discount
+
+        cap: 500,
+        cap_period: "monthly",
+        min_transaction: 250,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "Buy 1 Get 1 on BookMyShow movie tickets (effective 20% discount, ₹500 cap/month)",
+        priority: 150
+    }
+];
+
+/* --- Source: rules/hdfc/direct_merchant_accelerated_rewards.js --- */
+// rules/hdfc/direct_merchant_accelerated_rewards.js
+// HDFC Bank - Direct Merchant Accelerated Reward Points
+// Validated as of January 2026
+
+window.HDFC_DIRECT_ACCELERATED_RULES = [
+    
+    // ============================================================
+    // SUPER PREMIUM CARDS - DINING MULTIPLIER
+    // ============================================================
+    {
+        id: "hdfc_infinia_dcb_dining_merchants",
+        bank: "HDFC",
+        rule_type: "direct_merchant_accelerated",
+        
+        category: "dining",
+        merchants: [],  // All dining merchants
+        
+        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal"],
+        reward_multipliers: [2, 2],  // 2x on dining (validated from HDFC MITC)
+        
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "2x Reward Points on dining transactions (10 RP per ₹150 instead of 5 RP)",
+        priority: 100
+    },
+    
+    // ============================================================
+    // PREMIUM CARDS - DEPARTMENT STORES
+    // ============================================================
+    {
+        id: "hdfc_regalia_dcp_department_stores",
+        bank: "HDFC",
+        rule_type: "direct_merchant_accelerated",
+        
+        category: "shopping",
+        merchants: ["shoppers_stop", "lifestyle", "westside", "pantaloons"],
+        
+        applies_to_cards: ["hdfc_regalia_gold", "hdfc_dcp"],
+        reward_multipliers: [2, 2],  // 2x on department stores
+        
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "2x Reward Points on department store purchases (8 RP per ₹150)",
+        priority: 100
+    },
+    
+    // ============================================================
+    // INDIANOIL - FUEL ACCELERATED POINTS
+    // ============================================================
+    {
+        id: "hdfc_indianoil_fuel_accelerated",
+        bank: "HDFC",
+        rule_type: "direct_merchant_accelerated",
+        
+        category: "fuel",
+        merchants: ["indianoil"],
+        
+        applies_to_cards: ["hdfc_indianoil"],
+        reward_multipliers: [6],  // 6x on IndianOil fuel (6 FP per ₹150 instead of 1)
+        
+        cap: null,
+        cap_period: null,
+        min_transaction: 400,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "6x Fuel Points on IndianOil fuel purchases (6 FP per ₹150, min ₹400 transaction)",
+        priority: 100
+    }
+];
+
+/* --- Source: rules/hdfc/portal.js --- */
+// rules/hdfc/portal.js
+// HDFC Bank - SmartBuy Portal Rules (Flights & Hotels ONLY)
+// Validated as of January 2026 from https://offers.smartbuy.hdfcbank.com/
+
+window.HDFC_PORTAL_RULES = [
+
+    // ============================================================
+    // SMARTBUY HOTELS - 10X REWARD MULTIPLIER
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_hotels_10x",
+        bank: "HDFC",
+        rule_type: "portal",
+
+        platform: "SmartBuy",
+        category: "hotels",
+        merchants: [],  // All hotels via SmartBuy
+
+        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal", "hdfc_regalia_gold", "hdfc_dcp"],
+
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [10, 10, 10, 10],  // 10x RP for all these cards
+        cashback_rates: null,
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "10x Reward Points on hotel bookings via SmartBuy. Infinia/DCB get 50 RP per ₹150, Regalia/DCP get 40 RP per ₹150.",
+        priority: 150
+    },
+
+    // ============================================================
+    // SMARTBUY FLIGHTS - 5X REWARD MULTIPLIER
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_flights_5x",
+        bank: "HDFC",
+        rule_type: "portal",
+
+        platform: "SmartBuy",
+        category: ["flights", "travel"],
+        merchants: [],
+
+        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal", "hdfc_regalia_gold", "hdfc_dcp"],
+
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [5, 5, 5, 5],  // 5x RP for all these cards
+        cashback_rates: null,
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5x Reward Points on flight bookings via SmartBuy. Infinia/DCB get 25 RP per ₹150, Regalia/DCP get 20 RP per ₹150.",
+        priority: 150
+    },
+
+    // ============================================================
+    // MILLENNIA - SMARTBUY HOTELS 5% CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_hotels_millennia_5pct",
+        bank: "HDFC",
+        rule_type: "portal",
+
+        platform: "SmartBuy",
+        category: "hotels",
+        merchants: [],
+
+        applies_to_cards: ["hdfc_millennia"],
+
+        benefit_type: "cashback",
+        reward_multipliers: null,
+        cashback_rates: [0.05],  // 5% cashback
+
+        cap: 1000,
+        cap_period: "monthly",
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% cashback on hotel bookings via SmartBuy (₹1000 cap/month)",
+        priority: 150
+    },
+
+    // ============================================================
+    // MILLENNIA - SMARTBUY FLIGHTS 5% CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_flights_millennia_5pct",
+        bank: "HDFC",
+        rule_type: "portal",
+
+        platform: "SmartBuy",
+        category: "flights",
+        merchants: [],
+
+        applies_to_cards: ["hdfc_millennia"],
+
+        benefit_type: "cashback",
+        reward_multipliers: null,
+        cashback_rates: [0.05],  // 5% cashback
+
+        cap: 1000,
+        cap_period: "monthly",
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "5% cashback on flight bookings via SmartBuy (₹1000 cap/month)",
+        priority: 150
+    }
+];
+
+/* --- Source: rules/hdfc/vouchers.js --- */
+// rules/hdfc/vouchers.js
+// HDFC Bank - SmartBuy Voucher Purchase Rules
+// Validated as of January 2026 from SmartBuy (GyFTR) platform
+// Allowed merchants: amazon, flipkart, swiggy, zomato, tata_neu, bigbasket
+
+window.HDFC_VOUCHER_RULES = [
+    
+    // ============================================================
+    // SUPER PREMIUM - AMAZON/FLIPKART VOUCHERS 3X
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_amazon_flipkart_voucher_infinia_dcb_3x",
+        bank: "HDFC",
+        rule_type: "voucher",
+        
+        platform: "SmartBuy (GyFTR)",
+        category: "voucher",
+        merchants: ["amazon", "flipkart"],
+        
+        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal"],
+        
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [3, 3],  // 3x RP
+        cashback_rates: null,
+        instant_discount_rates: null,
+        
+        cap: 10000,
+        cap_period: "monthly",
+        min_transaction: 1000,
+        max_transaction: 10000,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "3x Reward Points when buying Amazon/Flipkart vouchers via SmartBuy (15 RP per ₹150, ₹10k cap/month)",
+        priority: 150,
+        
+        voucher_denominations: [100, 500, 1000, 2000, 5000, 10000],
+        discount_on_voucher: 0
+    },
+    
+    // ============================================================
+    // SUPER PREMIUM - SWIGGY/ZOMATO VOUCHERS 3X
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_swiggy_zomato_voucher_infinia_dcb_3x",
+        bank: "HDFC",
+        rule_type: "voucher",
+        
+        platform: "SmartBuy (GyFTR)",
+        category: "voucher",
+        merchants: ["swiggy", "zomato"],
+        
+        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal"],
+        
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [3, 3],
+        cashback_rates: null,
+        instant_discount_rates: null,
+        
+        cap: 10000,
+        cap_period: "monthly",
+        min_transaction: 500,
+        max_transaction: 10000,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "3x Reward Points when buying Swiggy/Zomato vouchers via SmartBuy",
+        priority: 150,
+        
+        voucher_denominations: [100, 250, 500, 1000, 2000, 5000],
+        discount_on_voucher: 0
+    },
+    
+    // ============================================================
+    // SUPER PREMIUM - BIGBASKET VOUCHERS 3X
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_bigbasket_voucher_infinia_dcb_3x",
+        bank: "HDFC",
+        rule_type: "voucher",
+        
+        platform: "SmartBuy (GyFTR)",
+        category: "voucher",
+        merchants: ["bigbasket"],
+        
+        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal"],
+        
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [3, 3],
+        cashback_rates: null,
+        instant_discount_rates: null,
+        
+        cap: 10000,
+        cap_period: "monthly",
+        min_transaction: 500,
+        max_transaction: 5000,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "3x Reward Points when buying BigBasket vouchers via SmartBuy",
+        priority: 150,
+        
+        voucher_denominations: [100, 250, 500, 1000, 2000, 5000],
+        discount_on_voucher: 0
+    },
+    
+    // ============================================================
+    // PREMIUM - AMAZON/FLIPKART VOUCHERS 2X
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_amazon_flipkart_voucher_regalia_dcp_2x",
+        bank: "HDFC",
+        rule_type: "voucher",
+        
+        platform: "SmartBuy (GyFTR)",
+        category: "voucher",
+        merchants: ["amazon", "flipkart"],
+        
+        applies_to_cards: ["hdfc_regalia_gold", "hdfc_dcp"],
+        
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [2, 2],  // 2x RP
+        cashback_rates: null,
+        instant_discount_rates: null,
+        
+        cap: 5000,
+        cap_period: "monthly",
+        min_transaction: 1000,
+        max_transaction: 10000,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "2x Reward Points when buying Amazon/Flipkart vouchers via SmartBuy (8 RP per ₹150, ₹5k cap/month)",
+        priority: 150,
+        
+        voucher_denominations: [100, 500, 1000, 2000, 5000, 10000],
+        discount_on_voucher: 0
+    },
+    
+    // ============================================================
+    // MILLENNIA - AMAZON/FLIPKART VOUCHERS 5% CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_amazon_flipkart_voucher_millennia_5pct",
+        bank: "HDFC",
+        rule_type: "voucher",
+        
+        platform: "SmartBuy (GyFTR)",
+        category: "voucher",
+        merchants: ["amazon", "flipkart"],
+        
+        applies_to_cards: ["hdfc_millennia"],
+        
+        benefit_type: "cashback",
+        reward_multipliers: null,
+        cashback_rates: [0.05],  // 5% cashback
+        instant_discount_rates: null,
+        
+        cap: 1000,
+        cap_period: "monthly",
+        min_transaction: 1000,
+        max_transaction: 10000,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "5% cashback when buying Amazon/Flipkart vouchers via SmartBuy (₹1000 cap/month)",
+        priority: 150,
+        
+        voucher_denominations: [100, 500, 1000, 2000, 5000, 10000],
+        discount_on_voucher: 0
+    },
+    
+    // ============================================================
+    // MILLENNIA - SWIGGY/ZOMATO VOUCHERS 5% CASHBACK
+    // ============================================================
+    {
+        id: "hdfc_smartbuy_swiggy_zomato_voucher_millennia_5pct",
+        bank: "HDFC",
+        rule_type: "voucher",
+        
+        platform: "SmartBuy (GyFTR)",
+        category: "voucher",
+        merchants: ["swiggy", "zomato"],
+        
+        applies_to_cards: ["hdfc_millennia"],
+        
+        benefit_type: "cashback",
+        reward_multipliers: null,
+        cashback_rates: [0.05],
+        instant_discount_rates: null,
+        
+        cap: 1000,
+        cap_period: "monthly",
+        min_transaction: 500,
+        max_transaction: 5000,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "5% cashback when buying Swiggy/Zomato vouchers via SmartBuy (₹1000 cap/month)",
+        priority: 150,
+        
+        voucher_denominations: [100, 250, 500, 1000, 2000, 5000],
+        discount_on_voucher: 0
+    },
+    
+    // ============================================================
+    // TATA NEU - TATA BRAND VOUCHERS (No multiplier, regular NeuCoins)
+    // ============================================================
+    {
+        id: "hdfc_tataneu_tata_brand_vouchers_base",
+        bank: "HDFC",
+        rule_type: "voucher",
+        
+        platform: "Tata Neu App",
+        category: "voucher",
+        merchants: ["tata_neu", "bigbasket"],
+        
+        applies_to_cards: ["hdfc_tataneu_infinity", "hdfc_tataneu_plus"],
+        
+        benefit_type: "reward_multiplier",
+        reward_multipliers: [1, 1],  // 1x (base rate, no multiplier)
+        cashback_rates: null,
+        instant_discount_rates: null,
+        
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+        max_transaction: null,
+        
+        valid_from: "2024-01-01",
+        valid_until: null,
+        
+        notes: "Base NeuCoins rate when buying Tata brand vouchers (no additional multiplier)",
+        priority: 50,  // Lower priority - base rate only
+        
+        voucher_denominations: [100, 500, 1000, 2000, 5000],
+        discount_on_voucher: 0
+    }
+];
+
+/* --- Source: rules/axis/cashback.js --- */
+
+
+/**
+ * Axis Bank - Cashback Rules
+ * Direct cashback offers (statement credit or instant)
+ * Data validated against: Axis Bank MITC, official product pages
+ * Last updated: January 17, 2026
+ */
+
+window.axisCashbackRules = [
+  // Ace Card - Bill Payments (Primary benefit)
+  {
+    id: "axis_ace_bill_payment_gpay_phonepe",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.UTILITIES,
+    merchants: ["Google Pay", "PhonePe"],
+    platform: "direct", // Bill payment via UPI apps
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.05], // 5% cashback
+    applies_to_cards: ["axis_ace"],
+    constraints: {
+      transaction_type: "Bill Payment",
+      platforms: ["Google Pay", "PhonePe"],
+      excluded_billers: []
+    },
+    cap: null, // No cap
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5% unlimited cashback on bill payments via Google Pay and PhonePe. No upper limit."
+  },
+  
+  // Ace Card - Utilities (2%)
+  {
+    id: "axis_ace_utilities",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.UTILITIES,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.02], // 2% cashback
+    applies_to_cards: ["axis_ace"],
+    constraints: {
+      transaction_type: "Direct Payment",
+      excluded: ["bill_payments_via_gpay_phonepe"]
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "2% cashback on direct utility payments (not via GPay/PhonePe which get 5%)"
+  },
+
+  // Airtel Card - Airtel Bills (25% for Airtel Black)
+  {
+    id: "axis_airtel_black_airtel_bills",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.UTILITIES,
+    merchants: ["Airtel"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.25], // 25% cashback
+    applies_to_cards: ["axis_airtel"],
+    constraints: {
+      customer_type: "Airtel Black",
+      transaction_type: "Airtel Bill Payment"
+    },
+    cap: 500, // ₹500/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "25% cashback for Airtel Black customers on Airtel bills. Capped at ₹500/month."
+  },
+
+  // Airtel Card - Airtel Bills (10% for regular)
+  {
+    id: "axis_airtel_regular_airtel_bills",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.UTILITIES,
+    merchants: ["Airtel"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.10], // 10% cashback
+    applies_to_cards: ["axis_airtel"],
+    constraints: {
+      customer_type: "Regular",
+      transaction_type: "Airtel Bill Payment"
+    },
+    cap: 300, // ₹300/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "10% cashback for regular Airtel customers on Airtel bills. Capped at ₹300/month."
+  },
+
+  // Airtel Card - Other Utilities (4%)
+  {
+    id: "axis_airtel_other_utilities",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.UTILITIES,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.04], // 4% cashback
+    applies_to_cards: ["axis_airtel"],
+    constraints: {
+      excluded_merchants: ["Airtel"]
+    },
+    cap: 250, // ₹250/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 8,
+    notes: "4% cashback on other utility bills (excluding Airtel). Capped at ₹250/month."
+  },
+
+  // Flipkart Card - Flipkart/Myntra (5%)
+  {
+    id: "axis_flipkart_flipkart_myntra",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    merchants: ["Flipkart", "Myntra"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.05], // 5% cashback (CORRECTED)
+    applies_to_cards: ["axis_flipkart"],
+    constraints: {
+      platforms: ["Flipkart", "Myntra"]
+    },
+    cap: null, // Unlimited
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "4% unlimited cashback on Flipkart and Myntra purchases. No upper limit."
+  }
+];
+
+if (typeof axisCashbackRules !== "undefined") window.axisCashbackRules = axisCashbackRules;
+
+/* --- Source: rules/axis/direct_merchant_accelerated_rewards.js --- */
+
+
+/**
+ * Axis Bank - Direct Merchant Accelerated Rewards
+ * Reward point multipliers for direct merchant swipes
+ * Data validated against: Axis Bank MITC, official product pages
+ * Last updated: January 17, 2026
+ */
+
+window.axisDirectAcceleratedRules = [
+  // Magnus/Reserve - Dining (5x on Travel Edge, 1x base)
+  // Note: Magnus gets 12 Edge Miles per ₹200 base, so Travel Edge multiplier makes it effective 60 miles per ₹200
+  // But direct dining at non-Travel Edge is just base rate
+  {
+    id: "axis_magnus_reserve_dining_direct",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
+    category: EXPENSE_CATEGORIES.DINING,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [2, 2], // 2x on dining (12 miles becomes 24 per ₹200)
+    applies_to_cards: ["axis_magnus", "axis_reserve"],
+    constraints: {
+      platform: "Direct merchant swipe (not via Travel Edge)"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 8,
+    notes: "2x Edge Miles on dining for Magnus/Reserve. Direct swipe only."
+  },
+
+  // Vistara Infinite - Vistara Spends (10x CV Points)
+  {
+    id: "axis_vistara_infinite_vistara_spends",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
+    category: EXPENSE_CATEGORIES.TRAVEL,
+    merchants: ["Vistara"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5x on Vistara (4 CV Points becomes 20 per ₹200)
+    applies_to_cards: ["axis_vistara_infinite"],
+    constraints: {
+      merchant: "Vistara Airlines only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x CV Points on Vistara flight bookings (direct or via website)"
+  }
+];
+
+if (typeof axisDirectAcceleratedRules !== "undefined") window.axisDirectAcceleratedRules = axisDirectAcceleratedRules;
+
+/* --- Source: rules/axis/portal.js --- */
+
+
+/**
+ * Axis Bank - Portal Rules (Travel Edge, EDGE Rewards)
+ * Flight & Hotel bookings via Axis portals
+ * Data validated against: Travel Edge portal, Axis MITC
+ * Last updated: January 17, 2026
+ */
+
+window.axisPortalRules = [
+  // Travel Edge Hotels - 10x Edge Miles
+  {
+    id: "axis_travel_edge_hotels_10x",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.PORTAL,
+    category: EXPENSE_CATEGORIES.HOTELS,
+    merchants: [],
+    platform: BANK_PORTALS.AXIS_TRAVEL_EDGE,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10, 10, 10], // 10x Edge Miles for all
+    applies_to_cards: ["axis_magnus", "axis_reserve", "axis_atlas"],
+    constraints: {
+      booking_platform: "Travel Edge only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 1000,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10x Edge Miles on hotel bookings via Travel Edge. Magnus: 120/₹200, Reserve: 150/₹200, Atlas: 20/₹100."
+  },
+
+  // Travel Edge Flights - 5x Edge Miles
+  {
+    id: "axis_travel_edge_flights_5x",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.PORTAL,
+    category: EXPENSE_CATEGORIES.FLIGHTS,
+    merchants: [],
+    platform: BANK_PORTALS.AXIS_TRAVEL_EDGE,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5, 5, 5], // 5x Edge Miles for all
+    applies_to_cards: ["axis_magnus", "axis_reserve", "axis_atlas"],
+    constraints: {
+      booking_platform: "Travel Edge only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 1000,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x Edge Miles on flight bookings via Travel Edge. Magnus: 60/₹200, Reserve: 75/₹200, Atlas: 10/₹100."
+  }
+];
+
+if (typeof axisPortalRules !== "undefined") window.axisPortalRules = axisPortalRules;
+
+/* --- Source: rules/axis/vouchers.js --- */
+
+
+/**
+ * Axis Bank - Voucher Rules (EDGE Rewards)
+ * Gift voucher purchases via EDGE Rewards portal
+ * Data validated against: EDGE Rewards portal, Axis MITC
+ * Last updated: January 17, 2026
+ */
+
+window.axisVoucherRules = [
+  // Magnus - Amazon/Flipkart Vouchers (5x)
+  {
+    id: "axis_magnus_amazon_flipkart_vouchers",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
+    platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5x Edge Miles
+    applies_to_cards: ["axis_magnus"],
+    constraints: {
+      platform: "EDGE Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000, 5000, 10000],
+    cap: 15000, // ₹15k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 10000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x Edge Miles on Amazon/Flipkart vouchers. Base 12 per ₹200 becomes 60 per ₹200."
+  },
+
+  // Magnus - Dining Vouchers (Swiggy/Zomato) (5x)
+  {
+    id: "axis_magnus_dining_vouchers",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
+    platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5x Edge Miles
+    applies_to_cards: ["axis_magnus"],
+    constraints: {
+      platform: "EDGE Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000],
+    cap: 10000, // ₹10k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 5000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x Edge Miles on Swiggy/Zomato vouchers."
+  },
+
+  // Reserve - Amazon/Flipkart Vouchers (5x)
+  {
+    id: "axis_reserve_amazon_flipkart_vouchers",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
+    platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5x Edge Miles
+    applies_to_cards: ["axis_reserve"],
+    constraints: {
+      platform: "EDGE Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000, 5000, 10000],
+    cap: 20000, // ₹20k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 10000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x Edge Miles on Amazon/Flipkart vouchers. Base 15 per ₹200 becomes 75 per ₹200."
+  },
+
+  // Reserve - Dining Vouchers (Swiggy/Zomato) (5x)
+  {
+    id: "axis_reserve_dining_vouchers",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
+    platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5x Edge Miles
+    applies_to_cards: ["axis_reserve"],
+    constraints: {
+      platform: "EDGE Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000],
+    cap: 15000, // ₹15k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 5000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x Edge Miles on Swiggy/Zomato vouchers."
+  },
+
+  // Atlas - All Vouchers (2x base)
+  {
+    id: "axis_atlas_all_vouchers",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART, VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
+    platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [2], // 2x Edge Miles
+    applies_to_cards: ["axis_atlas"],
+    constraints: {
+      platform: "EDGE Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000, 5000],
+    cap: 5000, // ₹5k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 5000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "2x Edge Miles on vouchers. Base 2 per ₹100 becomes 4 per ₹100."
+  }
+];
+
+if (typeof axisVoucherRules !== "undefined") window.axisVoucherRules = axisVoucherRules;
+
+/* --- Source: rules/icici/cashback.js --- */
+
+
+/**
+ * ICICI Bank - Cashback Rules
+ * Direct cashback offers (statement credit or Amazon Pay balance)
+ * Data validated against: ICICI Bank MITC, official product pages
+ * Last updated: January 17, 2026
+ */
+
+window.iciciCashbackRules = [
+  // Amazon Pay - Amazon (5% for Prime members, 3% for non-Prime)
+  // NOTE: Calculator uses 5% rate. Users should manually check if they have Prime membership.
+  {
+    id: "icici_amazon_pay_amazon",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    merchants: ["Amazon"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.05], // 5% cashback (Prime members)
+    applies_to_cards: ["icici_amazon_pay"],
+    constraints: {},
+    cap: null, // Unlimited
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5% cashback for Prime members, 3% for non-Prime. Calculation assumes Prime rate. Credited as Amazon Pay balance."
+  },
+
+  // Amazon Pay - Bill Payments (2%)
+  {
+    id: "icici_amazon_pay_bill_payments",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.UTILITIES,
+    merchants: [],
+    platform: "amazon_pay",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.02], // 2% cashback
+    applies_to_cards: ["icici_amazon_pay"],
+    constraints: {
+      transaction_type: "Bill Payment via Amazon Pay"
+    },
+    cap: 1500, // ₹1500/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 8,
+    notes: "2% cashback on bill payments via Amazon Pay. Capped at ₹1500/month."
+  },
+
+  // HPCL Card - Fuel (5% at HPCL)
+  {
+    id: "icici_hpcl_fuel",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.FUEL,
+    merchants: ["HPCL"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.05], // 5% cashback
+    applies_to_cards: ["icici_hpcl"],
+    constraints: {
+      merchant: "HPCL petrol pumps only"
+    },
+    cap: 500, // ₹500/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5% cashback at HPCL fuel stations. Capped at ₹500/month."
+  },
+
+  // Sapphiro - BookMyShow Discount
+  {
+    id: "icici_sapphiro_bookmyshow",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ENTERTAINMENT,
+    merchants: ["BookMyShow"],
+    platform: "online",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.15], // Effective 15% discount
+    applies_to_cards: ["icici_sapphiro"],
+    constraints: {
+      merchant: "BookMyShow only",
+      offer_type: "Buy 1 Get 1 on movie tickets"
+    },
+    cap: 500, // ₹500/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 200,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "Buy 1 Get 1 offer on BookMyShow movie tickets (effective ~15% discount, ₹500 cap/month)."
+  }
+];
+
+if (typeof iciciCashbackRules !== "undefined") window.iciciCashbackRules = iciciCashbackRules;
+
+/* --- Source: rules/icici/direct_merchant_accelerated_rewards.js --- */
+
+
+/**
+ * ICICI Bank - Direct Merchant Accelerated Rewards
+ * Reward point multipliers for direct merchant swipes
+ * Data validated against: ICICI Bank MITC, official product pages
+ * Last updated: January 17, 2026
+ */
+
+window.iciciDirectAcceleratedRules = [
+  // Sapphiro - Department Stores (2x)
+  // Note: Dining 2x was removed as it was a temporary promo, not a standard benefit
+  {
+    id: "icici_sapphiro_department_stores",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
+    category: EXPENSE_CATEGORIES.SHOPPING,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [2], // 2x Reward Points
+    applies_to_cards: ["icici_sapphiro"],
+    constraints: {
+      merchant_type: "Department Stores",
+      platform: "Direct swipe only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "2x Reward Points on department stores. Base 6 per ₹200 becomes 12 per ₹200."
+  }
+];
+
+if (typeof iciciDirectAcceleratedRules !== "undefined") window.iciciDirectAcceleratedRules = iciciDirectAcceleratedRules;
+
+/* --- Source: rules/icici/portal.js --- */
+
+
+/**
+ * ICICI Bank - Portal Rules (PayWith Rewards, iShop)
+ * Flight & Hotel bookings via ICICI portals
+ * Data validated against: PayWith Rewards portal, iShop portal, ICICI MITC
+ * Last updated: January 17, 2026
+ */
+
+window.iciciPortalRules = [
+  // PayWith Rewards - Hotels (10x for Sapphiro, 5x for Coral/Rubyx)
+  {
+    id: "icici_paywith_hotels",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.PORTAL,
+    category: EXPENSE_CATEGORIES.HOTELS,
+    merchants: [],
+    platform: BANK_PORTALS.ICICI_PAYWITH,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10, 5, 5], // Sapphiro 10x, Coral/Rubyx 5x
+    applies_to_cards: ["icici_sapphiro", "icici_coral", "icici_rubyx"],
+    constraints: {
+      booking_platform: "PayWith Rewards only"
+    },
+    cap: 15000, // ₹15k reward points/month (Sapphiro), ₹5k for Coral/Rubyx
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 1000,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "PayWith hotel bookings: Sapphiro 10x (60/₹200), Coral/Rubyx 5x (20/₹200)."
+  },
+
+  // PayWith Rewards - Flights (5x for Sapphiro, 3x for Coral/Rubyx)
+  {
+    id: "icici_paywith_flights",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.PORTAL,
+    category: EXPENSE_CATEGORIES.FLIGHTS,
+    merchants: [],
+    platform: BANK_PORTALS.ICICI_PAYWITH,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5, 3, 3], // Sapphiro 5x, Coral/Rubyx 3x
+    applies_to_cards: ["icici_sapphiro", "icici_coral", "icici_rubyx"],
+    constraints: {
+      booking_platform: "PayWith Rewards only"
+    },
+    cap: 10000, // ₹10k reward points/month (Sapphiro), ₹3k for Coral/Rubyx
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 1000,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "PayWith flight bookings: Sapphiro 5x (30/₹200), Coral/Rubyx 3x (12/₹200)."
+  },
+
+  // ============================================================
+  // iSHOP PORTAL - Alternative Rewards Platform
+  // ============================================================
+  
+  // Sapphiro - iShop Hotels (8x)
+  {
+    id: "icici_sapphiro_ishop_hotels",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.PORTAL,
+    category: EXPENSE_CATEGORIES.HOTELS,
+    merchants: [],
+    platform: "iShop",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [8], // 8x Reward Points
+    applies_to_cards: ["icici_sapphiro"],
+    constraints: {
+      booking_platform: "iShop portal only"
+    },
+    cap: 10000, // ₹10k reward points/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 1000,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "8x Reward Points on hotel bookings via iShop. Base 6 per ₹200 becomes 48 per ₹200."
+  },
+
+  // Sapphiro - iShop Flights (4x)
+  {
+    id: "icici_sapphiro_ishop_flights",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.PORTAL,
+    category: EXPENSE_CATEGORIES.FLIGHTS,
+    merchants: [],
+    platform: "iShop",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [4], // 4x Reward Points
+    applies_to_cards: ["icici_sapphiro"],
+    constraints: {
+      booking_platform: "iShop portal only"
+    },
+    cap: 8000, // ₹8k reward points/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 1000,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "4x Reward Points on flight bookings via iShop. Base 6 per ₹200 becomes 24 per ₹200."
+  }
+];
+
+if (typeof iciciPortalRules !== "undefined") window.iciciPortalRules = iciciPortalRules;
+
+/* --- Source: rules/icici/vouchers.js --- */
+
+
+/**
+ * ICICI Bank - Voucher Rules (PayWith Rewards)
+ * Gift voucher purchases via ICICI portals
+ * Data validated against: PayWith Rewards portal, ICICI MITC
+ * Last updated: January 17, 2026
+ */
+
+window.iciciVoucherRules = [
+  // Sapphiro - Amazon/Flipkart Vouchers (5x)
+  {
+    id: "icici_sapphiro_amazon_flipkart_vouchers",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
+    platform: BANK_PORTALS.ICICI_PAYWITH,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5x Reward Points
+    applies_to_cards: ["icici_sapphiro"],
+    constraints: {
+      platform: "PayWith Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000, 5000],
+    cap: 10000, // ₹10k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 10000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x Reward Points on Amazon/Flipkart vouchers. Base 6 per ₹200 becomes 30 per ₹200."
+  },
+
+  // Sapphiro - Dining Vouchers (Swiggy/Zomato) (5x)
+  {
+    id: "icici_sapphiro_dining_vouchers",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
+    platform: BANK_PORTALS.ICICI_PAYWITH,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5x Reward Points
+    applies_to_cards: ["icici_sapphiro"],
+    constraints: {
+      platform: "PayWith Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000],
+    cap: 5000, // ₹5k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 5000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5x Reward Points on Swiggy/Zomato vouchers."
+  },
+
+  // Coral/Rubyx - Amazon/Flipkart Vouchers (3x)
+  {
+    id: "icici_coral_rubyx_amazon_flipkart_vouchers",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
+    platform: BANK_PORTALS.ICICI_PAYWITH,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [3, 3], // 3x Reward Points
+    applies_to_cards: ["icici_coral", "icici_rubyx"],
+    constraints: {
+      platform: "PayWith Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000, 5000],
+    cap: 5000, // ₹5k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 5000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "3x Reward Points on Amazon/Flipkart vouchers. Base 4 per ₹200 becomes 12 per ₹200."
+  },
+
+  // Coral/Rubyx - Dining Vouchers (Swiggy/Zomato) (3x)
+  {
+    id: "icici_coral_rubyx_dining_vouchers",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.VOUCHER,
+    category: "voucher",
+    merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
+    platform: BANK_PORTALS.ICICI_PAYWITH,
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [3, 3], // 3x Reward Points
+    applies_to_cards: ["icici_coral", "icici_rubyx"],
+    constraints: {
+      platform: "PayWith Rewards portal only"
+    },
+    voucher_denominations: [100, 500, 1000, 2000],
+    cap: 3000, // ₹3k worth/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: 3000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "3x Reward Points on Swiggy/Zomato vouchers."
+  }
+];
+
+if (typeof iciciVoucherRules !== "undefined") window.iciciVoucherRules = iciciVoucherRules;
+
+/* --- Source: rules/sbi/cashback.js --- */
+
+
+/**
+ * SBI Cards - Cashback Rules
+ * Direct cashback and accelerated point offers
+ * Data validated against: SBI Cards MITC, official product pages
+ * Last updated: January 17, 2026
+ */
+
+window.sbiCashbackRules = [
+  // SBI Cashback Card - Online Shopping (5%)
+  {
+    id: "sbi_cashback_online_shopping",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    merchants: [],
+    platform: "online",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.05], // 5% cashback
+    applies_to_cards: ["sbi_cashback"],
+    constraints: {
+      transaction_type: "Online transactions only",
+      exclusions: "Excludes wallet loads, rent payments, fuel, insurance premiums, EMI transactions, cash withdrawals, railway tickets, government payments, education, utility bills"
+    },
+    cap: null, // Unlimited
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5% unlimited cashback on all online spends. MAJOR EXCLUSIONS: wallet loads, rent, fuel, insurance, EMI, cash, railway, government, education, utility bills."
+  },
+  
+  // SBI Cashback Card - Offline Shopping (1%)
+  {
+    id: "sbi_cashback_offline_shopping",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.SHOPPING,
+    merchants: [],
+    platform: "offline",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rates: [0.01], // 1% cashback
+    applies_to_cards: ["sbi_cashback"],
+    constraints: {
+      transaction_type: "Offline transactions only",
+      exclusions: "Excludes fuel, wallet loads, insurance, cash withdrawals"
+    },
+    cap: null, // Unlimited
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "1% cashback on all offline spends (physical POS swipes). Excludes fuel, wallet loads, insurance."
+  },
+
+  // SimplySAVE - Dining (10X = 10 RP per ₹100, worth ₹2.5)
+  {
+    id: "sbi_simplysave_dining",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.DINING,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10], // 10X reward points
+    applies_to_cards: ["sbi_simplysave"],
+    constraints: {},
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10X Reward Points on dining. Base 1 per ₹100 becomes 10 per ₹100."
+  },
+
+  // SimplySAVE - Groceries (10X)
+  {
+    id: "sbi_simplysave_groceries",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.GROCERY,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10], // 10X reward points
+    applies_to_cards: ["sbi_simplysave"],
+    constraints: {},
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10X Reward Points on groceries. Base 1 per ₹100 becomes 10 per ₹100."
+  },
+
+  // SimplySAVE - Movies (10X)
+  {
+    id: "sbi_simplysave_movies",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ENTERTAINMENT,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10], // 10X reward points
+    applies_to_cards: ["sbi_simplysave"],
+    constraints: {
+      merchant_type: "Movie Theaters"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10X Reward Points on movie tickets. Base 1 per ₹100 becomes 10 per ₹100."
+  },
+
+  // SimplyCLICK - Online Shopping (5X)
+  {
+    id: "sbi_simplyclick_online_shopping",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    merchants: [],
+    platform: "online",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [5], // 5X reward points
+    applies_to_cards: ["sbi_simplyclick"],
+    constraints: {},
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "5X Reward Points on online shopping. Base 1 per ₹100 becomes 5 per ₹100."
+  },
+
+  // SimplyCLICK - Partner Sites (10X)
+  {
+    id: "sbi_simplyclick_partners",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    merchants: ["Cleartrip", "BookMyShow", "Lenskart"],
+    platform: "online",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10], // 10X reward points
+    applies_to_cards: ["sbi_simplyclick"],
+    constraints: {
+      platforms: ["Cleartrip", "BookMyShow", "Lenskart"]
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10X Reward Points on Cleartrip, BookMyShow, Lenskart. Base 1 per ₹100 becomes 10 per ₹100."
+  },
+
+  // BPCL Card - Fuel (25X = 25 fuel points per ₹100)
+  {
+    id: "sbi_bpcl_fuel",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.FUEL,
+    merchants: ["BPCL"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [25], // 25X fuel points
+    applies_to_cards: ["sbi_bpcl"],
+    constraints: {
+      merchant: "BPCL petrol pumps only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "25X fuel points at BPCL. Base 1.25 per ₹100 becomes 31.25 per ₹100 (worth ₹12.5)."
+  }
+];
+
+if (typeof sbiCashbackRules !== "undefined") window.sbiCashbackRules = sbiCashbackRules;
+
+/* --- Source: rules/sbi/direct_merchant_accelerated_rewards.js --- */
+
+
+/**
+ * SBI Cards - Direct Merchant Accelerated Rewards
+ * Reward point multipliers for direct merchant swipes
+ * Data validated against: SBI Cards MITC, official product pages
+ * Last updated: January 17, 2026
+ */
+
+window.sbiDirectAcceleratedRules = [
+  // Vistara Prime - Vistara Spends (10X CV Points)
+  {
+    id: "sbi_vistara_prime_vistara_spends",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
+    category: EXPENSE_CATEGORIES.TRAVEL,
+    merchants: ["Vistara"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10], // 10x on Vistara
+    applies_to_cards: ["sbi_vistara_prime"],
+    constraints: {
+      merchant: "Vistara Airlines only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10X CV Points on Vistara flight bookings (direct or via website). Base 3 per ₹100 becomes 30 per ₹100."
+  }
+];
+
+if (typeof sbiDirectAcceleratedRules !== "undefined") window.sbiDirectAcceleratedRules = sbiDirectAcceleratedRules;
+
+/* --- Source: rules/sbi/portal.js --- */
+
+
+/**
+ * SBI Cards - Portal Rules (SBI Rewardz)
+ * Flight & Hotel bookings via SBI portals
+ * Data validated against: SBI Rewardz portal, SBI Cards MITC
+ * Last updated: January 17, 2026
+ */
+
+window.sbiPortalRules = [
+  // Note: SBI Cards primarily focus on cashback/accelerated rewards rather than portal bookings
+  // Minimal portal offerings compared to HDFC/Axis/ICICI
+  
+  // SimplyCLICK - Travel Partners (Limited)
+  {
+    id: "sbi_simplyclick_cleartrip",
+    bank: "SBI Card",
+    rule_type: RULE_TYPES.PORTAL,
+    category: EXPENSE_CATEGORIES.TRAVEL,
+    merchants: ["Cleartrip"],
+    platform: "Cleartrip",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multipliers: [10], // 10X reward points
+    applies_to_cards: ["sbi_simplyclick"],
+    constraints: {
+      booking_platform: "Cleartrip only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 1000,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10X Reward Points on Cleartrip bookings. Base 1 per ₹100 becomes 10 per ₹100."
+  }
+];
+
+if (typeof sbiPortalRules !== "undefined") window.sbiPortalRules = sbiPortalRules;
+
+/* --- Source: rules/sbi/vouchers.js --- */
+
+
+/**
+ * SBI Cards - Voucher Rules (SBI Rewardz)
+ * Gift voucher purchases via SBI portals
+ * Data validated against: SBI Rewardz portal, SBI Cards MITC
+ * Last updated: January 17, 2026
+ */
+
+window.sbiVoucherRules = [
+  // Note: SBI Cards has limited voucher multiplier programs compared to other banks
+  // Most voucher purchases earn base rates
+  // Promotional offers may provide temporary multipliers
+  
+  // Placeholder for future voucher rules
+  // Currently SBI Cards does not have standardized voucher multipliers
+  // Base rates apply for voucher purchases
+];
+
+if (typeof sbiVoucherRules !== "undefined") window.sbiVoucherRules = sbiVoucherRules;
+/* --- Source: engine/dataLoader.js --- */
+// engine/dataLoader.js
+// Loads and validates all card and rule data
+
+/**
+ * Data Loader Module
+ * Responsible for importing all cards and rules data and providing unified access
+ */
+
+
+
+
+
+
+// Import HDFC rules
+
+
+
+
+
+// Import Axis rules
+
+
+
+
+
+// Import ICICI rules
+
+
+
+
+
+// Import SBI rules
+
+
+
+
+
+/**
+ * Unified card data structure
+ */
+class DataLoader {
+    constructor() {
+        this.cards = [];
+        this.rules = [];
+        this.cardsById = new Map();
+        this.rulesByBank = new Map();
+        this.initialized = false;
+    }
+
+    /**
+     * Initialize and load all data
+     */
+    async initialize() {
+        if (this.initialized) {
+            console.warn('DataLoader already initialized');
+            return;
+        }
+
+        try {
+            // Load all cards
+            this.cards = [
+                ...HDFC_CARDS,
+                ...axisCardsData,
+                ...iciciCardsData,
+                ...sbiCardsData
+            ];
+
+            // Load all rules
+            this.rules = [
+                ...HDFC_CASHBACK_RULES,
+                ...HDFC_DIRECT_ACCELERATED_RULES,
+                ...HDFC_PORTAL_RULES,
+                ...HDFC_VOUCHER_RULES,
+                ...axisCashbackRules,
+                ...axisDirectAcceleratedRules,
+                ...axisPortalRules,
+                ...axisVoucherRules,
+                ...iciciCashbackRules,
+                ...iciciDirectAcceleratedRules,
+                ...iciciPortalRules,
+                ...iciciVoucherRules,
+                ...sbiCashbackRules,
+                ...sbiDirectAcceleratedRules,
+                ...sbiPortalRules,
+                ...sbiVoucherRules
+            ];
+
+            // Build index maps
+            this._buildCardIndex();
+            this._buildRuleIndex();
+
+            // Validate data
+            this._validateData();
+
+            this.initialized = true;
+            console.log(`✅ DataLoader initialized: ${this.cards.length} cards, ${this.rules.length} rules`);
+        } catch (error) {
+            console.error('❌ Failed to initialize DataLoader:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Build card index for fast lookup
+     */
+    _buildCardIndex() {
+        this.cardsById.clear();
+        for (const card of this.cards) {
+            if (this.cardsById.has(card.id)) {
+                console.warn(`⚠️ Duplicate card ID: ${card.id}`);
+            }
+            this.cardsById.set(card.id, card);
+        }
+    }
+
+    /**
+     * Build rule index by bank
+     */
+    _buildRuleIndex() {
+        this.rulesByBank.clear();
+        for (const rule of this.rules) {
+            if (!this.rulesByBank.has(rule.bank)) {
+                this.rulesByBank.set(rule.bank, []);
+            }
+            this.rulesByBank.get(rule.bank).push(rule);
+        }
+    }
+
+    /**
+     * Validate loaded data
+     */
+    _validateData() {
+        let errors = [];
+
+        // Validate cards
+        for (const card of this.cards) {
+            if (!card.id || !card.name || !card.bank) {
+                errors.push(`Invalid card: ${JSON.stringify(card)}`);
+            }
+            if (typeof card.base_rate !== 'number' || card.base_rate < 0) {
+                errors.push(`Invalid base_rate for card ${card.id}: ${card.base_rate}`);
+            }
+            if (typeof card.value_per_unit !== 'number' || card.value_per_unit <= 0) {
+                errors.push(`Invalid value_per_unit for card ${card.id}: ${card.value_per_unit}`);
+            }
+        }
+
+        // Validate rules
+        for (const rule of this.rules) {
+            if (!rule.id || !rule.bank || !rule.rule_type) {
+                errors.push(`Invalid rule: ${JSON.stringify(rule)}`);
+            }
+            if (!rule.applies_to_cards || rule.applies_to_cards.length === 0) {
+                errors.push(`Rule ${rule.id} has no applicable cards`);
+            }
+        }
+
+        if (errors.length > 0) {
+            console.error('❌ Data validation errors:', errors);
+            throw new Error(`Data validation failed: ${errors.length} errors found`);
+        }
+
+        console.log('✅ Data validation passed');
+    }
+
+    /**
+     * Get all cards
+     */
+    getAllCards() {
+        return this.cards;
+    }
+
+    /**
+     * Get card by ID
+     */
+    getCardById(cardId) {
+        return this.cardsById.get(cardId);
+    }
+
+    /**
+     * Get all cards from a specific bank
+     */
+    getCardsByBank(bank) {
+        return this.cards.filter(card => card.bank === bank);
+    }
+
+    /**
+     * Get all rules
+     */
+    getAllRules() {
+        return this.rules;
+    }
+
+    /**
+     * Get rules by bank
+     */
+    getRulesByBank(bank) {
+        return this.rulesByBank.get(bank) || [];
+    }
+
+    /**
+     * Get rules by type
+     */
+    getRulesByType(ruleType) {
+        return this.rules.filter(rule => rule.rule_type === ruleType);
+    }
+
+    /**
+     * Get statistics
+     */
+    getStats() {
+        return {
+            totalCards: this.cards.length,
+            totalRules: this.rules.length,
+            cardsByBank: {
+                HDFC: this.getCardsByBank('HDFC').length,
+                'Axis Bank': this.getCardsByBank('Axis Bank').length,
+                'ICICI Bank': this.getCardsByBank('ICICI Bank').length,
+                'SBI Card': this.getCardsByBank('SBI Card').length
+            },
+            rulesByType: {
+                cashback: this.getRulesByType('cashback').length,
+                direct_merchant_accelerated: this.getRulesByType('direct_merchant_accelerated').length,
+                portal: this.getRulesByType('portal').length,
+                voucher: this.getRulesByType('voucher').length
+            }
+        };
+    }
+}
+
+// Export singleton instance
+window.dataLoader = new DataLoader();
+if (typeof dataLoader !== "undefined") window.dataLoader = dataLoader;
+
+/* --- Source: engine/calculator.js --- */
+// engine/calculator.js
+// Core value calculation logic
+
+/**
+ * Value Calculator Module
+ * Handles all reward/cashback value calculations
+ */
+
+/**
+ * Calculate the monetary value for a given card and transaction
+ * @param {Object} card - Card object
+ * @param {Array} rules - Array of applicable rules
+ * @param {number} amount - Transaction amount in ₹
+ * @param {Object} options - Additional options (e.g., current spend for cap tracking)
+ * @returns {Object} Calculation result with value and breakdown
+ */
+window.calculateValue = function calculateValue(card, rules, amount, options = {}) {
+    if (!card || !amount || amount <= 0) {
+        return {
+            value: 0,
+            breakdown: [],
+            cappedValue: 0,
+            explanation: 'Invalid input'
+        };
+    }
+
+    let breakdown = [];
+    let finalValue = 0;
+    let isCapped = false;
+
+    // Step 1: Check Exclusions
+    let baseRate = card.base_rate;
+    // If the transaction category is in the card's exclusion list, base earning is 0
+    if (card.base_exclusions && card.base_exclusions.includes(options.category || '')) {
+        baseRate = 0;
+    }
+
+    // Step 2: Calculate base earning
+    const baseEarning = amount * baseRate;
+    const baseValue = baseEarning * card.value_per_unit;
+
+    // Log exclusion if applied
+    if (baseRate === 0) {
+        breakdown.push({
+            step: 'Base Earning',
+            calculation: `Excluded Category: ${options.category || 'Unknown'}`,
+            value: 0
+        });
+    } else {
+        breakdown.push({
+            step: 'Base Earning',
+            calculation: `₹${amount} × ${card.base_rate} × ₹${card.value_per_unit}`,
+            value: baseValue
+        });
+    }
+
+    // Step 2: Apply rules (if any)
+    if (!rules || rules.length === 0) {
+        // No rules, use base value
+        finalValue = baseValue;
+        breakdown.push({
+            step: 'Final Value',
+            calculation: 'No applicable rules',
+            value: finalValue
+        });
+    } else {
+        // Apply the highest priority rule
+        const sortedRules = [...rules].sort((a, b) => (b.priority || 0) - (a.priority || 0));
+        const primaryRule = sortedRules[0];
+
+        // Find card index in rule's applies_to_cards array
+        const cardIndex = primaryRule.applies_to_cards.indexOf(card.id);
+
+        if (cardIndex === -1) {
+            // Card not in rule, use base value
+            finalValue = baseValue;
+            breakdown.push({
+                step: 'Final Value',
+                calculation: 'Card not applicable to rule',
+                value: finalValue
+            });
+        } else {
+            // Apply rule benefit
+            if (primaryRule.benefit_type === 'reward_multiplier' || primaryRule.reward_multipliers) {
+                // Multiplier-based rule
+                const multiplier = primaryRule.reward_multipliers[cardIndex];
+                const multipliedEarning = baseEarning * multiplier;
+                const multipliedValue = multipliedEarning * card.value_per_unit;
+
+                breakdown.push({
+                    step: 'Apply Multiplier',
+                    calculation: `${baseEarning.toFixed(2)} ${card.reward_currency} × ${multiplier}x = ${multipliedEarning.toFixed(2)} ${card.reward_currency}`,
+                    value: multipliedValue
+                });
+
+                finalValue = multipliedValue;
+            } else if (primaryRule.benefit_type === 'cashback' || primaryRule.cashback_rates) {
+                // Cashback-based rule (overrides base rate)
+                const cashbackRate = primaryRule.cashback_rates[cardIndex];
+                const cashbackValue = amount * cashbackRate;
+
+                breakdown.push({
+                    step: 'Apply Cashback',
+                    calculation: `₹${amount} × ${(cashbackRate * 100).toFixed(2)}% = ₹${cashbackValue.toFixed(2)}`,
+                    value: cashbackValue
+                });
+
+                finalValue = cashbackValue;
+            } else if (primaryRule.benefit_type === 'instant_discount' || primaryRule.instant_discount_rates) {
+                // Instant discount (for vouchers)
+                const discountRate = primaryRule.instant_discount_rates[cardIndex];
+                const discountValue = amount * discountRate;
+
+                breakdown.push({
+                    step: 'Apply Instant Discount',
+                    calculation: `₹${amount} × ${(discountRate * 100).toFixed(2)}% = ₹${discountValue.toFixed(2)}`,
+                    value: discountValue
+                });
+
+                finalValue = discountValue;
+            }
+
+            // Step 3: Apply cap if exists
+            if (primaryRule.cap && finalValue > primaryRule.cap) {
+                breakdown.push({
+                    step: 'Apply Cap',
+                    calculation: `Capped at ₹${primaryRule.cap} (${primaryRule.cap_period || 'per transaction'})`,
+                    value: primaryRule.cap
+                });
+
+                finalValue = primaryRule.cap;
+                isCapped = true;
+            }
+        }
+    }
+
+    return {
+        value: finalValue,
+        breakdown,
+        cappedValue: isCapped ? finalValue : null,
+        explanation: generateExplanation(card, rules, finalValue, breakdown),
+        percentageReturn: (finalValue / amount) * 100
+    };
+}
+
+/**
+ * Generate human-readable explanation
+ */
+function generateExplanation(card, rules, finalValue, breakdown) {
+    if (!rules || rules.length === 0) {
+        return `Base earning on ${card.name}: ${card.earning_display}`;
+    }
+
+    const primaryRule = rules[0];
+    let explanation = `Using ${card.name} `;
+
+    if (primaryRule.platform) {
+        explanation += `via ${primaryRule.platform} `;
+    }
+
+    if (primaryRule.rule_type === 'voucher') {
+        explanation += `(buying voucher) `;
+    }
+
+    explanation += `→ ₹${finalValue.toFixed(2)} value`;
+
+    return explanation;
+}
+
+/**
+ * Compare two calculation results for sorting
+ * Primary: Higher value wins
+ * Secondary: Lower redemption_ease_score wins (easier redemption)
+ */
+window.compareResults = function compareResults(resultA, resultB) {
+    // Primary sort: value (descending)
+    if (resultA.value !== resultB.value) {
+        return resultB.value - resultA.value;
+    }
+
+    // Secondary sort: ease_score (ascending - lower is better)
+    return resultA.card.redemption_ease_score - resultB.card.redemption_ease_score;
+}
+
+
+
+/* --- Source: engine/ruleMatcher.js --- */
+// engine/ruleMatcher.js
+// Finds applicable rules for a given transaction and card
+
+/**
+ * Rule Matcher Module
+ * Responsible for finding all rules that apply to a specific transaction
+ */
+
+/**
+ * Find all rules that match the given criteria
+ * @param {Object} transaction - Transaction details {merchant, category, amount}
+ * @param {Object} card - Card object
+ * @param {string} method - Payment method: 'direct', 'portal', 'voucher'
+ * @param {string|null} platform - Platform name (e.g., 'SmartBuy', 'Travel Edge')
+ * @param {Array} allRules - All available rules
+ * @returns {Array} Array of matching rules, sorted by priority
+ */
+window.findMatchingRules = function findMatchingRules(transaction, card, method, platform, allRules) {
+    if (!transaction || !card || !allRules) {
+        return [];
+    }
+
+    const matchingRules = allRules.filter(rule => {
+        // 1. Check if rule applies to this card
+        if (!rule.applies_to_cards.includes(card.id)) {
+            return false;
+        }
+
+        // 2. Check if rule matches the payment method
+        if (method === 'direct' && rule.rule_type === 'portal') {
+            return false; // Portal rules don't apply to direct swipes
+        }
+        if (method === 'direct' && rule.rule_type === 'voucher') {
+            return false; // Voucher rules don't apply to direct swipes
+        }
+        if (method === 'portal' && rule.rule_type !== 'portal') {
+            return false; // Only portal rules apply to portal transactions
+        }
+        if (method === 'voucher' && rule.rule_type !== 'voucher') {
+            return false; // Only voucher rules apply to voucher purchases
+        }
+
+        // 3. Check platform match (for portal/voucher)
+        if (rule.platform && rule.platform !== platform) {
+            return false;
+        }
+
+        // 4. Check category match
+        if (rule.category) {
+            if (Array.isArray(rule.category)) {
+                // If rule supports multiple categories (e.g., ["flights", "travel"])
+                if (!rule.category.includes(transaction.category)) {
+                    return false;
+                }
+            } else {
+                // Single category string match
+                if (rule.category !== transaction.category) {
+                    return false;
+                }
+            }
+        }
+
+        // 5. Check merchant match (if specified in rule)
+        if (rule.merchants && rule.merchants.length > 0) {
+            if (!rule.merchants.includes(transaction.merchant)) {
+                return false;
+            }
+        }
+
+        // 6. Check minimum transaction amount
+        if (rule.min_transaction && transaction.amount < rule.min_transaction) {
+            return false;
+        }
+
+        // 7. Check validity period
+        if (rule.valid_until) {
+            const expiryDate = new Date(rule.valid_until);
+            const now = new Date();
+            if (now > expiryDate) {
+                return false; // Rule expired
+            }
+        }
+
+        // All checks passed
+        return true;
+    });
+
+    // Sort by priority (higher priority first)
+    return matchingRules.sort((a, b) => (b.priority || 0) - (a.priority || 0));
+}
+
+/**
+ * Get all possible payment methods for a transaction
+ * @param {Object} transaction - Transaction details
+ * @param {Array} allRules - All available rules
+ * @returns {Array} Array of possible methods: ['direct', 'portal', 'voucher']
+ */
+window.getPossibleMethods = function getPossibleMethods(transaction, allRules) {
+    const methods = new Set(['direct']); // Direct swipe is always possible
+
+    for (const rule of allRules) {
+        // Check if this transaction could use portal
+        if (rule.rule_type === 'portal' &&
+            (!rule.category || rule.category === transaction.category)) {
+            methods.add('portal');
+        }
+
+        // Check if this transaction could use voucher
+        if (rule.rule_type === 'voucher' &&
+            (!rule.merchants || rule.merchants.includes(transaction.merchant))) {
+            methods.add('voucher');
+        }
+    }
+
+    return Array.from(methods);
+}
+
+/**
+ * Get all possible platforms for a given method and bank
+ * @param {string} method - Payment method
+ * @param {string} bank - Bank name
+ * @param {Array} allRules - All available rules
+ * @returns {Array} Array of platform names
+ */
+window.getPossiblePlatforms = function getPossiblePlatforms(method, bank, allRules) {
+    if (method === 'direct') {
+        return [null]; // Direct swipe has no platform
+    }
+
+    const platforms = new Set();
+
+    for (const rule of allRules) {
+        if (rule.bank === bank && rule.rule_type === method && rule.platform) {
+            platforms.add(rule.platform);
+        }
+    }
+
+    return Array.from(platforms);
+}
+
+
+
+/* --- Source: engine/pathGenerator.js --- */
+// engine/pathGenerator.js
+// Generates all possible payment paths for a transaction
+
+/**
+ * Path Generator Module
+ * Creates all possible payment paths (card + method + platform combinations)
+ */
+
+
+
+/**
+ * Generate all possible payment paths for a transaction
+ * @param {Object} transaction - Transaction details {merchant, category, amount}
+ * @param {Array} userCards - Array of card objects (user's wallet)
+ * @param {Array} allRules - All available rules
+ * @returns {Array} Array of path objects
+ */
+window.generatePaths = function generatePaths(transaction, userCards, allRules) {
+    const paths = [];
+
+    for (const card of userCards) {
+        // Get possible methods for this transaction
+        const methods = getPossibleMethods(transaction, allRules);
+
+        for (const method of methods) {
+            if (method === 'direct') {
+                // Direct swipe path
+                paths.push({
+                    card,
+                    method: 'direct',
+                    platform: null,
+                    transaction,
+                    pathId: `${card.id}_direct`
+                });
+            } else {
+                // Portal or voucher - need to check platforms
+                const platforms = getPossiblePlatforms(method, card.bank, allRules);
+
+                if (platforms.length === 0) {
+                    // No platform available for this bank/method
+                    continue;
+                }
+
+                for (const platform of platforms) {
+                    paths.push({
+                        card,
+                        method,
+                        platform,
+                        transaction,
+                        pathId: `${card.id}_${method}_${platform || 'none'}`
+                    });
+                }
+            }
+        }
+    }
+
+    return paths;
+}
+
+/**
+ * Generate paths for a specific card only
+ * Useful for "What if I use this card?" scenarios
+ */
+window.generatePathsForCard = function generatePathsForCard(transaction, card, allRules) {
+    return generatePaths(transaction, [card], allRules);
+}
+
+/**
+ * Get human-readable path description
+ */
+window.getPathDescription = function getPathDescription(path) {
+    let description = `${path.card.name}`;
+
+    if (path.method === 'direct') {
+        description += ' (Direct Swipe)';
+    } else if (path.method === 'portal') {
+        description += ` via ${path.platform}`;
+    } else if (path.method === 'voucher') {
+        description += ` (Buy Voucher via ${path.platform})`;
+    }
+
+    return description;
+}
+
+
+
+/* --- Source: engine/pathEvaluator.js --- */
+// engine/pathEvaluator.js
+// Evaluates and ranks all payment paths
+
+/**
+ * Path Evaluator Module
+ * Evaluates all paths and returns ranked results with explanations
+ */
+
+
+
+
+
+/**
+ * Evaluate all payment paths and return ranked results
+ * @param {Array} paths - Array of path objects from pathGenerator
+ * @param {Array} allRules - All available rules
+ * @returns {Array} Ranked array of evaluation results
+ */
+window.evaluateAllPaths = function evaluateAllPaths(paths, allRules) {
+    const results = [];
+
+    for (const path of paths) {
+        const result = evaluatePath(path, allRules);
+        results.push(result);
+    }
+
+    // Sort by value (descending), then by ease_score (ascending)
+    results.sort(compareResults);
+
+    // Add rank
+    results.forEach((result, index) => {
+        result.rank = index + 1;
+    });
+
+    return results;
+}
+
+/**
+ * Evaluate a single payment path
+ * @param {Object} path - Path object
+ * @param {Array} allRules - All available rules
+ * @returns {Object} Evaluation result
+ */
+window.evaluatePath = function evaluatePath(path, allRules) {
+    const { card, method, platform, transaction } = path;
+
+    // Find matching rules for this path
+    // IMPORTANT: When evaluating a voucher path, we treat the transaction category as 'voucher'
+    // so it matches the specific voucher rules (which have category: 'voucher')
+    let evalTransaction = { ...transaction };
+    if (method === 'voucher') {
+        evalTransaction.category = 'voucher';
+    }
+
+    const matchingRules = findMatchingRules(
+        evalTransaction,
+        card,
+        method,
+        platform,
+        allRules
+    );
+
+    // Calculate value
+    const calculation = calculateValue(card, matchingRules, transaction.amount, {
+        category: transaction.category
+    });
+
+    // Build result object
+    return {
+        path,
+        card,
+        method,
+        platform,
+        value: calculation.value,
+        percentageReturn: calculation.percentageReturn,
+        breakdown: calculation.breakdown,
+        explanation: calculation.explanation,
+        matchingRules: matchingRules.map(r => r.id),
+        pathDescription: getPathDescription(path),
+        isCapped: calculation.cappedValue !== null,
+        cappedValue: calculation.cappedValue,
+        redemptionEase: card.redemption_ease_score,
+        redemptionMethod: card.optimal_redemption?.method || 'Unknown'
+    };
+}
+
+/**
+ * Get the best path (highest value)
+ */
+window.getBestPath = function getBestPath(results) {
+    if (!results || results.length === 0) {
+        return null;
+    }
+    return results[0]; // Already sorted
+}
+
+/**
+ * Get top N paths
+ */
+window.getTopPaths = function getTopPaths(results, n = 3) {
+    return results.slice(0, n);
+}
+
+/**
+ * Filter paths by minimum value threshold
+ */
+window.filterByMinValue = function filterByMinValue(results, minValue) {
+    return results.filter(result => result.value >= minValue);
+}
+
+/**
+ * Group results by card
+ */
+window.groupByCard = function groupByCard(results) {
+    const grouped = new Map();
+
+    for (const result of results) {
+        const cardId = result.card.id;
+        if (!grouped.has(cardId)) {
+            grouped.set(cardId, []);
+        }
+        grouped.get(cardId).push(result);
+    }
+
+    return grouped;
+}
+
+/**
+ * Get comparison summary between two paths
+ */
+window.comparePaths = function comparePaths(pathA, pathB) {
+    const valueDiff = pathA.value - pathB.value;
+    const percentageDiff = pathA.percentageReturn - pathB.percentageReturn;
+
+    return {
+        betterPath: valueDiff > 0 ? pathA : pathB,
+        valueDifference: Math.abs(valueDiff),
+        percentageDifference: Math.abs(percentageDiff),
+        summary: valueDiff > 0
+            ? `${pathA.pathDescription} is better by ₹${valueDiff.toFixed(2)}`
+            : `${pathB.pathDescription} is better by ₹${Math.abs(valueDiff).toFixed(2)}`
+    };
+}
+
+
+
+/* --- Source: engine/index.js --- */
+// engine/index.js
+// Main engine entry point - orchestrates all modules
+
+/**
+ * BachatSwipe Recommendation Engine
+ * Main orchestrator that ties all modules together
+ */
+
+
+
+
+
+/**
+ * Main recommendation engine class
+ */
+class BachatSwipeEngine {
+    constructor() {
+        this.initialized = false;
+    }
+
+    /**
+     * Initialize the engine
+     */
+    async initialize() {
+        if (this.initialized) {
+            console.log('Engine already initialized');
+            return;
+        }
+
+        console.log('🚀 Initializing BachatSwipe Engine...');
+
+        try {
+            await dataLoader.initialize();
+            this.initialized = true;
+
+            const stats = dataLoader.getStats();
+            console.log('✅ Engine initialized successfully');
+            console.log('📊 Stats:', stats);
+
+            return stats;
+        } catch (error) {
+            console.error('❌ Engine initialization failed:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Get recommendation for a transaction
+     * @param {Object} transaction - {merchant, category, amount}
+     * @param {Array} userCardIds - Array of card IDs the user owns
+     * @param {Object} options - Additional options
+     * @returns {Object} Recommendation results
+     */
+    getRecommendation(transaction, userCardIds = null, options = {}) {
+        if (!this.initialized) {
+            throw new Error('Engine not initialized. Call initialize() first.');
+        }
+
+        // Validate transaction
+        if (!transaction || !transaction.amount || transaction.amount <= 0) {
+            throw new Error('Invalid transaction: amount is required and must be positive');
+        }
+
+        // Get user's cards (or all cards if not specified)
+        let userCards;
+        if (userCardIds && userCardIds.length > 0) {
+            userCards = userCardIds
+                .map(id => dataLoader.getCardById(id))
+                .filter(card => card !== undefined);
+
+            if (userCards.length === 0) {
+                throw new Error('No valid cards found for the provided IDs');
+            }
+        } else {
+            // Use all cards if no specific cards provided
+            userCards = dataLoader.getAllCards();
+        }
+
+        // Get all rules
+        const allRules = dataLoader.getAllRules();
+
+        // Generate all possible paths
+        const paths = generatePaths(transaction, userCards, allRules);
+
+        if (paths.length === 0) {
+            return {
+                transaction,
+                results: [],
+                bestPath: null,
+                message: 'No valid payment paths found for this transaction'
+            };
+        }
+
+        // Evaluate all paths
+        const results = evaluateAllPaths(paths, allRules);
+
+        // Get best path
+        const bestPath = getBestPath(results);
+
+        // Get top 3 paths
+        const topPaths = getTopPaths(results, options.topN || 3);
+
+        return {
+            transaction,
+            totalPaths: results.length,
+            results: options.showAll ? results : topPaths,
+            bestPath,
+            topPaths,
+            stats: {
+                highestValue: bestPath?.value || 0,
+                lowestValue: results[results.length - 1]?.value || 0,
+                averageValue: results.reduce((sum, r) => sum + r.value, 0) / results.length
+            }
+        };
+    }
+
+    /**
+     * Compare two specific cards for a transaction
+     */
+    compareCards(transaction, cardId1, cardId2) {
+        const card1 = dataLoader.getCardById(cardId1);
+        const card2 = dataLoader.getCardById(cardId2);
+
+        if (!card1 || !card2) {
+            throw new Error('One or both card IDs are invalid');
+        }
+
+        const result1 = this.getRecommendation(transaction, [cardId1]);
+        const result2 = this.getRecommendation(transaction, [cardId2]);
+
+        return {
+            transaction,
+            card1: {
+                card: card1,
+                bestPath: result1.bestPath
+            },
+            card2: {
+                card: card2,
+                bestPath: result2.bestPath
+            },
+            winner: result1.bestPath.value > result2.bestPath.value ? card1 : card2,
+            valueDifference: Math.abs(result1.bestPath.value - result2.bestPath.value)
+        };
+    }
+
+    /**
+     * Get all cards
+     */
+    getAllCards() {
+        return dataLoader.getAllCards();
+    }
+
+    /**
+     * Get card by ID
+     */
+    getCardById(cardId) {
+        return dataLoader.getCardById(cardId);
+    }
+
+    /**
+     * Get statistics
+     */
+    getStats() {
+        return dataLoader.getStats();
+    }
+}
+
+// Export singleton instance
+window.engine = new BachatSwipeEngine();
+if (typeof engine !== "undefined") window.engine = engine;
+
+/* --- Source: ui/validator.js --- */
+// ui/validator.js
+// Input validation and sanitization
+
+/**
+ * Validator Module
+ * Validates and sanitizes all user inputs
+ */
+
+window.InputValidator = class InputValidator {
+    /**
+     * Validate transaction inputs
+     * @param {Object} inputs - Raw form inputs
+     * @returns {Object} Validated transaction or throws error
+     */
+    static validateTransaction(inputs) {
+        const errors = [];
+
+        // Validate amount
+        if (!inputs.amount) {
+            errors.push('Amount is required');
+        } else {
+            const amount = parseFloat(inputs.amount);
+            if (isNaN(amount)) {
+                errors.push('Amount must be a valid number');
+            } else if (amount <= 0) {
+                errors.push('Amount must be greater than 0');
+            } else if (amount > 10000000) {
+                errors.push('Amount cannot exceed ₹1 crore');
+            }
+        }
+
+        // Validate category
+        const validCategories = [
+            'shopping', 'dining', 'grocery', 'travel', 'flights', 'hotels',
+            'fuel', 'utility', 'upi', 'wallet', 'rent', 'government'
+        ];
+        if (!inputs.category) {
+            errors.push('Category is required');
+        } else if (!validCategories.includes(inputs.category)) {
+            errors.push('Invalid category selected');
+        }
+
+        // Validate merchant (optional but must be from allowed list if provided)
+        const validMerchants = ['', 'amazon', 'flipkart', 'swiggy', 'zomato', 'bigbasket', 'tata_neu'];
+        if (inputs.merchant && !validMerchants.includes(inputs.merchant)) {
+            errors.push('Invalid merchant selected');
+        }
+
+        if (errors.length > 0) {
+            throw new ValidationError(errors.join('; '));
+        }
+
+        return {
+            amount: parseFloat(inputs.amount),
+            category: inputs.category,
+            merchant: inputs.merchant || 'any'
+        };
+    }
+
+    /**
+     * Validate card search input
+     * @param {string} cardName - Card name from search
+     * @param {Array} availableCards - List of available cards
+     * @returns {string|null} Card ID or null
+     */
+    static validateCardSearch(cardName, availableCards) {
+        if (!cardName || cardName.trim() === '') {
+            return null; // No card selected, show all
+        }
+
+        const card = availableCards.find(c => c.name === cardName);
+        if (!card) {
+            throw new ValidationError(`Card "${cardName}" not found`);
+        }
+
+        return card.id;
+    }
+
+    /**
+     * Sanitize string input
+     */
+    static sanitizeString(input) {
+        if (typeof input !== 'string') return '';
+        return input.trim().toLowerCase();
+    }
+}
+
+/**
+ * Custom validation error
+ */
+window.ValidationError = class ValidationError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'ValidationError';
+    }
+}
+
+if (typeof InputValidator !== "undefined") window.InputValidator = InputValidator;
+
+/* --- Source: ui/errorHandler.js --- */
+// ui/errorHandler.js
+// Centralized error handling and display
+
+/**
+ * Error Handler Module
+ * Manages error display and logging
+ */
+
+window.ErrorHandler = class ErrorHandler {
+    constructor() {
+        this.errorBanner = null;
+        this.errorMessage = null;
+    }
+
+    /**
+     * Initialize error handler with DOM elements
+     */
+    init() {
+        this.errorBanner = document.getElementById('error-banner');
+        this.errorMessage = document.getElementById('error-message');
+
+        if (!this.errorBanner || !this.errorMessage) {
+            console.error('Error handler: Required DOM elements not found');
+        }
+    }
+
+    /**
+     * Show error message to user
+     * @param {Error|string} error - Error object or message
+     */
+    showError(error) {
+        const message = error instanceof Error ? error.message : String(error);
+
+        console.error('Error:', error);
+
+        if (this.errorBanner && this.errorMessage) {
+            this.errorMessage.textContent = message;
+            this.errorBanner.classList.remove('hidden');
+
+            // Auto-hide after 10 seconds for non-critical errors
+            if (!(error instanceof CriticalError)) {
+                setTimeout(() => this.hideError(), 10000);
+            }
+        } else {
+            // Fallback to alert if DOM not available
+            alert('Error: ' + message);
+        }
+    }
+
+    /**
+     * Hide error banner
+     */
+    hideError() {
+        if (this.errorBanner) {
+            this.errorBanner.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Handle engine initialization errors
+     */
+    handleEngineError(error) {
+        console.error('Engine initialization failed:', error);
+        this.showError(new CriticalError(
+            'Failed to initialize recommendation engine. Please refresh the page. ' +
+            'If the problem persists, check browser console for details.'
+        ));
+    }
+
+    /**
+     * Handle validation errors
+     */
+    handleValidationError(error) {
+        this.showError(error);
+    }
+
+    /**
+     * Handle recommendation errors
+     */
+    handleRecommendationError(error) {
+        console.error('Recommendation error:', error);
+        this.showError(
+            'Failed to generate recommendations. Please try again with different inputs.'
+        );
+    }
+
+    /**
+     * Handle unexpected errors
+     */
+    handleUnexpectedError(error) {
+        console.error('Unexpected error:', error);
+        this.showError(
+            'An unexpected error occurred. Please refresh the page and try again.'
+        );
+    }
+}
+
+/**
+ * Critical error that requires user action
+ */
+window.CriticalError = class CriticalError extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'CriticalError';
+    }
+}
+
+// Export singleton instance
+window.errorHandler = new ErrorHandler();
+if (typeof errorHandler !== "undefined") window.errorHandler = errorHandler;
+
+/* --- Source: ui/formHandler.js --- */
+// ui/formHandler.js
+// Form input handling and population
+
+/**
+ * Form Handler Module
+ * Manages form inputs and user interactions
+ */
+
+window.FormHandler = class FormHandler {
+    constructor() {
+        this.elements = {};
+    }
+
+    /**
+     * Initialize form handler with DOM elements
+     */
+    init() {
+        try {
+            this.elements = {
+                amount: this.getElement('amount'),
+                merchant: this.getElement('merchant'),
+                category: this.getElement('category'),
+                cardSearch: this.getElement('card_search'),
+                cardList: this.getElement('card_list'),
+                submitButton: this.getElement('submit-button'),
+                loadingSpinner: this.getElement('loading-spinner')
+            };
+        } catch (error) {
+            throw new Error('Failed to initialize form: ' + error.message);
+        }
+    }
+
+    /**
+     * Get DOM element with error handling
+     */
+    getElement(id) {
+        const element = document.getElementById(id);
+        if (!element) {
+            throw new Error(`Required element #${id} not found`);
+        }
+        return element;
+    }
+
+    /**
+     * Get form values
+     */
+    getFormValues() {
+        return {
+            amount: this.elements.amount.value,
+            merchant: this.elements.merchant.value,
+            category: this.elements.category.value,
+            cardSearch: this.elements.cardSearch.value.trim()
+        };
+    }
+
+    /**
+     * Populate card list dropdown
+     */
+    populateCardList(cards) {
+        if (!Array.isArray(cards)) {
+            throw new Error('Invalid cards data');
+        }
+
+        const cardList = this.elements.cardList;
+        cardList.innerHTML = ''; // Clear existing options
+
+        // Sort cards alphabetically
+        const sortedCards = [...cards].sort((a, b) =>
+            a.name.localeCompare(b.name)
+        );
+
+        sortedCards.forEach(card => {
+            const option = document.createElement('option');
+            option.value = card.name;
+            option.setAttribute('data-id', card.id);
+            cardList.appendChild(option);
+        });
+    }
+
+    /**
+     * Show loading state
+     */
+    showLoading() {
+        if (this.elements.loadingSpinner) {
+            this.elements.loadingSpinner.classList.add('active');
+        }
+        if (this.elements.submitButton) {
+            this.elements.submitButton.disabled = true;
+        }
+    }
+
+    /**
+     * Hide loading state
+     */
+    hideLoading() {
+        if (this.elements.loadingSpinner) {
+            this.elements.loadingSpinner.classList.remove('active');
+        }
+        if (this.elements.submitButton) {
+            this.elements.submitButton.disabled = false;
+        }
+    }
+
+    /**
+     * Reset form to defaults
+     */
+    reset() {
+        if (this.elements.amount) this.elements.amount.value = '10000';
+        if (this.elements.merchant) this.elements.merchant.value = '';
+        if (this.elements.category) this.elements.category.value = 'shopping';
+        if (this.elements.cardSearch) this.elements.cardSearch.value = '';
+    }
+
+    /**
+     * Disable form inputs
+     */
+    disable() {
+        Object.values(this.elements).forEach(element => {
+            if (element && element.disabled !== undefined) {
+                element.disabled = true;
+            }
+        });
+    }
+
+    /**
+     * Enable form inputs
+     */
+    enable() {
+        Object.values(this.elements).forEach(element => {
+            if (element && element.disabled !== undefined) {
+                element.disabled = false;
+            }
+        });
+    }
+}
+
+if (typeof FormHandler !== "undefined") window.FormHandler = FormHandler;
+
+/* --- Source: ui/resultsRenderer.js --- */
+// ui/resultsRenderer.js
+// Results display and rendering
+
+/**
+ * Results Renderer Module
+ * Handles rendering of recommendation results
+ */
+
+window.ResultsRenderer = class ResultsRenderer {
+    constructor() {
+        this.container = null;
+        this.title = null;
+    }
+
+    /**
+     * Initialize renderer with DOM elements
+     */
+    init() {
+        this.container = document.getElementById('results');
+        this.title = document.getElementById('result_title');
+
+        if (!this.container) {
+            throw new Error('Results container not found');
+        }
+    }
+
+    /**
+     * Render results
+     * @param {Object} result - Engine result object
+     */
+    render(result) {
+        if (!result || !result.results) {
+            this.showNoResults();
+            return;
+        }
+
+        // Clear previous results
+        this.container.innerHTML = '';
+
+        // Show title
+        if (this.title) {
+            this.title.classList.remove('hidden');
+        }
+
+        // Group results by card
+        const cardGroups = this.groupByCard(result.results);
+
+        // Take top 10 unique cards
+        const topCards = Array.from(cardGroups.values()).slice(0, 10);
+
+        if (topCards.length === 0) {
+            this.showNoResults();
+            return;
+        }
+
+        // Render each card
+        topCards.forEach((cardGroup, index) => {
+            this.renderCard(cardGroup, index);
+        });
+    }
+
+    /**
+     * Group results by card
+     */
+    groupByCard(results) {
+        const groups = new Map();
+
+        results.forEach(path => {
+            const cardId = path.card.id;
+            if (!groups.has(cardId)) {
+                groups.set(cardId, {
+                    card: path.card,
+                    paths: []
+                });
+            }
+            groups.get(cardId).paths.push(path);
+        });
+
+        return groups;
+    }
+
+    /**
+     * Render a single card with all its paths
+     */
+    renderCard(cardGroup, index) {
+        const isWinner = index === 0;
+        const bestPath = cardGroup.paths[0];
+        const otherPaths = cardGroup.paths.slice(1);
+        const card = cardGroup.card;
+
+        const isCashback = card.reward_type === 'cashback';
+        const valueColor = isCashback ? 'text-green-400' : 'text-blue-400';
+
+        const cardHTML = this.buildCardHTML(card, bestPath, otherPaths, isWinner, index, valueColor);
+        this.container.innerHTML += cardHTML;
+    }
+
+    /**
+     * Build HTML for a card
+     */
+    buildCardHTML(card, bestPath, otherPaths, isWinner, index, valueColor) {
+        const otherPathsHTML = otherPaths.map(path => `
+      <div class="flex justify-between items-center p-2 text-sm border-b border-white/5 last:border-0 hover:bg-white/5 rounded">
+        <div class="flex items-center gap-2">
+          <span>${this.getMethodIcon(path.method)}</span>
+          <div>
+            <div class="text-slate-200 font-medium">${this.escapeHTML(path.pathDescription)}</div>
+            <div class="text-xs text-slate-500">${this.escapeHTML(path.explanation)}</div>
+          </div>
+        </div>
+        <div class="text-right">
+          <div class="text-white font-mono">₹${Math.round(path.value)}</div>
+          <div class="text-[10px] text-slate-500">${path.percentageReturn.toFixed(2)}%</div>
+        </div>
+      </div>
+    `).join('');
+
+        return `
+      <div class="mb-3 rounded-xl overflow-hidden transition-all duration-300 ${isWinner ? 'bg-slate-800 gold-glow' : 'bg-slate-800/40 border border-slate-700/50'}">
+        
+        <div onclick="window.toggleDetails(${index})" class="relative p-4 flex justify-between items-center cursor-pointer hover:bg-slate-800/60 transition">
+          ${isWinner ? '<div class="absolute -top-3 -left-2 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded shadow">🏆 #1 BEST CHOICE</div>' : ''}
+          
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xl shadow-inner">
+              ${bestPath.value > 0 ? (card.reward_type === 'cashback' ? '💵' : '💎') : '⚠️'}
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-lg leading-tight">
+                ${this.escapeHTML(card.name)} 
+                <span class="text-[10px] uppercase bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded ml-1 border border-slate-700">${this.escapeHTML(card.bank)}</span>
+              </h3>
+              <div class="text-sm text-gray-300 mt-1 flex items-center gap-1">
+                <span class="text-xs bg-blue-900/30 text-blue-300 px-1.5 rounded border border-blue-500/20">${this.escapeHTML(bestPath.method)}</span>
+                <span class="text-xs text-slate-500">• ${this.escapeHTML(bestPath.explanation)}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="text-right flex items-center gap-4">
+            <div>
+              <div class="text-2xl font-bold ${valueColor}">₹${Math.round(bestPath.value)}</div>
+              <div class="text-xs font-mono text-slate-500 bg-slate-900/50 px-2 py-0.5 rounded inline-block mt-1">
+                ${bestPath.percentageReturn.toFixed(2)}% Return
+              </div>
+            </div>
+            <i id="chev-${index}" class="fas fa-chevron-down text-slate-600 chevron"></i>
+          </div>
+        </div>
+
+        <div id="strat-${index}" class="strategies-box bg-slate-900/50 px-4">
+          ${otherPaths.length > 0 ? `<div class="text-[10px] uppercase font-bold text-slate-600 mb-2">📊 Alternative Payment Paths (${otherPaths.length})</div>` : '<div class="text-xs text-slate-500 text-center py-2">No alternative paths available</div>'}
+          ${otherPathsHTML}
+        </div>
+      </div>`;
+    }
+
+    /**
+     * Show no results message
+     */
+    showNoResults() {
+        this.container.innerHTML = '<div class="text-gray-500 text-center py-4">No rewards found for this transaction.</div>';
+        if (this.title) {
+            this.title.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * Clear results
+     */
+    clear() {
+        this.container.innerHTML = '';
+        if (this.title) {
+            this.title.classList.add('hidden');
+        }
+    }
+
+    /**
+     * Get icon for payment method
+     */
+    getMethodIcon(method) {
+        const icons = {
+            'direct': '💳',
+            'portal': '🌐',
+            'voucher': '🎟️'
+        };
+        return icons[method] || '💳';
+    }
+
+    /**
+     * Escape HTML to prevent XSS
+     */
+    escapeHTML(str) {
+        if (typeof str !== 'string') return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+}
+
+if (typeof ResultsRenderer !== "undefined") window.ResultsRenderer = ResultsRenderer;
+
+/* --- Source: ui/app.js --- */
+// ui/app.js
+// Main application controller
+
+/**
+ * Application Controller
+ * Orchestrates all UI modules and engine interaction
+ */
+
+
+
+
+
+
+
+window.App = class App {
+    constructor() {
+        this.engineReady = false;
+        this.formHandler = new FormHandler();
+        this.resultsRenderer = new ResultsRenderer();
+    }
+
+    /**
+     * Initialize application
+     */
+    async init() {
+        try {
+            console.log('🚀 Initializing BachatSwipe...');
+
+            // Initialize error handler
+            errorHandler.init();
+
+            // Initialize UI components
+            this.formHandler.init();
+            this.resultsRenderer.init();
+
+            // Initialize engine
+            await this.initEngine();
+
+            // Set up event listeners
+            this.setupEventListeners();
+
+            console.log('✅ Application ready!');
+
+        } catch (error) {
+            console.error('Failed to initialize application:', error);
+            errorHandler.handleEngineError(error);
+            this.formHandler.disable();
+        }
+    }
+
+    /**
+     * Initialize recommendation engine
+     */
+    async initEngine() {
+        try {
+            await engine.initialize();
+            this.engineReady = true;
+
+            // Populate card list
+            const cards = engine.getAllCards();
+            this.formHandler.populateCardList(cards);
+
+        } catch (error) {
+            throw new CriticalError('Failed to load recommendation engine: ' + error.message);
+        }
+    }
+
+    /**
+     * Set up event listeners
+     */
+    setupEventListeners() {
+        // Make analyze function globally available
+        window.runEngine = () => this.analyze();
+
+        // Toggle details function
+        window.toggleDetails = (id) => {
+            const stratBox = document.getElementById(`strat-${id}`);
+            const chevron = document.getElementById(`chev-${id}`);
+            if (stratBox) stratBox.classList.toggle('open');
+            if (chevron) chevron.classList.toggle('open');
+        };
+    }
+
+    /**
+     * Main analysis function
+     */
+    async analyze() {
+        if (!this.engineReady) {
+            errorHandler.showError('Engine not ready. Please wait or refresh the page.');
+            return;
+        }
+
+        try {
+            // Clear previous errors
+            errorHandler.hideError();
+
+            // Show loading state
+            this.formHandler.showLoading();
+
+            // Get and validate inputs
+            const formValues = this.formHandler.getFormValues();
+            const transaction = InputValidator.validateTransaction(formValues);
+
+            // Validate card search
+            const cards = engine.getAllCards();
+            const cardId = InputValidator.validateCardSearch(formValues.cardSearch, cards);
+            const userCardIds = cardId ? [cardId] : null;
+
+            // Get recommendation
+            const result = engine.getRecommendation(transaction, userCardIds, { showAll: true });
+
+            // Render results
+            this.resultsRenderer.render(result);
+
+        } catch (error) {
+            if (error instanceof ValidationError) {
+                errorHandler.handleValidationError(error);
+            } else {
+                errorHandler.handleRecommendationError(error);
+            }
+        } finally {
+            this.formHandler.hideLoading();
+        }
+    }
+}
+
+// Create and export app instance
+window.app = new App();
+if (typeof app !== "undefined") window.app = app;
+        // Auto-initialize
+        window.addEventListener('DOMContentLoaded', () => {
+            console.log('Standalone mode loaded.');
+            if (window.app && window.app.init) {
+                window.app.init().catch(e => console.error('Init failed:', e));
+            } else {
+                console.error('window.app not found');
+            }
+        });
+    </script>
+</body>
+</html>

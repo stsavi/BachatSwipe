@@ -12,7 +12,7 @@ export const sbiDirectAcceleratedRules = [
   {
     id: "sbi_vistara_prime_vistara_spends",
     bank: "SBI Card",
-    rule_type: RULE_TYPES.DIRECT_ACCELERATED,
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
     category: EXPENSE_CATEGORIES.TRAVEL,
     merchants: ["Vistara"],
     platform: "direct",

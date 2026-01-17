@@ -15,7 +15,7 @@ export const iciciCardsData = [
     reward_type: REWARD_TYPES.POINTS,
     base_rate: 0.03, // 6 Reward Points per ₹200 = 0.03 points per ₹1
     earning_display: "6 Reward Points per ₹200",
-    value_per_unit: 0.50, // ₹0.50 per point (1 RP = ₹0.50 for statement credit)
+    value_per_unit: 0.25, // ₹0.25 per point (1 RP = ₹0.25 for statement credit)
     redemption_ease_score: 2, // Portal/voucher redemption
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.TRAVEL_PORTAL],
     annual_fee: 12500, // ₹10k + GST
@@ -39,7 +39,7 @@ export const iciciCardsData = [
     reward_type: REWARD_TYPES.POINTS,
     base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
     earning_display: "4 Reward Points per ₹200",
-    value_per_unit: 0.40, // ₹0.40 per point
+    value_per_unit: 0.25, // ₹0.25 per point
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
     annual_fee: 1000, // ₹1000
@@ -63,7 +63,7 @@ export const iciciCardsData = [
     reward_type: REWARD_TYPES.POINTS,
     base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
     earning_display: "4 Reward Points per ₹200",
-    value_per_unit: 0.40, // ₹0.40 per point
+    value_per_unit: 0.25, // ₹0.25 per point
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
     annual_fee: 3000, // ₹3000
@@ -126,30 +126,6 @@ export const iciciCardsData = [
     supports_upi: true,
     base_exclusions: ["fuel", "wallet_loads", "rent"],
     features: ["Basic entry card", "Retail offers", "EMI options"]
-  },
-  {
-    id: "icici_manchester_united",
-    name: "ICICI Manchester United",
-    bank: "ICICI Bank",
-    card_tier: CARD_TIERS.LIFESTYLE,
-    reward_type: REWARD_TYPES.POINTS,
-    base_rate: 0.02, // 4 Reward Points per ₹200 = 0.02 points per ₹1
-    earning_display: "4 Reward Points per ₹200",
-    value_per_unit: 0.40, // ₹0.40 per point
-    redemption_ease_score: 2,
-    redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS],
-    annual_fee: 3000, // ₹3000
-    fee_waiver_criteria: "Spend ₹4L in a year",
-    joining_bonus: "Manchester United merchandise worth ₹3000",
-    lounge: {
-      domestic: LOUNGE_ACCESS_TYPES.LIMITED_4,
-      international: LOUNGE_ACCESS_TYPES.LIMITED_2,
-      network: ["Visa lounges"],
-      guest_access: false
-    },
-    supports_upi: true,
-    base_exclusions: ["fuel", "wallet_loads", "rent"],
-    features: ["Manchester United themed", "Club merchandise", "Lounge access"]
   },
   {
     id: "icici_hpcl",

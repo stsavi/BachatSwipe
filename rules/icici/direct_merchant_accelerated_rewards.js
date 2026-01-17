@@ -13,7 +13,7 @@ export const iciciDirectAcceleratedRules = [
   {
     id: "icici_sapphiro_department_stores",
     bank: "ICICI Bank",
-    rule_type: RULE_TYPES.DIRECT_ACCELERATED,
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
     category: EXPENSE_CATEGORIES.SHOPPING,
     merchants: [],
     platform: "direct",

@@ -3,6 +3,8 @@
 
 **BachatSwipe** is an intelligent credit card optimization engine for India that tells you the best way to pay for any expense — ensuring you maximize rewards, cashback, and savings on every transaction.
 
+> **⚠️ IMPORTANT:** This app uses ES6 modules and **must be served via HTTP**. See [QUICK_START.md](./QUICK_START.md) for setup instructions.
+
 ---
 
 ## 🚨 The Problem

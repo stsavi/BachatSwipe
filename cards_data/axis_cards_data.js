@@ -63,7 +63,7 @@ export const axisCardsData = [
     reward_type: REWARD_TYPES.POINTS, // CV Points (Club Vistara)
     base_rate: 0.04, // 4 CV Points per ₹200 = 0.02 points per ₹1, but 1 CV Point ≈ ₹2, so 0.04
     earning_display: "4 CV Points per ₹200",
-    value_per_unit: 2.00, // ₹2 per CV Point (when transferred to Vistara)
+    value_per_unit: 0.2, // ₹0.2 per CV Point (when transferred to Vistara)
     redemption_ease_score: 3, // Miles transfer required
     redemption_types: [REDEMPTION_TYPES.MILES_TRANSFER],
     annual_fee: 10000, // ₹10k + GST
