@@ -16,8 +16,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["amazon", "flipkart"],
         platform: "SmartBuy",
 
-        applies_to_cards: ["hdfc_millennia"],
-        cashback_rates: [0.05],  // 5% cashback
+        cashback_rate_map: {
+            "hdfc_millennia": 0.05
+        },
 
         cap: 1000,
         cap_period: "monthly",
@@ -39,8 +40,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["swiggy", "zomato"],
         platform: "SmartBuy",
 
-        applies_to_cards: ["hdfc_millennia"],
-        cashback_rates: [0.05],
+        cashback_rate_map: {
+            "hdfc_millennia": 0.05
+        },
 
         cap: 1000,
         cap_period: "monthly",
@@ -65,8 +67,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["swiggy"],
         platform: null,  // Direct swipe
 
-        applies_to_cards: ["hdfc_swiggy"],
-        cashback_rates: [0.10],  // 10% on Swiggy
+        cashback_rate_map: {
+            "hdfc_swiggy": 0.10
+        },
 
         cap: null,
         cap_period: null,
@@ -88,8 +91,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: [],  // All dining merchants
         platform: null,
 
-        applies_to_cards: ["hdfc_swiggy"],
-        cashback_rates: [0.05],  // 5% on other dining
+        cashback_rate_map: {
+            "hdfc_swiggy": 0.05
+        },
 
         cap: null,
         cap_period: null,
@@ -114,8 +118,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["tata_neu", "bigbasket", "tata_cliq", "1mg", "croma"],
         platform: null,
 
-        applies_to_cards: ["hdfc_tataneu_infinity"],
-        cashback_rates: [0.05],  // 5% NeuCoins
+        cashback_rate_map: {
+            "hdfc_tataneu_infinity": 0.05
+        },
 
         cap: null,
         cap_period: null,
@@ -137,8 +142,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["tata_neu", "bigbasket", "tata_cliq", "1mg", "croma"],
         platform: null,
 
-        applies_to_cards: ["hdfc_tataneu_plus"],
-        cashback_rates: [0.05],
+        cashback_rate_map: {
+            "hdfc_tataneu_plus": 0.05
+        },
 
         cap: null,
         cap_period: null,
@@ -160,8 +166,10 @@ export const HDFC_CASHBACK_RULES = [
         merchants: [],  // All UPI
         platform: null,
 
-        applies_to_cards: ["hdfc_tataneu_infinity", "hdfc_tataneu_plus"],
-        cashback_rates: [0.05, 0.05],  // Both get 5% on UPI
+        cashback_rate_map: {
+            "hdfc_tataneu_infinity": 0.05,
+            "hdfc_tataneu_plus": 0.05
+        },
 
         cap: 250,
         cap_period: "monthly",
@@ -186,8 +194,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["indianoil"],
         platform: null,
 
-        applies_to_cards: ["hdfc_indianoil"],
-        cashback_rates: [0.01],  // Effective 1% via surcharge waiver
+        cashback_rate_map: {
+            "hdfc_indianoil": 0.01
+        },
 
         cap: 250,
         cap_period: "monthly",
@@ -212,10 +221,10 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["zomato", "swiggy"],
         platform: null,
 
-        applies_to_cards: ["hdfc_dcp"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [5],  // 5x RP on Zomato/Swiggy
+        reward_multiplier_map: {
+            "hdfc_dcp": 5
+        },
         cashback_rates: null,
 
         cap: null,
@@ -241,8 +250,9 @@ export const HDFC_CASHBACK_RULES = [
         merchants: ["bookmyshow"],
         platform: null,
 
-        applies_to_cards: ["hdfc_dcp"],
-        cashback_rates: [0.25],  // Effective 25% discount
+        cashback_rate_map: {
+            "hdfc_dcp": 0.25
+        },
 
         cap: 500,
         cap_period: "monthly",
@@ -253,5 +263,35 @@ export const HDFC_CASHBACK_RULES = [
 
         notes: "Buy 1 Get 1 on BookMyShow movie tickets (effective 20% discount, ₹500 cap/month)",
         priority: 150
+    },
+
+    // ============================================================
+    // MILLENNIA - BASE CASHBACK (1% WILDCARD)
+    // ============================================================
+    {
+        id: "hdfc_millennia_base_cashback_all",
+        bank: "HDFC",
+        rule_type: "cashback",
+
+        category: "*", // Wildcard: matches all categories
+
+        cashback_rate_map: {
+            "hdfc_millennia": 0.01
+        },
+
+        constraints: {
+            excluded_categories: [], // No category exclusions
+            exclusions: "Excludes fuel, wallet loads, rent, government, EMI, education"
+        },
+
+        cap: null,
+        cap_period: null,
+        min_transaction: null,
+
+        valid_from: "2024-01-01",
+        valid_until: null,
+
+        notes: "1% base cashback on all categories. Specific rules (5% SmartBuy) take precedence.",
+        priority: 5 // Lower than all specific rules
     }
 ];

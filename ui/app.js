@@ -24,7 +24,7 @@ export class App {
      */
     async init() {
         try {
-            console.log('🚀 Initializing BachatSwipe...');
+            console.log('Initializing BachatSwipe...');
 
             // Initialize error handler
             errorHandler.init();
@@ -39,7 +39,7 @@ export class App {
             // Set up event listeners
             this.setupEventListeners();
 
-            console.log('✅ Application ready!');
+            console.log('Application ready!');
 
         } catch (error) {
             console.error('Failed to initialize application:', error);

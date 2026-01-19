@@ -460,6 +460,6 @@ export const HDFC_CARDS = [
         supports_upi: false,
 
         // EXCLUSIONS (Validated: Minimal exclusions for fuel card)
-        base_exclusions: ["wallet"]
+        base_exclusions: ["rent", "education", "government", "wallet"]
     }
 ];

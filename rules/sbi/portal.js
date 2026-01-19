@@ -10,18 +10,19 @@ import { EXPENSE_CATEGORIES, BANK_PORTALS, CAP_PERIODS, BENEFIT_TYPES, RULE_TYPE
 export const sbiPortalRules = [
   // Note: SBI Cards primarily focus on cashback/accelerated rewards rather than portal bookings
   // Minimal portal offerings compared to HDFC/Axis/ICICI
-  
+
   // SimplyCLICK - Travel Partners (Limited)
   {
     id: "sbi_simplyclick_cleartrip",
     bank: "SBI Card",
     rule_type: RULE_TYPES.PORTAL,
     category: EXPENSE_CATEGORIES.TRAVEL,
-    merchants: ["Cleartrip"],
+    merchants: ["cleartrip"],
     platform: "Cleartrip",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10], // 10X reward points
-    applies_to_cards: ["sbi_simplyclick"],
+    reward_multiplier_map: {
+      "sbi_simplyclick": 10
+    },
     constraints: {
       booking_platform: "Cleartrip only"
     },

@@ -7,99 +7,99 @@
  */
 
 export class ResultsRenderer {
-    constructor() {
-        this.container = null;
-        this.title = null;
+  constructor() {
+    this.container = null;
+    this.title = null;
+  }
+
+  /**
+   * Initialize renderer with DOM elements
+   */
+  init() {
+    this.container = document.getElementById('results');
+    this.title = document.getElementById('result_title');
+
+    if (!this.container) {
+      throw new Error('Results container not found');
+    }
+  }
+
+  /**
+   * Render results
+   * @param {Object} result - Engine result object
+   */
+  render(result) {
+    if (!result || !result.results) {
+      this.showNoResults();
+      return;
     }
 
-    /**
-     * Initialize renderer with DOM elements
-     */
-    init() {
-        this.container = document.getElementById('results');
-        this.title = document.getElementById('result_title');
+    // Clear previous results
+    this.container.innerHTML = '';
 
-        if (!this.container) {
-            throw new Error('Results container not found');
-        }
+    // Show title
+    if (this.title) {
+      this.title.classList.remove('hidden');
     }
 
-    /**
-     * Render results
-     * @param {Object} result - Engine result object
-     */
-    render(result) {
-        if (!result || !result.results) {
-            this.showNoResults();
-            return;
-        }
+    // Group results by card
+    const cardGroups = this.groupByCard(result.results);
 
-        // Clear previous results
-        this.container.innerHTML = '';
+    // Take top 10 unique cards
+    const topCards = Array.from(cardGroups.values()).slice(0, 10);
 
-        // Show title
-        if (this.title) {
-            this.title.classList.remove('hidden');
-        }
+    if (topCards.length === 0) {
+      this.showNoResults();
+      return;
+    }
 
-        // Group results by card
-        const cardGroups = this.groupByCard(result.results);
+    // Render each card
+    topCards.forEach((cardGroup, index) => {
+      this.renderCard(cardGroup, index);
+    });
+  }
 
-        // Take top 10 unique cards
-        const topCards = Array.from(cardGroups.values()).slice(0, 10);
+  /**
+   * Group results by card
+   */
+  groupByCard(results) {
+    const groups = new Map();
 
-        if (topCards.length === 0) {
-            this.showNoResults();
-            return;
-        }
-
-        // Render each card
-        topCards.forEach((cardGroup, index) => {
-            this.renderCard(cardGroup, index);
+    results.forEach(path => {
+      const cardId = path.card.id;
+      if (!groups.has(cardId)) {
+        groups.set(cardId, {
+          card: path.card,
+          paths: []
         });
-    }
+      }
+      groups.get(cardId).paths.push(path);
+    });
 
-    /**
-     * Group results by card
-     */
-    groupByCard(results) {
-        const groups = new Map();
+    return groups;
+  }
 
-        results.forEach(path => {
-            const cardId = path.card.id;
-            if (!groups.has(cardId)) {
-                groups.set(cardId, {
-                    card: path.card,
-                    paths: []
-                });
-            }
-            groups.get(cardId).paths.push(path);
-        });
+  /**
+   * Render a single card with all its paths
+   */
+  renderCard(cardGroup, index) {
+    const isWinner = index === 0;
+    const bestPath = cardGroup.paths[0];
+    const otherPaths = cardGroup.paths.slice(1);
+    const card = cardGroup.card;
 
-        return groups;
-    }
+    const isCashback = card.reward_type === 'cashback';
+    const valueColor = isCashback ? 'text-green-400' : 'text-blue-400';
 
-    /**
-     * Render a single card with all its paths
-     */
-    renderCard(cardGroup, index) {
-        const isWinner = index === 0;
-        const bestPath = cardGroup.paths[0];
-        const otherPaths = cardGroup.paths.slice(1);
-        const card = cardGroup.card;
+    const cardHTML = this.buildCardHTML(card, bestPath, otherPaths, isWinner, index, valueColor);
+    this.container.innerHTML += cardHTML;
+  }
 
-        const isCashback = card.reward_type === 'cashback';
-        const valueColor = isCashback ? 'text-green-400' : 'text-blue-400';
-
-        const cardHTML = this.buildCardHTML(card, bestPath, otherPaths, isWinner, index, valueColor);
-        this.container.innerHTML += cardHTML;
-    }
-
-    /**
-     * Build HTML for a card
-     */
-    buildCardHTML(card, bestPath, otherPaths, isWinner, index, valueColor) {
-        const otherPathsHTML = otherPaths.map(path => `
+  /**
+   * Build HTML for a card
+   */
+  buildCardHTML(card, bestPath, otherPaths, isWinner, index, valueColor) {
+    const otherPathsHTML = otherPaths.map(path => `
       <div class="flex justify-between items-center p-2 text-sm border-b border-white/5 last:border-0 hover:bg-white/5 rounded">
         <div class="flex items-center gap-2">
           <span>${this.getMethodIcon(path.method)}</span>
@@ -115,15 +115,15 @@ export class ResultsRenderer {
       </div>
     `).join('');
 
-        return `
+    return `
       <div class="mb-3 rounded-xl overflow-hidden transition-all duration-300 ${isWinner ? 'bg-slate-800 gold-glow' : 'bg-slate-800/40 border border-slate-700/50'}">
         
         <div onclick="window.toggleDetails(${index})" class="relative p-4 flex justify-between items-center cursor-pointer hover:bg-slate-800/60 transition">
-          ${isWinner ? '<div class="absolute -top-3 -left-2 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded shadow">🏆 #1 BEST CHOICE</div>' : ''}
+          ${isWinner ? '<div class="absolute -top-3 -left-2 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded shadow">#1 BEST CHOICE</div>' : ''}
           
           <div class="flex items-center gap-4">
             <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xl shadow-inner">
-              ${bestPath.value > 0 ? (card.reward_type === 'cashback' ? '💵' : '💎') : '⚠️'}
+              ${bestPath.value > 0 ? (card.reward_type === 'cashback' ? 'C' : 'R') : '!'}
             </div>
             <div>
               <h3 class="font-bold text-white text-lg leading-tight">
@@ -149,53 +149,53 @@ export class ResultsRenderer {
         </div>
 
         <div id="strat-${index}" class="strategies-box bg-slate-900/50 px-4">
-          ${otherPaths.length > 0 ? `<div class="text-[10px] uppercase font-bold text-slate-600 mb-2">📊 Alternative Payment Paths (${otherPaths.length})</div>` : '<div class="text-xs text-slate-500 text-center py-2">No alternative paths available</div>'}
+          ${otherPaths.length > 0 ? `<div class="text-[10px] uppercase font-bold text-slate-600 mb-2">Alternative Payment Paths (${otherPaths.length})</div>` : '<div class="text-xs text-slate-500 text-center py-2">No alternative paths available</div>'}
           ${otherPathsHTML}
         </div>
       </div>`;
-    }
+  }
 
-    /**
-     * Show no results message
-     */
-    showNoResults() {
-        this.container.innerHTML = '<div class="text-gray-500 text-center py-4">No rewards found for this transaction.</div>';
-        if (this.title) {
-            this.title.classList.remove('hidden');
-        }
+  /**
+   * Show no results message
+   */
+  showNoResults() {
+    this.container.innerHTML = '<div class="text-gray-500 text-center py-4">No rewards found for this transaction.</div>';
+    if (this.title) {
+      this.title.classList.remove('hidden');
     }
+  }
 
-    /**
-     * Clear results
-     */
-    clear() {
-        this.container.innerHTML = '';
-        if (this.title) {
-            this.title.classList.add('hidden');
-        }
+  /**
+   * Clear results
+   */
+  clear() {
+    this.container.innerHTML = '';
+    if (this.title) {
+      this.title.classList.add('hidden');
     }
+  }
 
-    /**
-     * Get icon for payment method
-     */
-    getMethodIcon(method) {
-        const icons = {
-            'direct': '💳',
-            'portal': '🌐',
-            'voucher': '🎟️'
-        };
-        return icons[method] || '💳';
-    }
+  /**
+   * Get icon for payment method
+   */
+  getMethodIcon(method) {
+    const icons = {
+      'direct': 'D',
+      'portal': 'P',
+      'voucher': 'V'
+    };
+    return icons[method] || 'D';
+  }
 
-    /**
-     * Escape HTML to prevent XSS
-     */
-    escapeHTML(str) {
-        if (typeof str !== 'string') return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
+  /**
+   * Escape HTML to prevent XSS
+   */
+  escapeHTML(str) {
+    if (typeof str !== 'string') return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
 }
 
 export default ResultsRenderer;

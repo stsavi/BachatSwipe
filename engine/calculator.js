@@ -68,10 +68,22 @@ export function calculateValue(card, rules, amount, options = {}) {
         const sortedRules = [...rules].sort((a, b) => (b.priority || 0) - (a.priority || 0));
         const primaryRule = sortedRules[0];
 
-        // Find card index in rule's applies_to_cards array
-        const cardIndex = primaryRule.applies_to_cards.indexOf(card.id);
+        // Determine applicability and values
+        let isApplicable = false;
+        let multiplier, cashbackRate, discountRate;
 
-        if (cardIndex === -1) {
+        if (primaryRule.reward_multiplier_map && primaryRule.reward_multiplier_map[card.id] !== undefined) {
+            multiplier = primaryRule.reward_multiplier_map[card.id];
+            isApplicable = true;
+        } else if (primaryRule.cashback_rate_map && primaryRule.cashback_rate_map[card.id] !== undefined) {
+            cashbackRate = primaryRule.cashback_rate_map[card.id];
+            isApplicable = true;
+        } else if (primaryRule.instant_discount_rate_map && primaryRule.instant_discount_rate_map[card.id] !== undefined) {
+            discountRate = primaryRule.instant_discount_rate_map[card.id];
+            isApplicable = true;
+        }
+
+        if (!isApplicable) {
             // Card not in rule, use base value
             finalValue = baseValue;
             breakdown.push({
@@ -81,9 +93,8 @@ export function calculateValue(card, rules, amount, options = {}) {
             });
         } else {
             // Apply rule benefit
-            if (primaryRule.benefit_type === 'reward_multiplier' || primaryRule.reward_multipliers) {
+            if ((primaryRule.benefit_type === 'reward_multiplier' || multiplier !== undefined) && multiplier !== undefined) {
                 // Multiplier-based rule
-                const multiplier = primaryRule.reward_multipliers[cardIndex];
                 const multipliedEarning = baseEarning * multiplier;
                 const multipliedValue = multipliedEarning * card.value_per_unit;
 
@@ -94,9 +105,8 @@ export function calculateValue(card, rules, amount, options = {}) {
                 });
 
                 finalValue = multipliedValue;
-            } else if (primaryRule.benefit_type === 'cashback' || primaryRule.cashback_rates) {
+            } else if ((primaryRule.benefit_type === 'cashback' || cashbackRate !== undefined) && cashbackRate !== undefined) {
                 // Cashback-based rule (overrides base rate)
-                const cashbackRate = primaryRule.cashback_rates[cardIndex];
                 const cashbackValue = amount * cashbackRate;
 
                 breakdown.push({
@@ -106,9 +116,8 @@ export function calculateValue(card, rules, amount, options = {}) {
                 });
 
                 finalValue = cashbackValue;
-            } else if (primaryRule.benefit_type === 'instant_discount' || primaryRule.instant_discount_rates) {
+            } else if ((primaryRule.benefit_type === 'instant_discount' || discountRate !== undefined) && discountRate !== undefined) {
                 // Instant discount (for vouchers)
-                const discountRate = primaryRule.instant_discount_rates[cardIndex];
                 const discountValue = amount * discountRate;
 
                 breakdown.push({

@@ -19,8 +19,10 @@ export const axisDirectAcceleratedRules = [
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [2, 2], // 2x on dining (12 miles becomes 24 per ₹200)
-    applies_to_cards: ["axis_magnus", "axis_reserve"],
+    reward_multiplier_map: {
+      "axis_magnus": 2,
+      "axis_reserve": 2
+    },
     constraints: {
       platform: "Direct merchant swipe (not via Travel Edge)"
     },
@@ -43,8 +45,9 @@ export const axisDirectAcceleratedRules = [
     merchants: ["Vistara"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5x on Vistara (4 CV Points becomes 20 per ₹200)
-    applies_to_cards: ["axis_vistara_infinite"],
+    reward_multiplier_map: {
+      "axis_vistara_infinite": 5
+    },
     constraints: {
       merchant: "Vistara Airlines only"
     },

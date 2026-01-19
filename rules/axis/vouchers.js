@@ -17,8 +17,9 @@ export const axisVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
     platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5x Edge Miles
-    applies_to_cards: ["axis_magnus"],
+    reward_multiplier_map: {
+      "axis_magnus": 5
+    },
     constraints: {
       platform: "EDGE Rewards portal only"
     },
@@ -42,8 +43,9 @@ export const axisVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
     platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5x Edge Miles
-    applies_to_cards: ["axis_magnus"],
+    reward_multiplier_map: {
+      "axis_magnus": 5
+    },
     constraints: {
       platform: "EDGE Rewards portal only"
     },
@@ -67,8 +69,9 @@ export const axisVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
     platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5x Edge Miles
-    applies_to_cards: ["axis_reserve"],
+    reward_multiplier_map: {
+      "axis_reserve": 5
+    },
     constraints: {
       platform: "EDGE Rewards portal only"
     },
@@ -92,8 +95,9 @@ export const axisVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
     platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5x Edge Miles
-    applies_to_cards: ["axis_reserve"],
+    reward_multiplier_map: {
+      "axis_reserve": 5
+    },
     constraints: {
       platform: "EDGE Rewards portal only"
     },
@@ -117,8 +121,9 @@ export const axisVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART, VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
     platform: BANK_PORTALS.AXIS_EDGE_REWARDS,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [2], // 2x Edge Miles
-    applies_to_cards: ["axis_atlas"],
+    reward_multiplier_map: {
+      "axis_atlas": 2
+    },
     constraints: {
       platform: "EDGE Rewards portal only"
     },

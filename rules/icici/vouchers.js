@@ -17,8 +17,9 @@ export const iciciVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5x Reward Points
-    applies_to_cards: ["icici_sapphiro"],
+    reward_multiplier_map: {
+      "icici_sapphiro": 5
+    },
     constraints: {
       platform: "PayWith Rewards portal only"
     },
@@ -42,8 +43,9 @@ export const iciciVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5x Reward Points
-    applies_to_cards: ["icici_sapphiro"],
+    reward_multiplier_map: {
+      "icici_sapphiro": 5
+    },
     constraints: {
       platform: "PayWith Rewards portal only"
     },
@@ -67,8 +69,10 @@ export const iciciVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [3, 3], // 3x Reward Points
-    applies_to_cards: ["icici_coral", "icici_rubyx"],
+    reward_multiplier_map: {
+      "icici_coral": 3,
+      "icici_rubyx": 3
+    },
     constraints: {
       platform: "PayWith Rewards portal only"
     },
@@ -92,8 +96,10 @@ export const iciciVoucherRules = [
     merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [3, 3], // 3x Reward Points
-    applies_to_cards: ["icici_coral", "icici_rubyx"],
+    reward_multiplier_map: {
+      "icici_coral": 3,
+      "icici_rubyx": 3
+    },
     constraints: {
       platform: "PayWith Rewards portal only"
     },

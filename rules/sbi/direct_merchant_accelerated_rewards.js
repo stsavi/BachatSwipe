@@ -14,11 +14,12 @@ export const sbiDirectAcceleratedRules = [
     bank: "SBI Card",
     rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
     category: EXPENSE_CATEGORIES.TRAVEL,
-    merchants: ["Vistara"],
+    merchants: ["vistara"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10], // 10x on Vistara
-    applies_to_cards: ["sbi_vistara_prime"],
+    reward_multiplier_map: {
+      "sbi_vistara_prime": 10
+    },
     constraints: {
       merchant: "Vistara Airlines only"
     },

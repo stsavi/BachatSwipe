@@ -93,9 +93,9 @@ class DataLoader {
             this._validateData();
 
             this.initialized = true;
-            console.log(`✅ DataLoader initialized: ${this.cards.length} cards, ${this.rules.length} rules`);
+            console.log(`DataLoader initialized: ${this.cards.length} cards, ${this.rules.length} rules`);
         } catch (error) {
-            console.error('❌ Failed to initialize DataLoader:', error);
+            console.error('Failed to initialize DataLoader:', error);
             throw error;
         }
     }
@@ -107,7 +107,7 @@ class DataLoader {
         this.cardsById.clear();
         for (const card of this.cards) {
             if (this.cardsById.has(card.id)) {
-                console.warn(`⚠️ Duplicate card ID: ${card.id}`);
+                console.warn(`Duplicate card ID: ${card.id}`);
             }
             this.cardsById.set(card.id, card);
         }
@@ -150,17 +150,19 @@ class DataLoader {
             if (!rule.id || !rule.bank || !rule.rule_type) {
                 errors.push(`Invalid rule: ${JSON.stringify(rule)}`);
             }
-            if (!rule.applies_to_cards || rule.applies_to_cards.length === 0) {
-                errors.push(`Rule ${rule.id} has no applicable cards`);
+
+            const hasMap = rule.reward_multiplier_map || rule.cashback_rate_map || rule.instant_discount_rate_map;
+            if (!hasMap) {
+                errors.push(`Rule ${rule.id} has no applicable card maps`);
             }
         }
 
         if (errors.length > 0) {
-            console.error('❌ Data validation errors:', errors);
+            console.error('Data validation errors:', errors);
             throw new Error(`Data validation failed: ${errors.length} errors found`);
         }
 
-        console.log('✅ Data validation passed');
+        console.log('Data validation passed');
     }
 
     /**

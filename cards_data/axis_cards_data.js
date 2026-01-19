@@ -15,7 +15,7 @@ export const axisCardsData = [
     reward_type: REWARD_TYPES.EDGE_MILES,
     base_rate: 0.06, // 12 Edge Miles per ₹200 = 0.06 miles per ₹1
     earning_display: "12 Edge Miles per ₹200",
-    value_per_unit: 1.00, // ₹1 per Edge Mile
+    value_per_unit: 3.60, // Optimized for Accor (1 Mile = 2 Accor Points = ₹3.60)
     redemption_ease_score: 2, // Portal redemption
     redemption_types: [REDEMPTION_TYPES.TRAVEL_PORTAL, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.MILES_TRANSFER],
     annual_fee: 12500, // ₹10k + GST
@@ -39,7 +39,7 @@ export const axisCardsData = [
     reward_type: REWARD_TYPES.EDGE_MILES,
     base_rate: 0.075, // 15 Edge Miles per ₹200 = 0.075 miles per ₹1
     earning_display: "15 Edge Miles per ₹200",
-    value_per_unit: 1.00, // ₹1 per Edge Mile
+    value_per_unit: 3.60, // Optimized for Accor (1 Mile = 2 Accor Points = ₹3.60)
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.TRAVEL_PORTAL, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.MILES_TRANSFER],
     annual_fee: 50000, // ₹50k (non-waivable)
@@ -87,7 +87,7 @@ export const axisCardsData = [
     reward_type: REWARD_TYPES.EDGE_MILES,
     base_rate: 0.02, // 2 Edge Miles per ₹100 = 0.02 miles per ₹1
     earning_display: "2 Edge Miles per ₹100",
-    value_per_unit: 1.00, // ₹1 per Edge Mile
+    value_per_unit: 3.60, // Optimized for Accor (1 Mile = 2 Accor Points = ₹3.60)
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.TRAVEL_PORTAL, REDEMPTION_TYPES.VOUCHERS],
     annual_fee: 5000, // ₹5k + GST (₹5,900 total)

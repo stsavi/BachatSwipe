@@ -31,8 +31,9 @@ export class InputValidator {
 
         // Validate category
         const validCategories = [
-            'shopping', 'dining', 'grocery', 'travel', 'flights', 'hotels',
-            'fuel', 'utility', 'upi', 'wallet', 'rent', 'government'
+            'shopping', 'online_shopping', 'offline_shopping', 'dining', 'grocery',
+            'electronics', 'flights', 'hotels', 'travel', 'fuel', 'utilities',
+            'entertainment', 'upi', 'voucher'
         ];
         if (!inputs.category) {
             errors.push('Category is required');
@@ -41,7 +42,7 @@ export class InputValidator {
         }
 
         // Validate merchant (optional but must be from allowed list if provided)
-        const validMerchants = ['', 'amazon', 'flipkart', 'swiggy', 'zomato', 'bigbasket', 'tata_neu'];
+        const validMerchants = ['', 'amazon', 'flipkart', 'swiggy', 'zomato', 'bigbasket', 'tata_neu', 'bookmyshow'];
         if (inputs.merchant && !validMerchants.includes(inputs.merchant)) {
             errors.push('Invalid merchant selected');
         }

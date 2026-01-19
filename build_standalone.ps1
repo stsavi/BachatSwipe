@@ -64,15 +64,15 @@ $htmlHeader = @"
     <div class="w-full max-w-4xl">
         <div class="text-center mb-8">
             <h1 class="text-3xl md:text-5xl font-black mb-2 tracking-tight">
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-600">💳 BachatSwipe</span>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-600">BachatSwipe</span>
                 <span class="text-xs text-blue-400 bg-blue-900/30 px-2 py-1 rounded ml-2 align-top">STANDALONE</span>
             </h1>
-            <p class="text-slate-400 text-sm">Smart Card Optimizer • Single File Mode</p>
+            <p class="text-slate-400 text-sm">Smart Card Optimizer - Single File Mode</p>
         </div>
         <div class="glass p-6 rounded-2xl shadow-xl mb-8">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Expense Amount (₹)</label>
+                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Expense Amount (INR)</label>
                     <input type="number" id="amount" value="10000" min="1" max="10000000" class="input-dark w-full p-3 rounded-lg text-lg font-mono" required>
                 </div>
                 <div>
@@ -85,27 +85,24 @@ $htmlHeader = @"
                         <option value="zomato">Zomato</option>
                         <option value="bigbasket">BigBasket</option>
                         <option value="tata_neu">Tata Neu</option>
+                        <option value="bookmyshow">BookMyShow</option>
                     </select>
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Category</label>
                     <select id="category" class="input-dark w-full p-3 rounded-lg" required>
-                        <option value="shopping">Shopping 🛍️</option>
-                        <option value="dining">Dining 🍔</option>
-                        <option value="grocery">Grocery 🛒</option>
-                        <option value="electronics">Electronics 📱</option>
-                        <option value="pharmacy">Pharmacy / Medicine 💊</option>
-                        <option value="travel">Travel (Flight/Hotel) ✈️</option>
-                        <option value="flights">Flights ✈️</option>
-                        <option value="hotels">Hotels 🏨</option>
-                        <option value="fuel">Fuel / Petrol ⛽</option>
-                        <option value="utility">Utility (Electricity/Water) 💡</option>
-                        <option value="bills">Broadband / Mobile Bills 📱</option>
-                        <option value="upi">UPI / Scan & Pay 📸</option>
-                        <option value="wallet">Wallet Load 👛</option>
-                        <option value="rent">Rent 🏠</option>
-                        <option value="education">Education / Fees 🎓</option>
-                        <option value="government">Government / Tax 🏛️</option>
+                        <option value="shopping">Shopping (General)</option>
+                        <option value="online_shopping">Online Shopping</option>
+                        <option value="offline_shopping">Offline Swipe (Physical Store)</option>
+                        <option value="dining">Dining / Food Delivery</option>
+                        <option value="grocery">Grocery</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="flights">Flights</option>
+                        <option value="hotels">Hotels</option>
+                        <option value="fuel">Fuel / Petrol</option>
+                        <option value="utilities">Utility (Electricity/Water/Bills)</option>
+                        <option value="entertainment">Movies / BookMyShow</option>
+                        <option value="upi">UPI / Scan & Pay</option>
                     </select>
                 </div>
             </div>
@@ -114,7 +111,7 @@ $htmlHeader = @"
                     <label class="block text-xs font-bold text-slate-500 uppercase mb-1">
                         <i class="fas fa-credit-card mr-1"></i> Search Specific Card (Optional)
                     </label>
-                    <input type="text" id="card_search" list="card_list" placeholder="⚡ Leave empty for Top 10 Cards" class="input-dark w-full p-2 rounded-lg text-sm border-slate-600 font-bold text-yellow-400 bg-slate-800">
+                    <input type="text" id="card_search" list="card_list" placeholder="Leave empty for Top 10 Cards" class="input-dark w-full p-2 rounded-lg text-sm border-slate-600 font-bold text-yellow-400 bg-slate-800">
                     <datalist id="card_list"></datalist>
                 </div>
                 <button id="submit-button" onclick="window.app.analyze()" class="w-full md:w-auto px-8 py-3 bg-gradient-to-r from-yellow-500 to-orange-600 hover:from-yellow-400 hover:to-orange-500 text-black font-bold rounded-xl shadow-lg transition active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed">
@@ -163,5 +160,8 @@ $htmlFooter = @"
 "@
 
 $finalContent = $htmlHeader + $scriptContent + $htmlFooter
-Set-Content -Path "BachatSwipe_App.html" -Value $finalContent -Encoding UTF8
-Write-Host "Created BachatSwipe_App.html"
+
+# Use .NET to write UTF-8 without BOM for better web compatibility
+$utf8NoBom = New-Object System.Text.UTF8Encoding $false
+[System.IO.File]::WriteAllText("$PWD/index.html", $finalContent, $utf8NoBom)
+Write-Host "Created index.html (UTF-8) - Ready for GitHub Pages!"

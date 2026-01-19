@@ -15,11 +15,12 @@ export const iciciCashbackRules = [
     bank: "ICICI Bank",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
-    merchants: ["Amazon"],
+    merchants: ["amazon"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.05], // 5% cashback (Prime members)
-    applies_to_cards: ["icici_amazon_pay"],
+    cashback_rate_map: {
+      "icici_amazon_pay": 0.05
+    },
     constraints: {},
     cap: null, // Unlimited
     cap_period: null,
@@ -40,8 +41,9 @@ export const iciciCashbackRules = [
     merchants: [],
     platform: "amazon_pay",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.02], // 2% cashback
-    applies_to_cards: ["icici_amazon_pay"],
+    cashback_rate_map: {
+      "icici_amazon_pay": 0.02
+    },
     constraints: {
       transaction_type: "Bill Payment via Amazon Pay"
     },
@@ -61,11 +63,12 @@ export const iciciCashbackRules = [
     bank: "ICICI Bank",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.FUEL,
-    merchants: ["HPCL"],
+    merchants: ["hpcl"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.05], // 5% cashback
-    applies_to_cards: ["icici_hpcl"],
+    cashback_rate_map: {
+      "icici_hpcl": 0.05
+    },
     constraints: {
       merchant: "HPCL petrol pumps only"
     },
@@ -79,17 +82,18 @@ export const iciciCashbackRules = [
     notes: "5% cashback at HPCL fuel stations. Capped at ₹500/month."
   },
 
-  // Sapphiro - BookMyShow Discount
+  // Sapphiro - BookMyShow BOGO
   {
     id: "icici_sapphiro_bookmyshow",
     bank: "ICICI Bank",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.ENTERTAINMENT,
-    merchants: ["BookMyShow"],
-    platform: "online",
+    merchants: ["bookmyshow"],
+    platform: null, // No platform constraint - direct merchant transaction
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.15], // Effective 15% discount
-    applies_to_cards: ["icici_sapphiro"],
+    cashback_rate_map: {
+      "icici_sapphiro": 0.15
+    },
     constraints: {
       merchant: "BookMyShow only",
       offer_type: "Buy 1 Get 1 on movie tickets"
@@ -102,6 +106,32 @@ export const iciciCashbackRules = [
     valid_until: null,
     priority: 9,
     notes: "Buy 1 Get 1 offer on BookMyShow movie tickets (effective ~15% discount, ₹500 cap/month)."
+  },
+
+  // Amazon Pay - Base Cashback (1% Wildcard)
+  {
+    id: "icici_amazon_pay_base_cashback_all",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: "*", // Wildcard: matches all categories
+    merchants: [],
+    platform: null,
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "icici_amazon_pay": 0.01
+    },
+    constraints: {
+      excluded_categories: ["fuel", "offline_shopping"],
+      exclusions: "Excludes fuel, wallet loads, rent, insurance, government, EMI, education"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 5,
+    notes: "1% base cashback on all categories. Specific rules (5% Amazon, 2% bill payments) take precedence."
   }
 ];
 

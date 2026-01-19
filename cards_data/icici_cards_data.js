@@ -13,8 +13,8 @@ export const iciciCardsData = [
     bank: "ICICI Bank",
     card_tier: CARD_TIERS.SUPER_PREMIUM,
     reward_type: REWARD_TYPES.POINTS,
-    base_rate: 0.03, // 3% general reward rate
-    earning_display: "3% on all spends",
+    base_rate: 0.03, // 6 points per ₹200
+    earning_display: "6 points per ₹200",
     value_per_unit: 1.00, // 1 Reward Point = 1 Re
     redemption_ease_score: 2,
     redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT, REDEMPTION_TYPES.VOUCHERS, REDEMPTION_TYPES.TRAVEL_PORTAL],
@@ -27,7 +27,7 @@ export const iciciCardsData = [
       network: ["Priority Pass", "Dreamfolks"],
       guest_access: true
     },
-    supports_upi: true,
+    supports_upi: false,
     base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government", "education"],
     features: ["Unlimited lounge access", "Low forex markup", "Golf privileges", "Taj Epicure membership"]
   },
@@ -51,7 +51,7 @@ export const iciciCardsData = [
       network: ["Priority Pass", "Dreamfolks"],
       guest_access: true
     },
-    supports_upi: true,
+    supports_upi: false,
     base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government", "education"],
     features: ["Unlimited lounge access", "Golf privileges", "Concierge"]
   },
@@ -75,7 +75,7 @@ export const iciciCardsData = [
       network: ["Priority Pass", "Dreamfolks"],
       guest_access: true
     },
-    supports_upi: true,
+    supports_upi: false,
     base_exclusions: ["fuel", "wallet_loads", "rent", "insurance", "utilities", "government", "education"],
     features: ["Complimentary Priority Pass", "Golf privileges", "Concierge services", "Airport transfers"]
   },

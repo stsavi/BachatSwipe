@@ -17,12 +17,10 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["amazon", "flipkart"],
 
-        applies_to_cards: ["hdfc_infinia"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [5],  // 5X RP (Updated from visual evidence)
-        cashback_rates: null,
-        instant_discount_rates: null,
+        reward_multiplier_map: {
+            "hdfc_infinia": 5
+        },
 
         cap: 15000,
         cap_period: "monthly",
@@ -51,12 +49,10 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["amazon", "flipkart"],
 
-        applies_to_cards: ["hdfc_dcb_metal"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [3],  // 3X RP
-        cashback_rates: null,
-        instant_discount_rates: null,
+        reward_multiplier_map: {
+            "hdfc_dcb_metal": 3
+        },
 
         cap: 10000,
         cap_period: "monthly",
@@ -85,12 +81,11 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["swiggy", "zomato"],
 
-        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [3, 3],
-        cashback_rates: null,
-        instant_discount_rates: null,
+        reward_multiplier_map: {
+            "hdfc_infinia": 3,
+            "hdfc_dcb_metal": 3
+        },
 
         cap: 10000,
         cap_period: "monthly",
@@ -119,12 +114,11 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["bigbasket"],
 
-        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [3, 3],
-        cashback_rates: null,
-        instant_discount_rates: null,
+        reward_multiplier_map: {
+            "hdfc_infinia": 3,
+            "hdfc_dcb_metal": 3
+        },
 
         cap: 10000,
         cap_period: "monthly",
@@ -153,12 +147,11 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["amazon", "flipkart"],
 
-        applies_to_cards: ["hdfc_regalia_gold", "hdfc_dcp"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [5, 5],  // 5X RP (Updated from visual evidence)
-        cashback_rates: null,
-        instant_discount_rates: null,
+        reward_multiplier_map: {
+            "hdfc_regalia_gold": 5,
+            "hdfc_dcp": 5
+        },
 
         cap: 4000,
         cap_period: "monthly",
@@ -187,12 +180,10 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["amazon", "flipkart"],
 
-        applies_to_cards: ["hdfc_millennia"],
-
         benefit_type: "cashback",
-        reward_multipliers: null,
-        cashback_rates: [0.05],  // 5% cashback
-        instant_discount_rates: null,
+        cashback_rate_map: {
+            "hdfc_millennia": 0.05
+        },
 
         cap: 1000,
         cap_period: "monthly",
@@ -221,12 +212,10 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["swiggy", "zomato"],
 
-        applies_to_cards: ["hdfc_millennia"],
-
         benefit_type: "cashback",
-        reward_multipliers: null,
-        cashback_rates: [0.05],
-        instant_discount_rates: null,
+        cashback_rate_map: {
+            "hdfc_millennia": 0.05
+        },
 
         cap: 1000,
         cap_period: "monthly",
@@ -255,12 +244,11 @@ export const HDFC_VOUCHER_RULES = [
         category: "voucher",
         merchants: ["tata_neu", "bigbasket"],
 
-        applies_to_cards: ["hdfc_tataneu_infinity", "hdfc_tataneu_plus"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [1, 1],  // 1x (base rate, no multiplier)
-        cashback_rates: null,
-        instant_discount_rates: null,
+        reward_multiplier_map: {
+            "hdfc_tataneu_infinity": 1,
+            "hdfc_tataneu_plus": 1
+        },
 
         cap: null,
         cap_period: null,

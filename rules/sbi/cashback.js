@@ -8,20 +8,20 @@ import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES, CAP_PERIODS } from '../.
  */
 
 export const sbiCashbackRules = [
-  // SBI Cashback Card - Online Shopping (5%)
+  // SBI Cashback Card - All Online Categories (5% Wildcard)
   {
-    id: "sbi_cashback_online_shopping",
+    id: "sbi_cashback_online_all",
     bank: "SBI Card",
     rule_type: RULE_TYPES.CASHBACK,
-    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    category: "*", // Wildcard: matches all categories
     merchants: [],
-    platform: "online",
+    platform: null, // No platform constraint - applies to direct transactions
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.05], // 5% cashback
-    applies_to_cards: ["sbi_cashback"],
+    cashback_rate_map: {
+      "sbi_cashback": 0.05
+    },
     constraints: {
-      transaction_type: "Online transactions only",
-      exclusions: "Excludes wallet loads, rent payments, fuel, insurance premiums, EMI transactions, cash withdrawals, railway tickets, government payments, education, utility bills"
+      transaction_type: "Online transactions only (not offline POS)"
     },
     cap: null, // Unlimited
     cap_period: null,
@@ -29,8 +29,8 @@ export const sbiCashbackRules = [
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
-    priority: 10,
-    notes: "5% unlimited cashback on all online spends. MAJOR EXCLUSIONS: wallet loads, rent, fuel, insurance, EMI, cash, railway, government, education, utility bills."
+    priority: 8, // Lower than specific category rules
+    notes: "5% unlimited cashback on ALL online categories (shopping, dining, entertainment, etc.) except offline swipes and fuel. MAJOR EXCLUSIONS: wallet loads, rent, fuel, insurance, EMI, cash, railway, government, education, utility bills."
   },
 
   // SBI Cashback Card - Offline Shopping (1%)
@@ -38,16 +38,14 @@ export const sbiCashbackRules = [
     id: "sbi_cashback_offline_shopping",
     bank: "SBI Card",
     rule_type: RULE_TYPES.CASHBACK,
-    category: EXPENSE_CATEGORIES.SHOPPING,
+    category: [EXPENSE_CATEGORIES.SHOPPING, EXPENSE_CATEGORIES.OFFLINE_SHOPPING],
     merchants: [],
     platform: "offline",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.01], // 1% cashback
-    applies_to_cards: ["sbi_cashback"],
-    constraints: {
-      transaction_type: "Offline transactions only",
-      exclusions: "Excludes fuel, wallet loads, insurance, cash withdrawals"
+    cashback_rate_map: {
+      "sbi_cashback": 0.01
     },
+    constraints: {},
     cap: null, // Unlimited
     cap_period: null,
     min_transaction: 100,
@@ -55,7 +53,7 @@ export const sbiCashbackRules = [
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 9,
-    notes: "1% cashback on all offline spends (physical POS swipes). Excludes fuel, wallet loads, insurance."
+    notes: "1% cashback on all offline spends (physical POS swipes). Exclusions handled at card level."
   },
 
   // SimplySAVE - Dining (10X = 10 RP per ₹100, worth ₹2.5)
@@ -67,8 +65,9 @@ export const sbiCashbackRules = [
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10], // 10X reward points
-    applies_to_cards: ["sbi_simplysave"],
+    reward_multiplier_map: {
+      "sbi_simplysave": 10
+    },
     constraints: {},
     cap: null,
     cap_period: null,
@@ -89,8 +88,9 @@ export const sbiCashbackRules = [
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10], // 10X reward points
-    applies_to_cards: ["sbi_simplysave"],
+    reward_multiplier_map: {
+      "sbi_simplysave": 10
+    },
     constraints: {},
     cap: null,
     cap_period: null,
@@ -111,8 +111,9 @@ export const sbiCashbackRules = [
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10], // 10X reward points
-    applies_to_cards: ["sbi_simplysave"],
+    reward_multiplier_map: {
+      "sbi_simplysave": 10
+    },
     constraints: {
       merchant_type: "Movie Theaters"
     },
@@ -135,8 +136,9 @@ export const sbiCashbackRules = [
     merchants: [],
     platform: "online",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5], // 5X reward points
-    applies_to_cards: ["sbi_simplyclick"],
+    reward_multiplier_map: {
+      "sbi_simplyclick": 5
+    },
     constraints: {},
     cap: null,
     cap_period: null,
@@ -154,11 +156,12 @@ export const sbiCashbackRules = [
     bank: "SBI Card",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
-    merchants: ["Cleartrip", "BookMyShow", "Lenskart", "Apollo 24/7", "Domino's", "Myntra", "Netmeds", "Yatra", "Swiggy"],
+    merchants: ["cleartrip", "bookmyshow", "lenskart", "apollo 24/7", "dominos", "myntra", "netmeds", "yatra", "swiggy"],
     platform: "online",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10], // 10X reward points
-    applies_to_cards: ["sbi_simplyclick"],
+    reward_multiplier_map: {
+      "sbi_simplyclick": 10
+    },
     constraints: {
       platforms: ["Cleartrip", "BookMyShow", "Lenskart", "Apollo 24/7", "Domino's", "Myntra", "Netmeds", "Yatra", "Swiggy"]
     },
@@ -181,8 +184,9 @@ export const sbiCashbackRules = [
     merchants: ["BPCL"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [13], // 13X fuel points
-    applies_to_cards: ["sbi_bpcl"],
+    reward_multiplier_map: {
+      "sbi_bpcl": 13
+    },
     constraints: {
       merchant: "BPCL petrol pumps only"
     },

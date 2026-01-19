@@ -17,8 +17,11 @@ export const iciciPortalRules = [
     merchants: [],
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10, 5, 5], // Sapphiro 10x, Coral/Rubyx 5x
-    applies_to_cards: ["icici_sapphiro", "icici_coral", "icici_rubyx"],
+    reward_multiplier_map: {
+      "icici_sapphiro": 10,
+      "icici_coral": 5,
+      "icici_rubyx": 5
+    },
     constraints: {
       booking_platform: "PayWith Rewards only"
     },
@@ -41,8 +44,11 @@ export const iciciPortalRules = [
     merchants: [],
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5, 3, 3], // Sapphiro 5x, Coral/Rubyx 3x
-    applies_to_cards: ["icici_sapphiro", "icici_coral", "icici_rubyx"],
+    reward_multiplier_map: {
+      "icici_sapphiro": 5,
+      "icici_coral": 3,
+      "icici_rubyx": 3
+    },
     constraints: {
       booking_platform: "PayWith Rewards only"
     },
@@ -59,7 +65,7 @@ export const iciciPortalRules = [
   // ============================================================
   // iSHOP PORTAL - Alternative Rewards Platform
   // ============================================================
-  
+
   // Sapphiro - iShop Hotels (8x)
   {
     id: "icici_sapphiro_ishop_hotels",
@@ -69,8 +75,9 @@ export const iciciPortalRules = [
     merchants: [],
     platform: "iShop",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [8], // 8x Reward Points
-    applies_to_cards: ["icici_sapphiro"],
+    reward_multiplier_map: {
+      "icici_sapphiro": 8
+    },
     constraints: {
       booking_platform: "iShop portal only"
     },
@@ -93,8 +100,9 @@ export const iciciPortalRules = [
     merchants: [],
     platform: "iShop",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [4], // 4x Reward Points
-    applies_to_cards: ["icici_sapphiro"],
+    reward_multiplier_map: {
+      "icici_sapphiro": 4
+    },
     constraints: {
       booking_platform: "iShop portal only"
     },

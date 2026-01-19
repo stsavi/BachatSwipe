@@ -38,7 +38,8 @@ export const VOUCHER_MERCHANTS = [
     "swiggy",
     "zomato",
     "tata_neu",
-    "bigbasket"
+    "bigbasket",
+    "bookmyshow"
 ];
 
 // Human-readable merchant names
@@ -48,7 +49,8 @@ export const MERCHANT_DISPLAY_NAMES = {
     swiggy: "Swiggy",
     zomato: "Zomato",
     tata_neu: "Tata Neu",
-    bigbasket: "BigBasket"
+    bigbasket: "BigBasket",
+    bookmyshow: "BookMyShow"
 };
 
 // ============================================================
@@ -59,41 +61,28 @@ export const EXPENSE_CATEGORIES = {
     // Shopping
     SHOPPING: "shopping",
     ONLINE_SHOPPING: "online_shopping",
-    GROCERY: "grocery",
     OFFLINE_SHOPPING: "offline_shopping",
-    
+    GROCERY: "grocery",
+    ELECTRONICS: "electronics",
+
     // Food & Dining
     DINING: "dining",
     FOOD_DELIVERY: "food_delivery",
-    
-    // Travel
-    TRAVEL: "travel",
+
+    // Travel (Separated)
     FLIGHTS: "flights",
     HOTELS: "hotels",
-    
-    // Fuel & Transportation
+    TRAVEL: "travel",
+
+    // Fuel
     FUEL: "fuel",
-    TRANSPORTATION: "transportation",
-    
+
     // Entertainment
     ENTERTAINMENT: "entertainment",
-    MOVIES: "movies",
-    STREAMING: "streaming",
-    
+
     // Utilities & Bills
     UTILITIES: "utilities",
-    BILL_PAYMENTS: "bill_payments",
-    MOBILE_RECHARGE: "mobile_recharge",
-    
-    // Others
-    EDUCATION: "education",
-    HEALTHCARE: "healthcare",
-    INSURANCE: "insurance",
-    RENT: "rent",
-    GOVERNMENT: "government",
-    WALLET: "wallet",
-    EMI: "emi",
-    
+
     // Special
     VOUCHER: "voucher",
     UPI: "upi"
@@ -255,6 +244,6 @@ export function isValidCategory(category) {
  * Get display name for merchant
  */
 export function getMerchantDisplayName(merchant) {
-    return MERCHANT_DISPLAY_NAMES[merchant.toLowerCase()] || 
-           merchant.charAt(0).toUpperCase() + merchant.slice(1);
+    return MERCHANT_DISPLAY_NAMES[merchant.toLowerCase()] ||
+        merchant.charAt(0).toUpperCase() + merchant.slice(1);
 }

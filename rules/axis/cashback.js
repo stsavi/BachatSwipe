@@ -17,8 +17,9 @@ export const axisCashbackRules = [
     merchants: ["Google Pay", "PhonePe"],
     platform: "direct", // Bill payment via UPI apps
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.05], // 5% cashback
-    applies_to_cards: ["axis_ace"],
+    cashback_rate_map: {
+      "axis_ace": 0.05
+    },
     constraints: {
       transaction_type: "Bill Payment",
       platforms: ["Google Pay", "PhonePe"],
@@ -43,8 +44,9 @@ export const axisCashbackRules = [
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.02], // 2% cashback
-    applies_to_cards: ["axis_ace"],
+    cashback_rate_map: {
+      "axis_ace": 0.02
+    },
     constraints: {
       transaction_type: "Direct Payment",
       excluded: ["bill_payments_via_gpay_phonepe"]
@@ -68,8 +70,9 @@ export const axisCashbackRules = [
     merchants: ["Airtel"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.25], // 25% cashback
-    applies_to_cards: ["axis_airtel"],
+    cashback_rate_map: {
+      "axis_airtel": 0.25
+    },
     constraints: {
       customer_type: "Airtel Black",
       transaction_type: "Airtel Bill Payment"
@@ -93,8 +96,9 @@ export const axisCashbackRules = [
     merchants: ["Airtel"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.10], // 10% cashback
-    applies_to_cards: ["axis_airtel"],
+    cashback_rate_map: {
+      "axis_airtel": 0.10
+    },
     constraints: {
       customer_type: "Regular",
       transaction_type: "Airtel Bill Payment"
@@ -118,8 +122,9 @@ export const axisCashbackRules = [
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.04], // 4% cashback
-    applies_to_cards: ["axis_airtel"],
+    cashback_rate_map: {
+      "axis_airtel": 0.04
+    },
     constraints: {
       excluded_merchants: ["Airtel"]
     },
@@ -142,8 +147,9 @@ export const axisCashbackRules = [
     merchants: ["Flipkart", "Myntra"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rates: [0.04], // 4% cashback
-    applies_to_cards: ["axis_flipkart"],
+    cashback_rate_map: {
+      "axis_flipkart": 0.04
+    },
     constraints: {
       platforms: ["Flipkart", "Myntra"]
     },
@@ -155,6 +161,58 @@ export const axisCashbackRules = [
     valid_until: null,
     priority: 10,
     notes: "4% unlimited cashback on Flipkart and Myntra purchases. No upper limit."
+  },
+
+  // Ace Card - Base Cashback (1% Wildcard)
+  {
+    id: "axis_ace_base_cashback_all",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: "*", // Wildcard: matches all categories
+    merchants: [],
+    platform: null,
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_ace": 0.01
+    },
+    constraints: {
+      excluded_categories: ["fuel", "offline_shopping"],
+      exclusions: "Excludes fuel, wallet loads, rent, insurance, government, EMI, education"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 5,
+    notes: "1% base cashback on all categories. Specific rules (5% bill payments, 2% utilities) take precedence."
+  },
+
+  // Flipkart Card - Base Cashback (1.5% Wildcard)
+  {
+    id: "axis_flipkart_base_cashback_all",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: "*", // Wildcard: matches all categories
+    merchants: [],
+    platform: null,
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_flipkart": 0.015
+    },
+    constraints: {
+      excluded_categories: ["fuel", "offline_shopping"],
+      exclusions: "Excludes fuel, wallet loads, rent, insurance, government, EMI, education"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 5,
+    notes: "1.5% base cashback on all non-Flipkart spends. 4% on Flipkart/Myntra takes precedence."
   }
 ];
 

@@ -17,8 +17,11 @@ export const axisPortalRules = [
     merchants: [],
     platform: BANK_PORTALS.AXIS_TRAVEL_EDGE,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [10, 10, 10], // 10x Edge Miles for all
-    applies_to_cards: ["axis_magnus", "axis_reserve", "axis_atlas"],
+    reward_multiplier_map: {
+      "axis_magnus": 10,
+      "axis_reserve": 10,
+      "axis_atlas": 10
+    },
     constraints: {
       booking_platform: "Travel Edge only"
     },
@@ -41,8 +44,11 @@ export const axisPortalRules = [
     merchants: [],
     platform: BANK_PORTALS.AXIS_TRAVEL_EDGE,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [5, 5, 5], // 5x Edge Miles for all
-    applies_to_cards: ["axis_magnus", "axis_reserve", "axis_atlas"],
+    reward_multiplier_map: {
+      "axis_magnus": 5,
+      "axis_reserve": 5,
+      "axis_atlas": 5
+    },
     constraints: {
       booking_platform: "Travel Edge only"
     },

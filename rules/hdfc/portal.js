@@ -16,10 +16,13 @@ export const HDFC_PORTAL_RULES = [
         category: "hotels",
         merchants: [],  // All hotels via SmartBuy
 
-        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal", "hdfc_regalia_gold", "hdfc_dcp"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [10, 10, 10, 10],  // 10x RP for all these cards
+        reward_multiplier_map: {
+            "hdfc_infinia": 10,
+            "hdfc_dcb_metal": 10,
+            "hdfc_regalia_gold": 10,
+            "hdfc_dcp": 10
+        },
         cashback_rates: null,
 
         cap: null,
@@ -45,10 +48,13 @@ export const HDFC_PORTAL_RULES = [
         category: ["flights", "travel"],
         merchants: [],
 
-        applies_to_cards: ["hdfc_infinia", "hdfc_dcb_metal", "hdfc_regalia_gold", "hdfc_dcp"],
-
         benefit_type: "reward_multiplier",
-        reward_multipliers: [5, 5, 5, 5],  // 5x RP for all these cards
+        reward_multiplier_map: {
+            "hdfc_infinia": 5,
+            "hdfc_dcb_metal": 5,
+            "hdfc_regalia_gold": 5,
+            "hdfc_dcp": 5
+        },
         cashback_rates: null,
 
         cap: null,
@@ -74,11 +80,11 @@ export const HDFC_PORTAL_RULES = [
         category: "hotels",
         merchants: [],
 
-        applies_to_cards: ["hdfc_millennia"],
-
         benefit_type: "cashback",
         reward_multipliers: null,
-        cashback_rates: [0.05],  // 5% cashback
+        cashback_rate_map: {
+            "hdfc_millennia": 0.05
+        },
 
         cap: 1000,
         cap_period: "monthly",
@@ -103,11 +109,11 @@ export const HDFC_PORTAL_RULES = [
         category: "flights",
         merchants: [],
 
-        applies_to_cards: ["hdfc_millennia"],
-
         benefit_type: "cashback",
         reward_multipliers: null,
-        cashback_rates: [0.05],  // 5% cashback
+        cashback_rate_map: {
+            "hdfc_millennia": 0.05
+        },
 
         cap: 1000,
         cap_period: "monthly",

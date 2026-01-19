@@ -18,8 +18,9 @@ export const iciciDirectAcceleratedRules = [
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multipliers: [2], // 2x Reward Points
-    applies_to_cards: ["icici_sapphiro"],
+    reward_multiplier_map: {
+      "icici_sapphiro": 2
+    },
     constraints: {
       merchant_type: "Department Stores",
       platform: "Direct swipe only"

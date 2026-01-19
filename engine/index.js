@@ -27,19 +27,19 @@ class BachatSwipeEngine {
             return;
         }
 
-        console.log('🚀 Initializing BachatSwipe Engine...');
+        console.log('Initializing BachatSwipe Engine...');
 
         try {
             await dataLoader.initialize();
             this.initialized = true;
 
             const stats = dataLoader.getStats();
-            console.log('✅ Engine initialized successfully');
-            console.log('📊 Stats:', stats);
+            console.log('Engine initialized successfully');
+            console.log('Stats:', stats);
 
             return stats;
         } catch (error) {
-            console.error('❌ Engine initialization failed:', error);
+            console.error('Engine initialization failed:', error);
             throw error;
         }
     }
