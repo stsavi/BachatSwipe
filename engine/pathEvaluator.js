@@ -66,6 +66,17 @@ export function evaluatePath(path, allRules) {
     });
 
     // Build result object
+    let pathDescription = getPathDescription(path);
+
+    // Append multiplier info if applicable
+    const multiplierRule = matchingRules.find(r => r.reward_multiplier_map && r.reward_multiplier_map[card.id]);
+    if (multiplierRule) {
+        const multiplier = multiplierRule.reward_multiplier_map[card.id];
+        if (multiplier > 1) {
+            pathDescription += ` (${multiplier}x bonus points)`;
+        }
+    }
+
     return {
         path,
         card,
@@ -76,7 +87,7 @@ export function evaluatePath(path, allRules) {
         breakdown: calculation.breakdown,
         explanation: calculation.explanation,
         matchingRules: matchingRules.map(r => r.id),
-        pathDescription: getPathDescription(path),
+        pathDescription: pathDescription,
         isCapped: calculation.cappedValue !== null,
         cappedValue: calculation.cappedValue,
         redemptionEase: card.redemption_ease_score,

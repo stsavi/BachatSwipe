@@ -56,6 +56,10 @@ export class App {
             await engine.initialize();
             this.engineReady = true;
 
+            // Populate dropdowns
+            this.formHandler.populateMerchantDropdown();
+            this.formHandler.populateCategoryDropdown();
+
             // Populate card list
             const cards = engine.getAllCards();
             this.formHandler.populateCardList(cards);

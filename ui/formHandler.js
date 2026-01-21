@@ -6,6 +6,9 @@
  * Manages form inputs and user interactions
  */
 
+import { SUPPORTED_MERCHANTS } from '../config/merchants.js';
+import { SUPPORTED_CATEGORIES } from '../config/categories.js';
+
 export class FormHandler {
     constructor() {
         this.elements = {};
@@ -51,6 +54,49 @@ export class FormHandler {
             category: this.elements.category.value,
             cardSearch: this.elements.cardSearch.value.trim()
         };
+    }
+
+    /**
+     * Populate merchant dropdown
+     */
+    populateMerchantDropdown() {
+        const merchantSelect = this.elements.merchant;
+        // Keep the first "Select merchant" option
+        merchantSelect.innerHTML = '<option value="">Select merchant</option>';
+
+        SUPPORTED_MERCHANTS.forEach(merchant => {
+            const option = document.createElement('option');
+            option.value = merchant.value;
+            option.textContent = merchant.label;
+            merchantSelect.appendChild(option);
+        });
+
+        // Ensure default selection
+        if (merchantSelect.options.length > 0) {
+            merchantSelect.selectedIndex = 0;
+        }
+    }
+
+    /**
+     * Populate category dropdown
+     */
+    populateCategoryDropdown() {
+        const categorySelect = this.elements.category;
+        categorySelect.innerHTML = '';
+
+        SUPPORTED_CATEGORIES.forEach((category, index) => {
+            const option = document.createElement('option');
+            option.value = category.value;
+            option.textContent = category.label;
+            // Select first category by default
+            if (index === 0) option.selected = true;
+            categorySelect.appendChild(option);
+        });
+
+        // Ensure default selection
+        if (categorySelect.options.length > 0) {
+            categorySelect.selectedIndex = 0;
+        }
     }
 
     /**

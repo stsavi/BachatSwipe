@@ -12,14 +12,14 @@ export const BANK_PORTALS = {
         url: "https://offers.smartbuy.hdfcbank.com/"
     },
     AXIS: {
-        portal: "Travel Edge",
-        voucher_platform: "EDGE Rewards (GyFTR)",
-        url: "https://www.traveledge.axisbank.com/"
+        portal: "Grab Deals",
+        voucher_platform: "Grab Deals",
+        url: "https://grabdeals.axis.bank.in/"
     },
     ICICI: {
-        portal: "PayWith Rewards",
-        voucher_platform: "PayWith Rewards",
-        url: "https://www.icicibank.com/personal-banking/cards/credit-card/paywith-rewards"
+        portal: "iShop",
+        voucher_platform: "iShop",
+        url: "https://www.icici.bank.in/ishop/"
     },
     SBI: {
         portal: "SBI Rewardz",

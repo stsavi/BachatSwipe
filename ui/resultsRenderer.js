@@ -100,59 +100,105 @@ export class ResultsRenderer {
    */
   buildCardHTML(card, bestPath, otherPaths, isWinner, index, valueColor) {
     const otherPathsHTML = otherPaths.map(path => `
-      <div class="flex justify-between items-center p-2 text-sm border-b border-white/5 last:border-0 hover:bg-white/5 rounded">
-        <div class="flex items-center gap-2">
-          <span>${this.getMethodIcon(path.method)}</span>
-          <div>
-            <div class="text-slate-200 font-medium">${this.escapeHTML(path.pathDescription)}</div>
-            <div class="text-xs text-slate-500">${this.escapeHTML(path.explanation)}</div>
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; font-size: 0.875rem; border-bottom: 1px solid var(--border-light); transition: background 0.2s;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
+          <div style="min-width: 40px; display: flex; justify-content: center;">${this.getMethodIcon(path.method, path.pathDescription)}</div>
+          <div style="flex: 1;">
+            <div style="color: var(--dark-sky); font-weight: 500;">${this.escapeHTML(path.pathDescription)}</div>
+            <div style="font-size: 0.75rem; color: var(--slate-gray); margin-top: 0.25rem;">${this.escapeHTML(path.explanation)}</div>
           </div>
         </div>
-        <div class="text-right">
-          <div class="text-white font-mono">₹${Math.round(path.value)}</div>
-          <div class="text-[10px] text-slate-500">${path.percentageReturn.toFixed(2)}%</div>
+        <div style="text-align: right; min-width: 100px;">
+          <div style="color: var(--sky-blue); font-weight: 700; font-size: 1rem;">₹${Math.round(path.value)}</div>
+          <div style="font-size: 0.625rem; color: var(--slate-gray);">${path.percentageReturn.toFixed(2)}%</div>
         </div>
       </div>
     `).join('');
 
     return `
-      <div class="mb-3 rounded-xl overflow-hidden transition-all duration-300 ${isWinner ? 'bg-slate-800 gold-glow' : 'bg-slate-800/40 border border-slate-700/50'}">
+      <div class="result-card ${isWinner ? 'best-card' : ''}" style="padding-bottom: 1rem;">
+        ${isWinner ? '<div class="best-value-badge">Best Value</div>' : ''}
         
-        <div onclick="window.toggleDetails(${index})" class="relative p-4 flex justify-between items-center cursor-pointer hover:bg-slate-800/60 transition">
-          ${isWinner ? '<div class="absolute -top-3 -left-2 bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded shadow">#1 BEST CHOICE</div>' : ''}
-          
-          <div class="flex items-center gap-4">
-            <div class="w-10 h-10 rounded-full bg-slate-700 flex items-center justify-center text-xl shadow-inner">
-              ${bestPath.value > 0 ? (card.reward_type === 'cashback' ? 'C' : 'R') : '!'}
+        <div onclick="const btn = this.parentElement.querySelector('.select-btn'); if(btn) { window.toggleDetails(${index}); btn.textContent = btn.textContent.trim() === 'Select' ? 'Hide' : 'Select'; }" class="card-header cursor-pointer">
+          <div class="card-info">
+            <div class="card-logo">
+              ${this.getBankInitial(card.bank)}
             </div>
             <div>
-              <h3 class="font-bold text-white text-lg leading-tight">
-                ${this.escapeHTML(card.name)} 
-                <span class="text-[10px] uppercase bg-slate-900 text-slate-400 px-1.5 py-0.5 rounded ml-1 border border-slate-700">${this.escapeHTML(card.bank)}</span>
-              </h3>
-              <div class="text-sm text-gray-300 mt-1 flex items-center gap-1">
-                <span class="text-xs bg-blue-900/30 text-blue-300 px-1.5 rounded border border-blue-500/20">${this.escapeHTML(bestPath.method)}</span>
-                <span class="text-xs text-slate-500">• ${this.escapeHTML(bestPath.explanation)}</span>
-              </div>
+              <div class="card-name">${this.escapeHTML(card.name)}</div>
+              <div class="card-bank">${this.escapeHTML(card.bank)}</div>
             </div>
           </div>
-
-          <div class="text-right flex items-center gap-4">
-            <div>
-              <div class="text-2xl font-bold ${valueColor}">₹${Math.round(bestPath.value)}</div>
-              <div class="text-xs font-mono text-slate-500 bg-slate-900/50 px-2 py-0.5 rounded inline-block mt-1">
-                ${bestPath.percentageReturn.toFixed(2)}% Return
-              </div>
+          <div class="text-right">
+            <div class="reward-value">₹${Math.round(bestPath.value)}</div>
+            <div style="font-size: 0.75rem; color: var(--slate-gray); margin-top: 0.25rem;">
+              ${bestPath.percentageReturn.toFixed(2)}% return
             </div>
-            <i id="chev-${index}" class="fas fa-chevron-down text-slate-600 chevron"></i>
           </div>
         </div>
 
-        <div id="strat-${index}" class="strategies-box bg-slate-900/50 px-4">
-          ${otherPaths.length > 0 ? `<div class="text-[10px] uppercase font-bold text-slate-600 mb-2">Alternative Payment Paths (${otherPaths.length})</div>` : '<div class="text-xs text-slate-500 text-center py-2">No alternative paths available</div>'}
-          ${otherPathsHTML}
+        <!-- Best Usage Highlight (Always Visible) - Click does nothing -->
+        <div style="margin: 0 1.5rem 1rem 1.5rem; padding: 1rem; background: var(--sky-gray); border-radius: 8px; border-left: 4px solid var(--sky-blue); cursor: default;">
+          <div style="display: flex; align-items: flex-start; gap: 1rem;">
+            <div style="min-width: 40px; display: flex; justify-content: center; padding-top: 2px;">
+              ${this.getMethodIcon(bestPath.method, bestPath.pathDescription)}
+            </div>
+            <div>
+              <div style="font-weight: 700; color: var(--dark-sky); font-size: 1rem; margin-bottom: 0.25rem;">
+                ${this.escapeHTML(bestPath.pathDescription)}
+              </div>
+              <div style="font-size: 0.875rem; color: var(--slate-gray); line-height: 1.4;">
+                ${this.escapeHTML(bestPath.explanation)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="strat-${index}" class="strategies-box">
+          <div class="card-details" style="padding-top: 0;">
+            ${otherPaths.length > 0 ? `
+              <div style="font-weight: 600; margin-bottom: 0.5rem; color: var(--dark-sky); border-top: 1px solid var(--border-light); padding-top: 1rem; margin-top: 0; padding-left: 1.5rem; padding-right: 1.5rem;">
+                Alternative Paths (${otherPaths.length})
+              </div>
+              <div style="padding-left: 0.75rem; padding-right: 0.75rem;">
+                ${otherPathsHTML}
+              </div>
+            ` : `
+              <div style="font-style: italic; color: var(--slate-gray); border-top: 1px solid var(--border-light); padding: 1rem 1.5rem; margin-top: 0;">
+                There is no alternative way to pay using this card.
+              </div>
+            `}
+          </div>
+        </div>
+        
+        <div style="text-align: right; margin-top: 0.5rem; padding: 0 1.5rem;">
+          <button class="select-btn" onclick="window.toggleDetails(${index}); this.textContent = this.textContent.trim() === 'Select' ? 'Hide' : 'Select';">
+            Select
+          </button>
         </div>
       </div>`;
+  }
+
+  /**
+   * Get bank initial for logo
+   */
+  getBankInitial(bank) {
+    const bankName = bank.toLowerCase();
+    const bankLogos = {
+      'hdfc': 'metadata/images/hdfc_logo.jpg',
+      'axis': 'metadata/images/axis_logo.jpg',
+      'icici': 'metadata/images/icici_logo.jpg',
+      'sbi': 'metadata/images/sbi_logo.jpg'
+    };
+
+    // Find matching key
+    const match = Object.keys(bankLogos).find(key => bankName.includes(key));
+    const logoFile = match ? bankLogos[match] : null;
+
+    if (logoFile) {
+      return `<img src="${logoFile}" alt="${bank}" onerror="this.style.display='none'; this.parentElement.textContent='${bank.charAt(0)}';">`;
+    }
+    return bank.charAt(0).toUpperCase();
   }
 
   /**
@@ -176,15 +222,32 @@ export class ResultsRenderer {
   }
 
   /**
-   * Get icon for payment method
+   * Get icon image for payment method
    */
-  getMethodIcon(method) {
-    const icons = {
-      'direct': 'D',
-      'portal': 'P',
-      'voucher': 'V'
-    };
-    return icons[method] || 'D';
+  getMethodIcon(method, description = '') {
+    let iconSrc = 'metadata/images/card_img.jpg'; // Default to card image
+
+    if (method === 'direct') {
+      iconSrc = 'metadata/images/card_img.jpg';
+    } else if (method === 'voucher') {
+      iconSrc = 'metadata/images/voucher_img.jpg';
+    } else if (method === 'portal') {
+      const descLower = description.toLowerCase();
+      if (descLower.includes('smartbuy')) {
+        iconSrc = 'metadata/images/smartbuy_logo.jpg';
+      } else if (descLower.includes('grab deals')) {
+        iconSrc = 'metadata/images/grabdeals_icon.jpg';
+      } else if (descLower.includes('ishop')) {
+        iconSrc = 'metadata/images/ishop_logo.jpg';
+      } else if (descLower.includes('rewardz')) {
+        iconSrc = 'metadata/images/sbi_logo.jpg';
+      } else {
+        // Fallback for generic portals if any
+        iconSrc = 'metadata/images/card_img.jpg';
+      }
+    }
+
+    return `<img src="${iconSrc}" alt="${method}" style="width: 32px; height: 32px; object-fit: contain; border-radius: 4px;">`;
   }
 
   /**

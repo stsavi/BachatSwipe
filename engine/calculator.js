@@ -27,6 +27,8 @@ export function calculateValue(card, rules, amount, options = {}) {
     let breakdown = [];
     let finalValue = 0;
     let isCapped = false;
+    let regularEarning = 0;
+    let bonusEarning = 0;
 
     // Step 1: Check Exclusions
     let baseRate = card.base_rate;
@@ -38,6 +40,7 @@ export function calculateValue(card, rules, amount, options = {}) {
     // Step 2: Calculate base earning
     const baseEarning = amount * baseRate;
     const baseValue = baseEarning * card.value_per_unit;
+    regularEarning = baseEarning;
 
     // Log exclusion if applied
     if (baseRate === 0) {
@@ -95,12 +98,13 @@ export function calculateValue(card, rules, amount, options = {}) {
             // Apply rule benefit
             if ((primaryRule.benefit_type === 'reward_multiplier' || multiplier !== undefined) && multiplier !== undefined) {
                 // Multiplier-based rule
-                const multipliedEarning = baseEarning * multiplier;
-                const multipliedValue = multipliedEarning * card.value_per_unit;
+                const totalEarning = baseEarning * multiplier;
+                const multipliedValue = totalEarning * card.value_per_unit;
+                bonusEarning = totalEarning - baseEarning;
 
                 breakdown.push({
                     step: 'Apply Multiplier',
-                    calculation: `${baseEarning.toFixed(2)} ${card.reward_currency} × ${multiplier}x = ${multipliedEarning.toFixed(2)} ${card.reward_currency}`,
+                    calculation: `${baseEarning.toFixed(2)} ${card.reward_currency || 'Points'} × ${multiplier}x = ${totalEarning.toFixed(2)} ${card.reward_currency || 'Points'}`,
                     value: multipliedValue
                 });
 
@@ -116,6 +120,8 @@ export function calculateValue(card, rules, amount, options = {}) {
                 });
 
                 finalValue = cashbackValue;
+                regularEarning = 0; // Cashback overrides points logic
+                bonusEarning = 0;
             } else if ((primaryRule.benefit_type === 'instant_discount' || discountRate !== undefined) && discountRate !== undefined) {
                 // Instant discount (for vouchers)
                 const discountValue = amount * discountRate;
@@ -147,7 +153,9 @@ export function calculateValue(card, rules, amount, options = {}) {
         value: finalValue,
         breakdown,
         cappedValue: isCapped ? finalValue : null,
-        explanation: generateExplanation(card, rules, finalValue, breakdown),
+        regularEarning,
+        bonusEarning,
+        explanation: generateExplanation(card, rules, finalValue, regularEarning, bonusEarning),
         percentageReturn: (finalValue / amount) * 100
     };
 }
@@ -155,25 +163,31 @@ export function calculateValue(card, rules, amount, options = {}) {
 /**
  * Generate human-readable explanation
  */
-function generateExplanation(card, rules, finalValue, breakdown) {
-    if (!rules || rules.length === 0) {
-        return `Base earning on ${card.name}: ${card.earning_display}`;
+function generateExplanation(card, rules, finalValue, regularEarning, bonusEarning) {
+    const valueStr = Math.round(finalValue);
+
+    // Axis Edge Miles (Partner transfer)
+    if (card.reward_type === 'edge_miles') {
+        const miles = Math.round(regularEarning + bonusEarning);
+        const accorPoints = miles * 2; // Fixed Accor logic
+        return `Save ₹${valueStr} by redeeming ${accorPoints} Accor Points (by transfer of ${miles} Edge Miles)`;
     }
 
-    const primaryRule = rules[0];
-    let explanation = `Using ${card.name} `;
-
-    if (primaryRule.platform) {
-        explanation += `via ${primaryRule.platform} `;
+    // Cashback
+    if (card.reward_type === 'cashback') {
+        return `Save ₹${valueStr} through cashback earned directly or at the end of bill cycle`;
     }
 
-    if (primaryRule.rule_type === 'voucher') {
-        explanation += `(buying voucher) `;
+    // Reward Points (HDFC, etc.)
+    const total = Math.round(regularEarning + bonusEarning);
+    const reg = Math.round(regularEarning);
+    const bonus = Math.round(bonusEarning);
+
+    if (bonus > 0) {
+        return `Save ₹${valueStr} by redeeming ${total} Reward Points (regular ${reg} + bonus ${bonus})`;
+    } else {
+        return `Save ₹${valueStr} by redeeming ${reg} Reward Points`;
     }
-
-    explanation += `→ ₹${finalValue.toFixed(2)} value`;
-
-    return explanation;
 }
 
 /**

@@ -102,14 +102,14 @@ export function generatePathsForCard(transaction, card, allRules) {
  * Get human-readable path description
  */
 export function getPathDescription(path) {
-    let description = `${path.card.name}`;
+    let description = '';
 
     if (path.method === 'direct') {
-        description += ' (Direct Swipe)';
+        description = 'Direct Swipe';
     } else if (path.method === 'portal') {
-        description += ` via ${path.platform}`;
+        description = `via ${path.platform}`;
     } else if (path.method === 'voucher') {
-        description += ` (Buy Voucher via ${path.platform})`;
+        description = `Buy Voucher via ${path.platform}`;
     }
 
     return description;
