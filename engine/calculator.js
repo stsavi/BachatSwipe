@@ -175,13 +175,18 @@ function generateExplanation(card, rules, finalValue, regularEarning, bonusEarni
 
     // Cashback
     if (card.reward_type === 'cashback') {
-        return `Save ₹${valueStr} through cashback earned directly or at the end of bill cycle`;
+        return `Save ₹${valueStr} via direct cashback/statement credit`;
     }
 
     // Reward Points (HDFC, etc.)
     const total = Math.round(regularEarning + bonusEarning);
     const reg = Math.round(regularEarning);
     const bonus = Math.round(bonusEarning);
+
+    // Only show reward points explanation if there are points to redeem
+    if (total === 0) {
+        return `Save ₹${valueStr} via direct cashback/statement credit`;
+    }
 
     if (bonus > 0) {
         return `Save ₹${valueStr} by redeeming ${total} Reward Points (regular ${reg} + bonus ${bonus})`;

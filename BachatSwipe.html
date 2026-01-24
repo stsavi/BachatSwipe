@@ -7,6 +7,12 @@
   <title>BachatSwipe (Standalone)</title>
   <style>
     :root {
+      /* Brand Colors */
+      --brand-navy: #1a1f2e;
+      --brand-gold: #d4a574;
+      --brand-orange: #e67e22;
+
+      /* Skyscanner Palette */
       --sky-blue: #0062E3;
       --dark-sky: #00224F;
       --sky-gray: #F0F3F5;
@@ -30,16 +36,14 @@
     }
 
     .header-banner {
-      background: linear-gradient(135deg, var(--sky-blue) 0%, #0052c9 100%);
-      color: var(--white);
-      padding: 1.5rem 0;
+      background: linear-gradient(135deg, var(--brand-navy) 0%, #2c3e50 100%);
+      padding: 1.5rem 2rem;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
 
     .header-content {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 0 2rem;
       display: flex;
       align-items: center;
       gap: 1rem;
@@ -49,18 +53,18 @@
       width: 48px;
       height: 48px;
       background: url('metadata/images/icon.jpg') center/cover no-repeat;
-      border-radius: 12px;
-      background-color: var(--white);
+      border-radius: 8px;
     }
 
     .brand-text {
       font-size: 1.75rem;
       font-weight: 800;
+      color: var(--white);
       letter-spacing: -0.5px;
     }
 
     .highlight {
-      color: var(--monteverde);
+      color: var(--brand-gold);
     }
 
     .container {
@@ -239,6 +243,51 @@
     .loading-spinner.active {
       display: inline-block;
     }
+
+    /* Brand Link Styles */
+    .brand-text {
+      cursor: pointer;
+      transition: opacity 0.2s;
+      text-decoration: none;
+      color: var(--white);
+    }
+
+    .brand-text:hover {
+      opacity: 0.9;
+    }
+
+    /* Results Animation */
+    @keyframes slideOut {
+      from {
+        opacity: 1;
+        transform: translateX(0);
+      }
+
+      to {
+        opacity: 0;
+        transform: translateX(-30px);
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateX(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .results-slide-out {
+      animation: slideOut 300ms ease-out forwards;
+    }
+
+    .results-slide-in {
+      animation: slideIn 400ms ease-out forwards;
+    }
   </style>
 </head>
 
@@ -246,7 +295,8 @@
   <div class="header-banner">
     <div class="header-content">
       <div class="brand-icon"></div>
-      <div class="brand-text">Bachat<span class="highlight">Swipe</span></div>
+      <a href="BachatSwipe.html" class="brand-text" style="text-decoration: none;">Bachat<span
+          class="highlight">Swipe</span></a>
     </div>
   </div>
   <div class="container">
@@ -296,7 +346,8 @@
     </div>
     <div id="results"></div>
     <div style="text-align: center; padding: 2rem; font-size: 0.8rem; color: #64748b; font-style: italic;">
-      Disclaimer: Decisions should be based on current bank terms.
+      Disclaimer: BachatSwipe provides recommendations to help you optimize your spending. Please verify the
+      current terms and benefits with your card issuer before completing your transaction.
     </div>
   </div>
   <script>
@@ -2401,39 +2452,6 @@
 
         voucher_denominations: [100, 250, 500, 1000, 2000, 5000],
         discount_on_voucher: 0
-      },
-
-      // ============================================================
-      // TATA NEU - TATA BRAND VOUCHERS (No multiplier, regular NeuCoins)
-      // ============================================================
-      {
-        id: "hdfc_tataneu_tata_brand_vouchers_base",
-        bank: "HDFC",
-        rule_type: "voucher",
-
-        platform: "Tata Neu App",
-        category: "voucher",
-        merchants: ["tata_neu", "bigbasket"],
-
-        benefit_type: "reward_multiplier",
-        reward_multiplier_map: {
-          "hdfc_tataneu_infinity": 1,
-          "hdfc_tataneu_plus": 1
-        },
-
-        cap: null,
-        cap_period: null,
-        min_transaction: null,
-        max_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "Base NeuCoins rate when buying Tata brand vouchers (no additional multiplier)",
-        priority: 50,  // Lower priority - base rate only
-
-        voucher_denominations: [100, 500, 1000, 2000, 5000],
-        discount_on_voucher: 0
       }
     ];
 
@@ -4381,13 +4399,18 @@
 
       // Cashback
       if (card.reward_type === 'cashback') {
-        return `Save ₹${valueStr} through cashback earned directly or at the end of bill cycle`;
+        return `Save ₹${valueStr} via direct cashback/statement credit`;
       }
 
       // Reward Points (HDFC, etc.)
       const total = Math.round(regularEarning + bonusEarning);
       const reg = Math.round(regularEarning);
       const bonus = Math.round(bonusEarning);
+
+      // Only show reward points explanation if there are points to redeem
+      if (total === 0) {
+        return `Save ₹${valueStr} via direct cashback/statement credit`;
+      }
 
       if (bonus > 0) {
         return `Save ₹${valueStr} by redeeming ${total} Reward Points (regular ${reg} + bonus ${bonus})`;
@@ -5548,6 +5571,33 @@
 
     window.app = new window.App();
     window.app.init();
+
+    // Results animation on compare
+    const resultsElement = document.getElementById('results');
+
+    // Wrap the analyze function to add slide animation
+    const originalAnalyze = window.app.analyze.bind(window.app);
+    window.app.analyze = async function () {
+      // If there are existing results, slide them out first
+      if (resultsElement && resultsElement.children.length > 0) {
+        resultsElement.classList.add('results-slide-out');
+
+        // Wait for slide-out animation to complete
+        await new Promise(resolve => setTimeout(resolve, 300));
+        resultsElement.classList.remove('results-slide-out');
+      }
+
+      // Call original function to render new results
+      await originalAnalyze();
+
+      // Slide in the new results
+      if (resultsElement && resultsElement.children.length > 0) {
+        resultsElement.classList.add('results-slide-in');
+        setTimeout(() => {
+          resultsElement.classList.remove('results-slide-in');
+        }, 400);
+      }
+    };
   </script>
 </body>
 

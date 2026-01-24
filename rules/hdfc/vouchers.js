@@ -230,38 +230,5 @@ export const HDFC_VOUCHER_RULES = [
 
         voucher_denominations: [100, 250, 500, 1000, 2000, 5000],
         discount_on_voucher: 0
-    },
-
-    // ============================================================
-    // TATA NEU - TATA BRAND VOUCHERS (No multiplier, regular NeuCoins)
-    // ============================================================
-    {
-        id: "hdfc_tataneu_tata_brand_vouchers_base",
-        bank: "HDFC",
-        rule_type: "voucher",
-
-        platform: "Tata Neu App",
-        category: "voucher",
-        merchants: ["tata_neu", "bigbasket"],
-
-        benefit_type: "reward_multiplier",
-        reward_multiplier_map: {
-            "hdfc_tataneu_infinity": 1,
-            "hdfc_tataneu_plus": 1
-        },
-
-        cap: null,
-        cap_period: null,
-        min_transaction: null,
-        max_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "Base NeuCoins rate when buying Tata brand vouchers (no additional multiplier)",
-        priority: 50,  // Lower priority - base rate only
-
-        voucher_denominations: [100, 500, 1000, 2000, 5000],
-        discount_on_voucher: 0
     }
 ];
