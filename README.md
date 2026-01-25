@@ -42,9 +42,14 @@ Ever wondered which credit card to use for maximum rewards? Or whether buying vo
 - **Offline**: Works without internet (after first visit)
 
 ### 🎨 Beautiful & Fast
-- Clean, modern interface
-- Instant results
+- Clean, modern interface with **Sticky Search Palette**
+- Instant results with **Manual Comparison Mode**
 - No ads, no tracking, completely free
+
+### 📱 Optimized for Mobile
+- **Sticky Palette**: 2-row layout with horizontal scroll for easy access
+- **Smart Feedback**: Integrated directly into the header for zero overlap
+- **Responsive**: Adapts perfectly to any screen size
 
 ---
 
@@ -244,12 +249,12 @@ We're constantly improving BachatSwipe to serve you better!
 
 ### Found Incorrect Data?
 If you notice any incorrect reward rates or outdated information:
-- Use the **Feedback** section in the app (coming soon!)
+- Click the **"Feedback"** button in the top header
 - We'll review and update the data promptly
 
 ### Have a Suggestion?
 Want to see a new feature or card added?
-- Share your ideas through the **Feedback** section
+- Click the **"Feedback"** button in the top header
 - We prioritize features based on user requests
 
 ### Report a Bug
@@ -257,7 +262,7 @@ Something not working as expected?
 - Describe the issue in the **Feedback** section
 - Include details: which card, merchant, and amount you tried
 
-**Note:** The Feedback feature will be available in the app soon. Stay tuned!
+**Note:** The Feedback feature is now live! Look for the button in the top header.
 
 ---
 

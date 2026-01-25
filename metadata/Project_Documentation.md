@@ -1,7 +1,7 @@
 # 📚 BachatSwipe - Project Documentation
 
-**Version:** 2.0  
-**Last Updated:** January 24, 2026  
+**Version:** 2.1  
+**Last Updated:** January 26, 2026  
 **Purpose:** Complete technical documentation for developers
 
 ---
@@ -185,6 +185,19 @@ BachatSwipe/
 └── README.md                    # User-facing documentation
 ```
 
+### 🎨 UI Components
+
+#### Sticky Search Palette
+- **Behavior**: Appears on scroll threshold (>300px).
+- **Mobile Layout**: Transforms into a 2-row layout (Branding + Horizontal Scrollable Inputs).
+- **Synchronization**: Uses `MutationObserver` to mirror main form dropdowns in real-time.
+- **Manual Trigger**: Decoupled from auto-analysis; requires user click to "Compare".
+
+#### Feedback System
+- **Integration**: Zero-overlap button located in the sticky header banner.
+- **Link**: Directs to Google Form for user input.
+- **Visibility**: Always accessible, even on mobile.
+
 ---
 
 ## ✨ Core Features
@@ -246,10 +259,10 @@ ngrok http 8080
 # Open HTTPS URL on phone → Install banner appears
 ```
 
-### 5. Error Handling
-- Input validation with user-friendly messages
-- XSS protection via HTML escaping
-- Graceful degradation for missing data
+### 5. Error Handling & Synchronization
+- **Input validation** with user-friendly messages
+- **XSS protection** via HTML escaping
+- **Robust Sync**: `MutationObserver` ensures sticky palette dropdowns never desync from the main form.
 
 ---
 
@@ -598,7 +611,13 @@ function calculateValue(card, transaction, rules) {
 
 ---
 
-## 🔐 Security Considerations
+## 🔐 Security & Data Integrity
+
+### Data Synchronization
+The application uses a robust **MutationObserver** pattern to ensure data integrity between the main search form and the sticky palette.
+- **Source of Truth**: The main form (`#merchant`, `#category`) is populated by the Engine.
+- **Observer**: Watches for `childList` changes on the main dropdowns.
+- **Replication**: Instantly clones options to the sticky palette, preserving placeholders and selection state.
 
 ### XSS Protection
 - All user inputs are sanitized

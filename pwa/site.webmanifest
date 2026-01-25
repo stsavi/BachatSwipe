@@ -1,0 +1,21 @@
+{
+    "name": "BachatSwipe - Smart Card Optimizer",
+    "short_name": "BachatSwipe",
+    "description": "Optimize your credit card rewards and savings.",
+    "start_url": "../index.html",
+    "display": "standalone",
+    "background_color": "#F1F2F8",
+    "theme_color": "#1a1f2e",
+    "icons": [
+        {
+            "src": "/metadata/images/icon.jpg",
+            "sizes": "192x192",
+            "type": "image/jpeg"
+        },
+        {
+            "src": "/metadata/images/icon.jpg",
+            "sizes": "512x512",
+            "type": "image/jpeg"
+        }
+    ]
+}
