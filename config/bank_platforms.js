@@ -12,9 +12,9 @@ export const BANK_PORTALS = {
         url: "https://offers.smartbuy.hdfcbank.com/"
     },
     AXIS: {
-        portal: "Grab Deals",
-        voucher_platform: "Grab Deals",
-        url: "https://grabdeals.axis.bank.in/"
+        portal: "Travel Edge",
+        voucher_platform: "GiftEdge",
+        url: "https://travel.axis.bank.in/"
     },
     ICICI: {
         portal: "iShop",
@@ -33,6 +33,7 @@ export const BANK_PORTALS = {
 // ============================================================
 
 export const VOUCHER_MERCHANTS = [
+    "airtel_thanks",
     "amazon",
     "flipkart",
     "swiggy",
@@ -44,6 +45,7 @@ export const VOUCHER_MERCHANTS = [
 
 // Human-readable merchant names
 export const MERCHANT_DISPLAY_NAMES = {
+    airtel_thanks: "Airtel Thanks",
     amazon: "Amazon",
     flipkart: "Flipkart",
     swiggy: "Swiggy",

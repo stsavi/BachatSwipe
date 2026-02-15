@@ -1,128 +1,110 @@
-// rules/hdfc/portal.js
-// HDFC Bank - SmartBuy Portal Rules (Flights & Hotels ONLY)
-// Validated as of January 2026 from https://offers.smartbuy.hdfcbank.com/
+import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES, CAP_PERIODS } from '../../config/bank_platforms.js';
+
+/**
+ * HDFC Bank - SmartBuy Portal Rules
+ * Flight & Hotel bookings via SmartBuy portal
+ * Data validated against: SmartBuy portal, HDFC Bank MITC
+ * Last updated: February 1, 2026
+ */
 
 export const HDFC_PORTAL_RULES = [
-
-    // ============================================================
-    // SMARTBUY HOTELS - 10X REWARD MULTIPLIER
-    // ============================================================
+    // SmartBuy Hotels - 10X Reward Multiplier
     {
         id: "hdfc_smartbuy_hotels_10x",
         bank: "HDFC",
-        rule_type: "portal",
-
+        rule_type: RULE_TYPES.PORTAL,
         platform: "SmartBuy",
-        category: "hotels",
-        merchants: [],  // All hotels via SmartBuy
-
-        benefit_type: "reward_multiplier",
+        category: EXPENSE_CATEGORIES.HOTELS,
+        merchants: [],
+        benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
         reward_multiplier_map: {
             "hdfc_infinia": 10,
             "hdfc_dcb_metal": 10,
             "hdfc_regalia_gold": 10,
             "hdfc_dcp": 10
         },
-        cashback_rates: null,
-
+        constraints: {},
         cap: null,
         cap_period: null,
         min_transaction: null,
-
+        max_transaction: null,
         valid_from: "2024-01-01",
         valid_until: null,
-
-        notes: "10x Reward Points on hotel bookings via SmartBuy. Infinia/DCB get 50 RP per ₹150, Regalia/DCP get 40 RP per ₹150.",
-        priority: 150
+        priority: 150,
+        notes: "10x Reward Points on hotel bookings via SmartBuy. Infinia/DCB get 50 RP per ₹150, Regalia/DCP get 40 RP per ₹150"
     },
 
-    // ============================================================
-    // SMARTBUY FLIGHTS - 5X REWARD MULTIPLIER
-    // ============================================================
+    // SmartBuy Flights - 5X Reward Multiplier
     {
         id: "hdfc_smartbuy_flights_5x",
         bank: "HDFC",
-        rule_type: "portal",
-
+        rule_type: RULE_TYPES.PORTAL,
         platform: "SmartBuy",
-        category: ["flights", "travel"],
+        category: [EXPENSE_CATEGORIES.FLIGHTS, EXPENSE_CATEGORIES.TRAVEL],
         merchants: [],
-
-        benefit_type: "reward_multiplier",
+        benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
         reward_multiplier_map: {
             "hdfc_infinia": 5,
             "hdfc_dcb_metal": 5,
             "hdfc_regalia_gold": 5,
             "hdfc_dcp": 5
         },
-        cashback_rates: null,
-
+        constraints: {},
         cap: null,
         cap_period: null,
         min_transaction: null,
-
+        max_transaction: null,
         valid_from: "2024-01-01",
         valid_until: null,
-
-        notes: "5x Reward Points on flight bookings via SmartBuy. Infinia/DCB get 25 RP per ₹150, Regalia/DCP get 20 RP per ₹150.",
-        priority: 150
+        priority: 150,
+        notes: "5x Reward Points on flight bookings via SmartBuy. Infinia/DCB get 25 RP per ₹150, Regalia/DCP get 20 RP per ₹150"
     },
 
-    // ============================================================
-    // MILLENNIA - SMARTBUY HOTELS 5% CASHBACK
-    // ============================================================
+    // Millennia - SmartBuy Hotels 5% Cashback
     {
         id: "hdfc_smartbuy_hotels_millennia_5pct",
         bank: "HDFC",
-        rule_type: "portal",
-
+        rule_type: RULE_TYPES.PORTAL,
         platform: "SmartBuy",
-        category: "hotels",
+        category: EXPENSE_CATEGORIES.HOTELS,
         merchants: [],
-
-        benefit_type: "cashback",
-        reward_multipliers: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
         cashback_rate_map: {
             "hdfc_millennia": 0.05
         },
-
+        constraints: {},
         cap: 1000,
-        cap_period: "monthly",
+        cap_period: CAP_PERIODS.MONTHLY,
         min_transaction: null,
-
+        max_transaction: null,
         valid_from: "2024-01-01",
         valid_until: null,
-
-        notes: "5% cashback on hotel bookings via SmartBuy (₹1000 cap/month)",
-        priority: 150
+        priority: 150,
+        notes: "5% cashback on hotel bookings via SmartBuy (₹1000 cap/month)"
     },
 
-    // ============================================================
-    // MILLENNIA - SMARTBUY FLIGHTS 5% CASHBACK
-    // ============================================================
+    // Millennia - SmartBuy Flights 5% Cashback
     {
         id: "hdfc_smartbuy_flights_millennia_5pct",
         bank: "HDFC",
-        rule_type: "portal",
-
+        rule_type: RULE_TYPES.PORTAL,
         platform: "SmartBuy",
-        category: "flights",
+        category: EXPENSE_CATEGORIES.FLIGHTS,
         merchants: [],
-
-        benefit_type: "cashback",
-        reward_multipliers: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
         cashback_rate_map: {
             "hdfc_millennia": 0.05
         },
-
+        constraints: {},
         cap: 1000,
-        cap_period: "monthly",
+        cap_period: CAP_PERIODS.MONTHLY,
         min_transaction: null,
-
+        max_transaction: null,
         valid_from: "2024-01-01",
         valid_until: null,
-
-        notes: "5% cashback on flight bookings via SmartBuy (₹1000 cap/month)",
-        priority: 150
+        priority: 150,
+        notes: "5% cashback on flight bookings via SmartBuy (₹1000 cap/month)"
     }
 ];
+
+export default HDFC_PORTAL_RULES;

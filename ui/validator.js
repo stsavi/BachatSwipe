@@ -6,6 +6,8 @@
  * Validates and sanitizes all user inputs
  */
 
+import { SUPPORTED_MERCHANTS } from '../config/merchants.js';
+
 export class InputValidator {
     /**
      * Validate transaction inputs
@@ -42,7 +44,7 @@ export class InputValidator {
         }
 
         // Validate merchant (optional but must be from allowed list if provided)
-        const validMerchants = ['', 'amazon', 'flipkart', 'swiggy', 'zomato', 'bigbasket', 'tata_neu', 'bookmyshow'];
+        const validMerchants = ['', ...SUPPORTED_MERCHANTS.map(m => m.value)];
         if (inputs.merchant && !validMerchants.includes(inputs.merchant)) {
             errors.push('Invalid merchant selected');
         }

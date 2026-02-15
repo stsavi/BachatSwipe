@@ -24,7 +24,7 @@ export const iciciCashbackRules = [
     constraints: {},
     cap: null, // Unlimited
     cap_period: null,
-    min_transaction: 100,
+    min_transaction: null,
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
@@ -47,9 +47,9 @@ export const iciciCashbackRules = [
     constraints: {
       transaction_type: "Bill Payment via Amazon Pay"
     },
-    cap: 1500, // ₹1500/month
-    cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 100,
+    cap: null, // Unlimited
+    cap_period: null,
+    min_transaction: null,
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
@@ -57,9 +57,9 @@ export const iciciCashbackRules = [
     notes: "2% cashback on bill payments via Amazon Pay. Capped at ₹1500/month."
   },
 
-  // HPCL Card - Fuel (5% at HPCL)
+  // HPCL Super Saver - Fuel (4% at HPCL)
   {
-    id: "icici_hpcl_fuel",
+    id: "icici_hpcl_super_saver_fuel",
     bank: "ICICI Bank",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.FUEL,
@@ -67,19 +67,45 @@ export const iciciCashbackRules = [
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
     cashback_rate_map: {
-      "icici_hpcl": 0.05
+      "icici_hpcl": 0.04
     },
     constraints: {
       merchant: "HPCL petrol pumps only"
     },
-    cap: 500, // ₹500/month
+    cap: 200, // ₹200/month
     cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 100,
+    min_transaction: 400,
+    max_transaction: 4000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "4% cashback at HPCL fuel stations. Capped at ₹200/month."
+  },
+
+  // Emeralde Private Metal - BookMyShow BOGO
+  {
+    id: "icici_emeralde_private_metal_bookmyshow",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ENTERTAINMENT,
+    merchants: ["bookmyshow"],
+    platform: null, // No platform constraint - direct merchant transaction
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "icici_emeralde_private_metal": 0.50
+    },
+    constraints: {
+      merchant: "BookMyShow only",
+      offer_type: "Buy 1 Get 1 on movie tickets"
+    },
+    cap: 750, // ₹750/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: null,
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "5% cashback at HPCL fuel stations. Capped at ₹500/month."
+    notes: "Buy 1 Get 1 offer on BookMyShow movie tickets (₹750 cap/month)."
   },
 
   // Sapphiro - BookMyShow BOGO
@@ -92,7 +118,7 @@ export const iciciCashbackRules = [
     platform: null, // No platform constraint - direct merchant transaction
     benefit_type: BENEFIT_TYPES.CASHBACK,
     cashback_rate_map: {
-      "icici_sapphiro": 0.15
+      "icici_sapphiro": 0.50
     },
     constraints: {
       merchant: "BookMyShow only",
@@ -100,12 +126,38 @@ export const iciciCashbackRules = [
     },
     cap: 500, // ₹500/month
     cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 200,
+    min_transaction: null,
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 9,
-    notes: "Buy 1 Get 1 offer on BookMyShow movie tickets (effective ~15% discount, ₹500 cap/month)."
+    notes: "Buy 1 Get 1 offer on BookMyShow movie tickets (₹500 cap/month)."
+  },
+
+  // Coral - BookMyShow BOGO
+  {
+    id: "icici_coral_bookmyshow",
+    bank: "ICICI Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ENTERTAINMENT,
+    merchants: ["bookmyshow"],
+    platform: null, // No platform constraint - direct merchant transaction
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "icici_coral": 0.25
+    },
+    constraints: {
+      merchant: "BookMyShow only",
+      offer_type: "25% off on spends through BookMyShow"
+    },
+    cap: 150, // ₹150/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: null,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "Buy 1 Get 1 offer on BookMyShow movie tickets (₹150 cap/month)."
   },
 
   // Amazon Pay - Base Cashback (1% Wildcard)

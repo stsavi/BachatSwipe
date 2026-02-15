@@ -19,8 +19,7 @@ export const axisPortalRules = [
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
     reward_multiplier_map: {
       "axis_magnus": 10,
-      "axis_reserve": 10,
-      "axis_atlas": 10
+      "axis_reserve": 10
     },
     constraints: {
       booking_platform: "Travel Edge only"
@@ -32,7 +31,7 @@ export const axisPortalRules = [
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "10x Edge Miles on hotel bookings via Travel Edge. Magnus: 120/₹200, Reserve: 150/₹200, Atlas: 20/₹100."
+    notes: "10x Edge Miles on hotel bookings via Travel Edge."
   },
 
   // Travel Edge Flights - 5x Edge Miles
@@ -46,8 +45,7 @@ export const axisPortalRules = [
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
     reward_multiplier_map: {
       "axis_magnus": 5,
-      "axis_reserve": 5,
-      "axis_atlas": 5
+      "axis_reserve": 5
     },
     constraints: {
       booking_platform: "Travel Edge only"
@@ -59,7 +57,7 @@ export const axisPortalRules = [
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "5x Edge Miles on flight bookings via Travel Edge. Magnus: 60/₹200, Reserve: 75/₹200, Atlas: 10/₹100."
+    notes: "5x Edge Miles on flight bookings via Travel Edge."
   }
 ];
 

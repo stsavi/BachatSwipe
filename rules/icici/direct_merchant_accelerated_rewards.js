@@ -1,4 +1,4 @@
-import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES } from '../../config/bank_platforms.js';
+import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES, CAP_PERIODS } from '../../config/bank_platforms.js';
 
 /**
  * ICICI Bank - Direct Merchant Accelerated Rewards
@@ -8,31 +8,27 @@ import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES } from '../../config/bank
  */
 
 export const iciciDirectAcceleratedRules = [
-  // Sapphiro - Department Stores (2x)
-  // Note: Dining 2x was removed as it was a temporary promo, not a standard benefit
+
+  //HPCL Super Saver - 20 reward points per Rs. 100 on departmental stores, mobile bills & electricity bills
   {
-    id: "icici_sapphiro_department_stores",
+    id: "icici_hpcl_super_saver_accelerated",
     bank: "ICICI Bank",
     rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
-    category: EXPENSE_CATEGORIES.SHOPPING,
+    category: [EXPENSE_CATEGORIES.GROCERY, EXPENSE_CATEGORIES.UTILITIES],
     merchants: [],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
     reward_multiplier_map: {
-      "icici_sapphiro": 2
+      "icici_hpcl_super_saver": 10
     },
-    constraints: {
-      merchant_type: "Department Stores",
-      platform: "Direct swipe only"
-    },
-    cap: null,
-    cap_period: null,
+    cap: 100,
+    cap_period: CAP_PERIODS.MONTHLY,
     min_transaction: 100,
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
-    priority: 9,
-    notes: "2x Reward Points on department stores. Base 6 per ₹200 becomes 12 per ₹200."
+    priority: 10,
+    notes: "20 reward points per Rs. 100 on departmental stores, mobile bills & electricity bills. Capped at ₹100/month."
   }
 ];
 

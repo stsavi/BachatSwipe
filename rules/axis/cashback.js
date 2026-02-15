@@ -8,22 +8,49 @@ import { EXPENSE_CATEGORIES, BANK_PORTALS, CAP_PERIODS, BENEFIT_TYPES, RULE_TYPE
  */
 
 export const axisCashbackRules = [
-  // Ace Card - Bill Payments (Primary benefit)
+
+  //Axis Reserve - BookMyShow Offer
   {
-    id: "axis_ace_bill_payment_gpay_phonepe",
+    id: "axis_reserve_bookmyshow",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ENTERTAINMENT,
+    merchants: ["BookMyShow"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_reserve": 0.50
+    },
+    constraints: {
+      transaction_type: "Direct Payment",
+      platforms: ["BookMyShow"]
+    },
+    cap: 1000,
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "Buy 1 Get 1 free movie ticket, up to Rs. 500 off on 2nd, can be availed 5 times a month. Buy 1 Get 1 free non-movie ticket and get up to Rs. 1000 off on the 2nd, can be availed 5 times a month."
+  },
+
+  // Ace Card - (5% on Utilitybill payments via Google Pay)
+  {
+    id: "axis_ace_utility_gpay",
     bank: "Axis Bank",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.UTILITIES,
-    merchants: ["Google Pay", "PhonePe"],
+    merchants: ["Google Pay"],
     platform: "direct", // Bill payment via UPI apps
     benefit_type: BENEFIT_TYPES.CASHBACK,
     cashback_rate_map: {
       "axis_ace": 0.05
     },
     constraints: {
-      transaction_type: "Bill Payment",
-      platforms: ["Google Pay", "PhonePe"],
-      excluded_billers: []
+      transaction_type: "Utility Bill Payment",
+      platforms: ["Google Pay"],
+      excluded_billers: ["Any Platform other than Google Pay"]
     },
     cap: null, // No cap
     cap_period: null,
@@ -32,24 +59,24 @@ export const axisCashbackRules = [
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "5% unlimited cashback on bill payments via Google Pay and PhonePe. No upper limit."
+    notes: "5% Cashback on bill payments through Google Pay (electricity, water, gas, LPG, broadband, DTH, mobile recharges)"
   },
 
-  // Ace Card - Utilities (2%)
+  // Ace Card - (4% on Swiggy/Zomato/Ola)
   {
-    id: "axis_ace_utilities",
+    id: "axis_ace_swiggy_zomato_ola",
     bank: "Axis Bank",
     rule_type: RULE_TYPES.CASHBACK,
-    category: EXPENSE_CATEGORIES.UTILITIES,
-    merchants: [],
+    category: EXPENSE_CATEGORIES.DINING,
+    merchants: ["Swiggy", "Zomato", "Ola"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
     cashback_rate_map: {
-      "axis_ace": 0.02
+      "axis_ace": 0.04
     },
     constraints: {
       transaction_type: "Direct Payment",
-      excluded: ["bill_payments_via_gpay_phonepe"]
+      platforms: ["Swiggy", "Zomato", "Ola"]
     },
     cap: null,
     cap_period: null,
@@ -58,75 +85,23 @@ export const axisCashbackRules = [
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 9,
-    notes: "2% cashback on direct utility payments (not via GPay/PhonePe which get 5%)"
+    notes: "4% Cashback on Swiggy/Zomato/Ola spends"
   },
 
-  // Airtel Card - Airtel Bills (25% for Airtel Black)
+  // Airtel Card - 25% for Airtel bills
   {
-    id: "axis_airtel_black_airtel_bills",
+    id: "axis_airtel_bills_25pct",
     bank: "Axis Bank",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.UTILITIES,
-    merchants: ["Airtel"],
+    merchants: ["airtel_thanks"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
     cashback_rate_map: {
       "axis_airtel": 0.25
     },
     constraints: {
-      customer_type: "Airtel Black",
-      transaction_type: "Airtel Bill Payment"
-    },
-    cap: 500, // ₹500/month
-    cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 100,
-    max_transaction: null,
-    valid_from: "2023-01-01",
-    valid_until: null,
-    priority: 10,
-    notes: "25% cashback for Airtel Black customers on Airtel bills. Capped at ₹500/month."
-  },
-
-  // Airtel Card - Airtel Bills (10% for regular)
-  {
-    id: "axis_airtel_regular_airtel_bills",
-    bank: "Axis Bank",
-    rule_type: RULE_TYPES.CASHBACK,
-    category: EXPENSE_CATEGORIES.UTILITIES,
-    merchants: ["Airtel"],
-    platform: "direct",
-    benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rate_map: {
-      "axis_airtel": 0.10
-    },
-    constraints: {
-      customer_type: "Regular",
-      transaction_type: "Airtel Bill Payment"
-    },
-    cap: 300, // ₹300/month
-    cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 100,
-    max_transaction: null,
-    valid_from: "2023-01-01",
-    valid_until: null,
-    priority: 9,
-    notes: "10% cashback for regular Airtel customers on Airtel bills. Capped at ₹300/month."
-  },
-
-  // Airtel Card - Other Utilities (4%)
-  {
-    id: "axis_airtel_other_utilities",
-    bank: "Axis Bank",
-    rule_type: RULE_TYPES.CASHBACK,
-    category: EXPENSE_CATEGORIES.UTILITIES,
-    merchants: [],
-    platform: "direct",
-    benefit_type: BENEFIT_TYPES.CASHBACK,
-    cashback_rate_map: {
-      "axis_airtel": 0.04
-    },
-    constraints: {
-      excluded_merchants: ["Airtel"]
+      transaction_type: "Airtel Bill Payments"
     },
     cap: 250, // ₹250/month
     cap_period: CAP_PERIODS.MONTHLY,
@@ -134,33 +109,133 @@ export const axisCashbackRules = [
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
-    priority: 8,
-    notes: "4% cashback on other utility bills (excluding Airtel). Capped at ₹250/month."
+    priority: 10,
+    notes: "25% cashback on Airtel bills via Airtel Thanks app. Capped at ₹250/month."
   },
 
-  // Flipkart Card - Flipkart/Myntra (5%)
+  // Airtel Card - 10% for Utility bills.
   {
-    id: "axis_flipkart_flipkart_myntra",
+    id: "axis_airtel_utility_bills_10pct",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.UTILITIES,
+    merchants: ["airtel_thanks"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_airtel": 0.10
+    },
+    constraints: {
+      transaction_type: "Utility Bill Payments"
+    },
+    cap: 250, // ₹250/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "10% cashback on Utility bill payments via Airtel Thanks app. Capped at ₹250/month."
+  },
+
+  // Airtel Card - 10% for Zomato, Swiggy and BigBasket.
+  {
+    id: "axis_airtel_preferred_merchants",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: [EXPENSE_CATEGORIES.DINING, EXPENSE_CATEGORIES.GROCERIES],
+    merchants: ["Zomato", "Swiggy", "BigBasket"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_airtel": 0.10
+    },
+    constraints: {
+      transaction_type: "Preferred Merchant Payments"
+    },
+    cap: 500, // ₹500/month
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 9,
+    notes: "10% cashback on Zomato, Swiggy and BigBasket. Capped at ₹500/month."
+  },
+
+  // Flipkart Card - Flipkart/Cleartrip (5%)
+  {
+    id: "axis_flipkart_flipkart_cleartrip",
     bank: "Axis Bank",
     rule_type: RULE_TYPES.CASHBACK,
     category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
-    merchants: ["Flipkart", "Myntra"],
+    merchants: ["Flipkart", "Cleartrip"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_flipkart": 0.05
+    },
+    constraints: {
+      platforms: ["Flipkart", "Cleartrip"]
+    },
+    cap: 4000, //₹4000/statement cycle
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5% cashback on Flipkart and Cleartrip purchases. Capped at ₹4000/statement cycle."
+  },
+
+  // Flipkart Card - Myntra (7.5%)
+  {
+    id: "axis_flipkart_myntra",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    merchants: ["Myntra"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_flipkart": 0.075
+    },
+    constraints: {
+      platforms: ["Myntra"]
+    },
+    cap: 4000, //₹4000/statement cycle
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "7.5% cashback on Myntra purchases. Capped at ₹4000/statement cycle."
+  },
+
+  // Flipkart Card - Preferred Merchants (4%)
+  {
+    id: "axis_flipkart_preferred_merchants",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: [EXPENSE_CATEGORIES.ONLINE_SHOPPING, EXPENSE_CATEGORIES.DINING, EXPENSE_CATEGORIES.ENTERTAINMENT],
+    merchants: ["Swiggy", "Uber", "PVR", "Cult.fit"],
     platform: "direct",
     benefit_type: BENEFIT_TYPES.CASHBACK,
     cashback_rate_map: {
       "axis_flipkart": 0.04
     },
     constraints: {
-      platforms: ["Flipkart", "Myntra"]
+      platforms: ["Swiggy", "Uber", "PVR", "Cult.fit"]
     },
-    cap: null, // Unlimited
+    cap: null, //Unlimited
     cap_period: null,
     min_transaction: 100,
     max_transaction: null,
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "4% unlimited cashback on Flipkart and Myntra purchases. No upper limit."
+    notes: "4% cashback on Swiggy, Uber, PVR, Cult.fit purchases. Unlimited."
   },
 
   // Ace Card - Base Cashback (1% Wildcard)
@@ -213,6 +288,31 @@ export const axisCashbackRules = [
     valid_until: null,
     priority: 5,
     notes: "1.5% base cashback on all non-Flipkart spends. 4% on Flipkart/Myntra takes precedence."
+  },
+
+  //Axis IndianOil - 10% discount on BookMyShow bookings
+  {
+    id: "axis_indianoil_bookmyshow",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.CASHBACK,
+    category: EXPENSE_CATEGORIES.ENTERTAINMENT,
+    merchants: ["BookMyShow"],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.CASHBACK,
+    cashback_rate_map: {
+      "axis_indianoil": 0.10
+    },
+    constraints: {
+      platforms: ["BookMyShow"]
+    },
+    cap: 100,
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "10% discount on BookMyShow bookings."
   }
 ];
 

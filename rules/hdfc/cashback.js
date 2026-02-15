@@ -1,297 +1,221 @@
-// rules/hdfc/cashback.js
-// HDFC Bank - Direct Cashback Rules
-// Validated as of January 2026
+import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES, CAP_PERIODS } from '../../config/bank_platforms.js';
+
+/**
+ * HDFC Bank - Cashback Rules
+ * Direct cashback offers on various categories and merchants
+ * Data validated against: HDFC Bank MITC, official product pages
+ * Last updated: February 1, 2026
+ */
 
 export const HDFC_CASHBACK_RULES = [
-
-    // ============================================================
-    // MILLENNIA - SMARTBUY PORTAL CASHBACK
-    // ============================================================
+    // MILLENNIA - 5% Cashback on preferred merchants
     {
-        id: "hdfc_millennia_smartbuy_shopping_5pct",
+        id: "hdfc_millennia_direct_shopping_5pct",
         bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "online_shopping",
-        merchants: ["amazon", "flipkart"],
-        platform: "SmartBuy",
-
+        rule_type: RULE_TYPES.CASHBACK,
+        category: [EXPENSE_CATEGORIES.ONLINE_SHOPPING, EXPENSE_CATEGORIES.ENTERTAINMENT, EXPENSE_CATEGORIES.DINING],
+        merchants: ["amazon", "bookmyshow", "cult.fit", "flipkart", "myntra", "sony liv", "swiggy", "tata cliq", "uber", "zomato"],
+        platform: "direct",
+        benefit_type: BENEFIT_TYPES.CASHBACK,
         cashback_rate_map: {
             "hdfc_millennia": 0.05
         },
-
+        constraints: {},
         cap: 1000,
-        cap_period: "monthly",
+        cap_period: CAP_PERIODS.MONTHLY,
         min_transaction: null,
-
+        max_transaction: null,
         valid_from: "2024-01-01",
         valid_until: null,
-
-        notes: "5% cashback on Amazon/Flipkart purchases via HDFC SmartBuy portal (₹1000 cap/month)",
-        priority: 150  // Higher than base
+        priority: 150,
+        notes: "5% cashback on online shopping towards preferred merchants (₹1000 cap/month)"
     },
 
+    // MILLENNIA - 1% Cashback on other spends
     {
-        id: "hdfc_millennia_smartbuy_dining_5pct",
+        id: "hdfc_millennia_direct_shopping_1pct",
         bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "dining",
-        merchants: ["swiggy", "zomato"],
-        platform: "SmartBuy",
-
-        cashback_rate_map: {
-            "hdfc_millennia": 0.05
-        },
-
-        cap: 1000,
-        cap_period: "monthly",
-        min_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "5% cashback on Swiggy/Zomato orders via SmartBuy portal (₹1000 cap/month)",
-        priority: 150
-    },
-
-    // ============================================================
-    // SWIGGY HDFC - DIRECT MERCHANT CASHBACK
-    // ============================================================
-    {
-        id: "hdfc_swiggy_direct_10pct",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "dining",
-        merchants: ["swiggy"],
-        platform: null,  // Direct swipe
-
-        cashback_rate_map: {
-            "hdfc_swiggy": 0.10
-        },
-
-        cap: null,
-        cap_period: null,
-        min_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "10% Swiggy Money on all Swiggy orders (direct payment)",
-        priority: 150
-    },
-
-    {
-        id: "hdfc_swiggy_dining_5pct",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "dining",
-        merchants: [],  // All dining merchants
-        platform: null,
-
-        cashback_rate_map: {
-            "hdfc_swiggy": 0.05
-        },
-
-        cap: null,
-        cap_period: null,
-        min_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "5% Swiggy Money on all other dining merchants (restaurants, food delivery)",
-        priority: 100
-    },
-
-    // ============================================================
-    // TATA NEU CARDS - TATA BRAND CASHBACK
-    // ============================================================
-    {
-        id: "hdfc_tataneu_infinity_tata_brands_5pct",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: ["shopping", "grocery", "electronics", "pharmacy", "medicine"],
-        merchants: ["tata_neu", "bigbasket", "tata_cliq", "1mg", "croma"],
-        platform: null,
-
-        cashback_rate_map: {
-            "hdfc_tataneu_infinity": 0.05
-        },
-
-        cap: null,
-        cap_period: null,
-        min_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "5% NeuCoins on Tata brand purchases (BigBasket, Tata CLiQ, 1mg, Croma, etc.)",
-        priority: 150
-    },
-
-    {
-        id: "hdfc_tataneu_plus_tata_brands_5pct",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: ["shopping", "grocery", "electronics", "pharmacy", "medicine"],
-        merchants: ["tata_neu", "bigbasket", "tata_cliq", "1mg", "croma"],
-        platform: null,
-
-        cashback_rate_map: {
-            "hdfc_tataneu_plus": 0.05
-        },
-
-        cap: null,
-        cap_period: null,
-        min_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "5% NeuCoins on Tata brand purchases",
-        priority: 150
-    },
-
-    {
-        id: "hdfc_tataneu_cards_upi_5pct",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "upi",
-        merchants: [],  // All UPI
-        platform: null,
-
-        cashback_rate_map: {
-            "hdfc_tataneu_infinity": 0.05,
-            "hdfc_tataneu_plus": 0.05
-        },
-
-        cap: 250,
-        cap_period: "monthly",
-        min_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "5% NeuCoins on UPI transactions (₹250 cap/month)",
-        priority: 150
-    },
-
-    // ============================================================
-    // INDIANOIL - FUEL CASHBACK
-    // ============================================================
-    {
-        id: "hdfc_indianoil_fuel_surcharge_waiver",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "fuel",
-        merchants: ["indianoil"],
-        platform: null,
-
-        cashback_rate_map: {
-            "hdfc_indianoil": 0.01
-        },
-
-        cap: 250,
-        cap_period: "monthly",
-        min_transaction: 400,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "1% fuel surcharge waiver at IndianOil stations (₹250 cap/month, min ₹400 txn)",
-        priority: 100
-    },
-
-    // ============================================================
-    // DCP (DINERS PRIVILEGE) - FOOD DELIVERY 5X
-    // ============================================================
-    {
-        id: "hdfc_dcp_zomato_swiggy_5x",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "dining",
-        merchants: ["zomato", "swiggy"],
-        platform: null,
-
-        benefit_type: "reward_multiplier",
-        reward_multiplier_map: {
-            "hdfc_dcp": 5
-        },
-        cashback_rates: null,
-
-        cap: null,
-        cap_period: null,
-        min_transaction: null,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "5x Reward Points on Zomato and Swiggy orders (20 RP per ₹150 spent)",
-        priority: 150
-    },
-
-    // ============================================================
-    // DCP (DINERS PRIVILEGE) - BOOKMYSHOW DISCOUNT
-    // ============================================================
-    {
-        id: "hdfc_dcp_bookmyshow_discount",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "entertainment",
-        merchants: ["bookmyshow"],
-        platform: null,
-
-        cashback_rate_map: {
-            "hdfc_dcp": 0.25
-        },
-
-        cap: 500,
-        cap_period: "monthly",
-        min_transaction: 250,
-
-        valid_from: "2024-01-01",
-        valid_until: null,
-
-        notes: "Buy 1 Get 1 on BookMyShow movie tickets (effective 20% discount, ₹500 cap/month)",
-        priority: 150
-    },
-
-    // ============================================================
-    // MILLENNIA - BASE CASHBACK (1% WILDCARD)
-    // ============================================================
-    {
-        id: "hdfc_millennia_base_cashback_all",
-        bank: "HDFC",
-        rule_type: "cashback",
-
-        category: "*", // Wildcard: matches all categories
-
+        rule_type: RULE_TYPES.CASHBACK,
+        category: [],
+        merchants: [],
+        platform: "direct",
+        benefit_type: BENEFIT_TYPES.CASHBACK,
         cashback_rate_map: {
             "hdfc_millennia": 0.01
         },
+        constraints: {},
+        cap: 1000,
+        cap_period: CAP_PERIODS.MONTHLY,
+        min_transaction: null,
+        max_transaction: null,
+        valid_from: "2024-01-01",
+        valid_until: null,
+        priority: 100,
+        notes: "1% cashback on other shopping purchases (₹1000 cap/month)"
+    },
 
-        constraints: {
-            excluded_categories: [], // No category exclusions
-            exclusions: "Excludes fuel, wallet loads, rent, government, EMI, education"
+    // SWIGGY HDFC - 10% on Swiggy orders
+    {
+        id: "hdfc_swiggy_direct_10pct",
+        bank: "HDFC",
+        rule_type: RULE_TYPES.CASHBACK,
+        category: EXPENSE_CATEGORIES.DINING,
+        merchants: ["swiggy"],
+        platform: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
+        cashback_rate_map: {
+            "hdfc_swiggy": 0.10
         },
+        constraints: {},
+        cap: 1500,
+        cap_period: CAP_PERIODS.MONTHLY,
+        min_transaction: null,
+        max_transaction: null,
+        valid_from: "2024-01-01",
+        valid_until: null,
+        priority: 150,
+        notes: "10% cashback on all Swiggy orders (₹1500 cap/month)"
+    },
 
+    // SWIGGY HDFC - 5% on online spends
+    {
+        id: "hdfc_swiggy_online_5pct",
+        bank: "HDFC",
+        rule_type: RULE_TYPES.CASHBACK,
+        category: [],
+        merchants: [],
+        platform: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
+        cashback_rate_map: {
+            "hdfc_swiggy": 0.05
+        },
+        constraints: {
+            exclude_category: [EXPENSE_CATEGORIES.OFFLINE_SHOPPING]
+        },
+        cap: 1500,
+        cap_period: CAP_PERIODS.MONTHLY,
+        min_transaction: null,
+        max_transaction: null,
+        valid_from: "2024-01-01",
+        valid_until: null,
+        priority: 100,
+        notes: "5% cashback on all other online spends (₹1500 cap/month)"
+    },
+
+    // TATA NEU INFINITY - 5% NeuCoins on Tata brands
+    {
+        id: "hdfc_tataneu_infinity_tata_brands_5pct",
+        bank: "HDFC",
+        rule_type: RULE_TYPES.CASHBACK,
+        category: [EXPENSE_CATEGORIES.SHOPPING, EXPENSE_CATEGORIES.GROCERY, EXPENSE_CATEGORIES.ELECTRONICS],
+        merchants: ["tata_neu", "bigbasket", "tata_cliq", "1mg", "croma"],
+        platform: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
+        cashback_rate_map: {
+            "hdfc_tataneu_infinity": 0.05
+        },
+        constraints: {},
         cap: null,
         cap_period: null,
         min_transaction: null,
-
+        max_transaction: null,
         valid_from: "2024-01-01",
         valid_until: null,
+        priority: 150,
+        notes: "5% NeuCoins on Tata brand purchases (BigBasket, Tata CLiQ, 1mg, Croma, etc.)"
+    },
 
-        notes: "1% base cashback on all categories. Specific rules (5% SmartBuy) take precedence.",
-        priority: 5 // Lower than all specific rules
+    // TATA NEU INFINITY - 1.5% NeuCoins on UPI via Tata Neu
+    {
+        id: "hdfc_tataneu_infinity_upi_1.5pct",
+        bank: "HDFC",
+        rule_type: RULE_TYPES.CASHBACK,
+        category: EXPENSE_CATEGORIES.UPI,
+        merchants: ["tata_neu"],
+        platform: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
+        cashback_rate_map: {
+            "hdfc_tataneu_infinity": 0.015
+        },
+        constraints: {},
+        cap: 500,
+        cap_period: CAP_PERIODS.MONTHLY,
+        min_transaction: 100,
+        max_transaction: null,
+        valid_from: "2024-01-01",
+        valid_until: null,
+        priority: 150,
+        notes: "1.5% NeuCoins on UPI transactions via Tata Neu app (₹500 cap/month, min ₹100 txn)"
+    },
+
+    // INDIANOIL - 5% cashback on fuel
+    {
+        id: "hdfc_indianoil_fuel_5pct",
+        bank: "HDFC",
+        rule_type: RULE_TYPES.CASHBACK,
+        category: EXPENSE_CATEGORIES.FUEL,
+        merchants: [],
+        platform: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
+        cashback_rate_map: {
+            "hdfc_indianoil": 0.05
+        },
+        constraints: {},
+        cap: 150,
+        cap_period: CAP_PERIODS.MONTHLY,
+        min_transaction: 400,
+        max_transaction: null,
+        valid_from: "2024-01-01",
+        valid_until: null,
+        priority: 100,
+        notes: "5% cashback at IndianOil stations (₹150 cap/month, min ₹400 txn)"
+    },
+
+    // INDIANOIL - 5% cashback on grocery and utilities
+    {
+        id: "hdfc_indianoil_grocery_utilities_5pct",
+        bank: "HDFC",
+        rule_type: RULE_TYPES.CASHBACK,
+        category: [EXPENSE_CATEGORIES.UTILITIES, EXPENSE_CATEGORIES.GROCERY],
+        merchants: [],
+        platform: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
+        cashback_rate_map: {
+            "hdfc_indianoil": 0.05
+        },
+        constraints: {},
+        cap: 100,
+        cap_period: CAP_PERIODS.MONTHLY,
+        min_transaction: 150,
+        max_transaction: null,
+        valid_from: "2024-01-01",
+        valid_until: null,
+        priority: 100,
+        notes: "5% cashback on grocery and utilities (₹100 cap/month, min ₹150 txn)"
+    },
+
+    // DCP - Buy 1 Get 1 on BookMyShow (represented as 50% cashback)
+    {
+        id: "hdfc_dcp_bookmyshow_discount",
+        bank: "HDFC",
+        rule_type: RULE_TYPES.CASHBACK,
+        category: EXPENSE_CATEGORIES.ENTERTAINMENT,
+        merchants: ["bookmyshow"],
+        platform: null,
+        benefit_type: BENEFIT_TYPES.CASHBACK,
+        cashback_rate_map: {
+            "hdfc_dcp": 0.50
+        },
+        constraints: {},
+        cap: 500,
+        cap_period: CAP_PERIODS.MONTHLY,
+        min_transaction: 250,
+        max_transaction: null,
+        valid_from: "2024-01-01",
+        valid_until: null,
+        priority: 150,
+        notes: "Buy 1 Get 1 on BookMyShow movie tickets (₹250 per transaction, ₹500 cap/month)"
     }
 ];
+
+export default HDFC_CASHBACK_RULES;

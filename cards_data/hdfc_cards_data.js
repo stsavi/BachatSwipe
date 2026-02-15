@@ -1,465 +1,224 @@
-// cards_data/hdfc_cards_data.js
-// HDFC Bank Credit Cards - Validated as of January 2026
+import { CARD_TIERS, REWARD_TYPES, REDEMPTION_TYPES, LOUNGE_ACCESS_TYPES } from '../config/bank_platforms.js';
+
+/**
+ * HDFC Bank Credit Cards Data
+ * Data validated against: HDFC Bank official product pages, MITC documents, SmartBuy portal
+ * Last updated: February 1, 2026
+ */
 
 export const HDFC_CARDS = [
-    // ============================================================
-    // SUPER PREMIUM (2 Cards)
-    // ============================================================
+    // SUPER PREMIUM CARDS
     {
-        // IDENTITY
         id: "hdfc_infinia",
         name: "HDFC Infinia Metal",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "super_premium",
-        reward_type: "points",
-
-        // EARNING (Validated: 5 RP per ₹150 on non-SmartBuy spends)
-        base_rate: 0.0333,  // 5/150 = 0.0333 per ₹1
+        card_tier: CARD_TIERS.SUPER_PREMIUM,
+        reward_type: REWARD_TYPES.POINTS,
+        base_rate: 0.0333, // 5 RP per ₹150
         earning_display: "5 RP per ₹150",
-        reward_currency: "RP",
-
-        // REDEMPTION (Validated: 1 RP = ₹1 on SmartBuy flights/hotels)
-        value_per_unit: 1.0,
-        optimal_redemption: {
-            method: "SmartBuy Flights/Hotels",
-            redemption_type: "portal",
-            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹1. Alternate: Apple products at 1 RP = ₹0.50, statement adjustment at 1 RP = ₹0.30."
-        },
-        redemption_ease_score: 2,  // Moderate (portal booking required)
-
-        // FEES (Validated)
-        joining_fee: 12500,
+        value_per_unit: 1.0, // ₹1 per RP on SmartBuy flights/hotels
+        redemption_ease_score: 2,
+        redemption_types: [REDEMPTION_TYPES.PORTAL],
         annual_fee: 12500,
-        fee_waiver: {
-            spend_threshold: 1000000,
-            period: "annual",
-            notes: "Annual fee waived on ₹10L+ annual spends."
-        },
-
-        // BENEFITS (Validated)
+        fee_waiver_criteria: "Spend ₹10L in a year",
+        joining_bonus: null,
         lounge: {
-            domestic: "Unlimited",
-            international: "Unlimited",
-            access_type: "complimentary",
-            spend_threshold: 0,
-            network: ["Priority Pass", "Diners Club", "Visa/Mastercard"],
-            notes: "Unlimited complimentary lounge access globally for primary and add-on cardholders."
+            domestic: LOUNGE_ACCESS_TYPES.COMPLIMENTARY,
+            international: LOUNGE_ACCESS_TYPES.COMPLIMENTARY,
+            guest_access: true,
+            notes: "Unlimited complimentary lounge access globally for primary and add-on cardholders"
         },
-
-        // FEATURES
+        network: ["Visa", "Mastercard"],
         supports_upi: false,
-
-        // EXCLUSIONS (Validated from HDFC MITC)
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "education"]
+        base_exclusions: ["fuel", "wallet", "wallet_loads", "rent", "government", "emi", "education"],
+        features: ["5 RP per ₹150 base earning", "10 RP per ₹150 on SmartBuy", "1 RP = ₹1 on SmartBuy flights/hotels", "Unlimited lounge access"]
     },
     {
-        // IDENTITY
         id: "hdfc_dcb_metal",
         name: "HDFC Diners Black Metal",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "super_premium",
-        reward_type: "points",
-
-        // EARNING (Validated: Same as Infinia)
-        base_rate: 0.0333,
+        card_tier: CARD_TIERS.SUPER_PREMIUM,
+        reward_type: REWARD_TYPES.POINTS,
+        base_rate: 0.0333, // 5 RP per ₹150
         earning_display: "5 RP per ₹150",
-        reward_currency: "RP",
-
-        // REDEMPTION (Validated: Same as Infinia)
         value_per_unit: 1.0,
-        optimal_redemption: {
-            method: "SmartBuy Flights/Hotels",
-            redemption_type: "portal",
-            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹1."
-        },
         redemption_ease_score: 2,
-
-        // FEES (Validated)
-        joining_fee: 10000,
+        redemption_types: [REDEMPTION_TYPES.PORTAL],
         annual_fee: 10000,
-        fee_waiver: {
-            spend_threshold: 800000,
-            period: "annual",
-            notes: "Annual fee waived on ₹8L+ annual spends."
-        },
-
-        // BENEFITS (Validated)
+        fee_waiver_criteria: "Spend ₹8L in a year",
+        joining_bonus: null,
         lounge: {
-            domestic: "Unlimited",
-            international: "Unlimited",
-            access_type: "complimentary",
-            spend_threshold: 0,
-            network: ["Diners Club", "Priority Pass"],
-            notes: "Unlimited complimentary Diners Club and Priority Pass lounge access."
+            domestic: LOUNGE_ACCESS_TYPES.COMPLIMENTARY,
+            international: LOUNGE_ACCESS_TYPES.COMPLIMENTARY,
+            guest_access: true,
+            notes: "Unlimited complimentary Diners Club and Priority Pass lounge access"
         },
-
-        // FEATURES
+        network: ["Diners Club"],
         supports_upi: false,
-
-        // EXCLUSIONS
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "education"]
+        base_exclusions: ["fuel", "wallet", "wallet_loads", "rent", "government", "emi", "education"],
+        features: ["5 RP per ₹150 base earning", "10 RP per ₹150 on SmartBuy", "1 RP = ₹1 on SmartBuy flights/hotels", "Unlimited lounge access"]
     },
 
-    // ============================================================
-    // PREMIUM / LIFESTYLE (2 Cards)
-    // ============================================================
+    // PREMIUM / LIFESTYLE CARDS
     {
-        // IDENTITY
         id: "hdfc_regalia_gold",
         name: "HDFC Regalia Gold",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "premium",
-        reward_type: "points",
-
-        // EARNING (Validated: 4 RP per ₹150)
-        base_rate: 0.0267,  // 4/150 = 0.0267
+        card_tier: CARD_TIERS.PREMIUM,
+        reward_type: REWARD_TYPES.POINTS,
+        base_rate: 0.0267, // 4 RP per ₹150
         earning_display: "4 RP per ₹150",
-        reward_currency: "RP",
-
-        // REDEMPTION (Validated: Lower redemption value than Infinia)
-        value_per_unit: 0.50,
-        optimal_redemption: {
-            method: "SmartBuy Flights/Hotels",
-            redemption_type: "portal",
-            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹0.50. Statement adjustment at 1 RP = ₹0.30."
-        },
+        value_per_unit: 0.50, // ₹0.50 per RP on SmartBuy
         redemption_ease_score: 2,
-
-        // FEES (Validated)
-        joining_fee: 2500,
+        redemption_types: [REDEMPTION_TYPES.PORTAL, REDEMPTION_TYPES.VOUCHERS],
         annual_fee: 2500,
-        fee_waiver: {
-            spend_threshold: 400000,
-            period: "annual",
-            notes: "Annual fee waived on ₹4L+ annual spends."
-        },
-
-        // BENEFITS (Validated)
+        fee_waiver_criteria: "Spend ₹4L in a year",
+        joining_bonus: null,
         lounge: {
-            domestic: 12,
-            international: 6,
-            access_type: "complimentary",
-            spend_threshold: 0,
-            network: ["Priority Pass", "Visa/Mastercard"],
-            notes: "12 domestic and 6 international lounge visits per year."
+            domestic: LOUNGE_ACCESS_TYPES.COMPLIMENTARY,
+            international: LOUNGE_ACCESS_TYPES.COMPLIMENTARY,
+            guest_access: false,
+            notes: "12 domestic and 6 international lounge visits per year"
         },
-
-        // FEATURES
+        network: ["Visa", "Mastercard"],
         supports_upi: false,
-
-        // EXCLUSIONS
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "education"]
+        base_exclusions: ["fuel", "wallet", "wallet_loads", "rent", "government", "emi", "education"],
+        features: ["4 RP per ₹150 base earning", "8 RP per ₹150 on SmartBuy", "1 RP = ₹0.50 on SmartBuy", "12 domestic + 6 international lounge visits/year"]
     },
     {
-        // IDENTITY
         id: "hdfc_dcp",
         name: "HDFC Diners Privilege",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "premium",
-        reward_type: "points",
-
-        // EARNING (Validated: 4 RP per ₹150)
-        base_rate: 0.0267,
+        card_tier: CARD_TIERS.PREMIUM,
+        reward_type: REWARD_TYPES.POINTS,
+        base_rate: 0.0267, // 4 RP per ₹150
         earning_display: "4 RP per ₹150",
-        reward_currency: "RP",
-
-        // REDEMPTION (Validated: Same as Regalia)
         value_per_unit: 0.50,
-        optimal_redemption: {
-            method: "SmartBuy Flights/Hotels",
-            redemption_type: "portal",
-            annotation: "Best value: Redeem on SmartBuy for flights/hotels at 1 RP = ₹0.50."
-        },
         redemption_ease_score: 2,
-
-        // FEES (Validated)
-        joining_fee: 2500,
+        redemption_types: [REDEMPTION_TYPES.PORTAL, REDEMPTION_TYPES.VOUCHERS],
         annual_fee: 2500,
-        fee_waiver: {
-            spend_threshold: 300000,
-            period: "annual",
-            notes: "Annual fee waived on ₹3L+ annual spends."
-        },
-
-        // BENEFITS (Validated: Spend-based lounge)
+        fee_waiver_criteria: "Spend ₹3L in a year",
+        joining_bonus: null,
         lounge: {
-            domestic: 8,
-            international: 8,
-            access_type: "spend_based",
-            spend_threshold: 15000,
-            network: ["Diners Club"],
-            notes: "2 domestic and 2 international visits per quarter on spending ₹15k in previous quarter (8 visits/year total)."
+            domestic: LOUNGE_ACCESS_TYPES.SPEND_BASED,
+            international: LOUNGE_ACCESS_TYPES.SPEND_BASED,
+            guest_access: false,
+            notes: "2 domestic and 2 international visits per quarter on spending ₹15k in previous quarter (8 visits/year total)"
         },
-
-        // FEATURES
+        network: ["Diners Club"],
         supports_upi: false,
-
-        // EXCLUSIONS
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "education"]
+        base_exclusions: ["fuel", "wallet", "wallet_loads", "rent", "government", "emi", "education"],
+        features: ["4 RP per ₹150 base earning", "5X on Swiggy/Zomato", "Buy 1 Get 1 on BookMyShow", "Spend-based lounge access"]
     },
 
-    // ============================================================
-    // CASHBACK / MID-RANGE (2 Cards)
-    // ============================================================
+    // CASHBACK / MID-RANGE CARDS
     {
-        // IDENTITY
         id: "hdfc_millennia",
         name: "HDFC Millennia",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "cashback",
-        reward_type: "cashback",
-
-        // EARNING (Validated: 1% base cashback = 1 per ₹100)
-        base_rate: 0.01,
+        card_tier: CARD_TIERS.CASHBACK,
+        reward_type: REWARD_TYPES.CASHBACK,
+        base_rate: 0.01, // 1% base cashback
         earning_display: "1% Cashback",
-        reward_currency: "Cashback",
-
-        // REDEMPTION (Validated: Cashback = direct money)
         value_per_unit: 1.0,
-        optimal_redemption: {
-            method: "Statement Credit",
-            redemption_type: "statement_credit",
-            annotation: "Cashback automatically credited as statement credit. 1 cashback unit = ₹1."
-        },
-        redemption_ease_score: 1,  // Easiest - automatic statement credit
-
-        // FEES (Validated)
-        joining_fee: 1000,
+        redemption_ease_score: 1,
+        redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
         annual_fee: 1000,
-        fee_waiver: {
-            spend_threshold: 100000,
-            period: "annual",
-            notes: "Annual fee waived on ₹1L+ annual spends."
-        },
-
-        // BENEFITS (Validated)
+        fee_waiver_criteria: "Spend ₹1L in a year",
+        joining_bonus: null,
         lounge: {
-            domestic: 4,
-            international: 0,
-            access_type: "spend_based",
-            spend_threshold: 100000,
-            network: ["Visa/Mastercard"],
-            notes: "1 domestic lounge visit per quarter on spending ₹1L in previous quarter (4 visits/year total)."
+            domestic: LOUNGE_ACCESS_TYPES.NONE,
+            international: LOUNGE_ACCESS_TYPES.NONE,
+            network: [],
+            guest_access: false,
+            notes: "No lounge access"
         },
-
-        // FEATURES
+        network: ["Visa", "Mastercard", "Rupay", "Diners Club"],
         supports_upi: false,
-
-        // EXCLUSIONS
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "education"]
+        base_exclusions: ["fuel", "wallet", "wallet_loads", "rent", "government", "emi", "education"],
+        features: ["5% cashback on preferred merchants (Amazon, Flipkart, etc.)", "1% cashback on other spends", "₹1000 cap/month"]
     },
     {
-        // IDENTITY
         id: "hdfc_swiggy",
         name: "Swiggy HDFC Bank Credit Card",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "cashback",
-        reward_type: "cashback",
-
-        // EARNING (Validated: 1% base as Swiggy Money)
-        base_rate: 0.01,
-        earning_display: "1% Swiggy Money",
-        reward_currency: "Swiggy Money",
-
-        // REDEMPTION (Validated: Swiggy Money = usable on Swiggy)
+        card_tier: CARD_TIERS.CASHBACK,
+        reward_type: REWARD_TYPES.CASHBACK,
+        base_rate: 0.01, // 1% base
+        earning_display: "1% Cashback",
         value_per_unit: 1.0,
-        optimal_redemption: {
-            method: "Swiggy Wallet",
-            redemption_type: "cash",
-            annotation: "Cashback credited to Swiggy Money wallet. 1 unit = ₹1 on Swiggy platform."
-        },
-        redemption_ease_score: 1,  // Easiest - automatic wallet credit
-
-        // FEES (Validated)
-        joining_fee: 500,
+        redemption_ease_score: 1,
+        redemption_types: [REDEMPTION_TYPES.STATEMENT_CREDIT],
         annual_fee: 500,
-        fee_waiver: {
-            spend_threshold: 200000,
-            period: "annual",
-            notes: "Annual fee waived on ₹2L+ annual spends."
-        },
-
-        // BENEFITS (Validated: No lounge access)
+        fee_waiver_criteria: "Spend ₹2L in a year",
+        joining_bonus: null,
         lounge: {
-            domestic: 0,
-            international: 0,
-            access_type: "none",
-            spend_threshold: 0,
+            domestic: LOUNGE_ACCESS_TYPES.NONE,
+            international: LOUNGE_ACCESS_TYPES.NONE,
             network: [],
-            notes: "No lounge access provided."
+            guest_access: false,
+            notes: "No lounge access provided"
         },
-
-        // FEATURES
+        network: ["Visa", "Mastercard"],
         supports_upi: false,
-
-        // EXCLUSIONS (Validated: Broader exclusions)
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "jewellery", "education"]
+        base_exclusions: ["fuel", "wallet", "wallet_loads", "rent", "government", "emi", "jewellery", "education"],
+        features: ["10% cashback on Swiggy orders", "5% cashback on online spends", "₹1500 cap/month"]
     },
 
-    // ============================================================
-    // UPI / CO-BRANDED (2 Cards)
-    // ============================================================
+    // UPI / CO-BRANDED CARDS
     {
-        // IDENTITY
         id: "hdfc_tataneu_infinity",
         name: "Tata Neu Infinity HDFC Bank Credit Card",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "upi",
-        reward_type: "neucoins",
-
-        // EARNING (Validated: 1.5% base NeuCoins)
-        base_rate: 0.015,
+        card_tier: CARD_TIERS.UPI,
+        reward_type: REWARD_TYPES.CASHBACK, // NeuCoins treated as cashback
+        base_rate: 0.015, // 1.5% NeuCoins
         earning_display: "1.5% NeuCoins",
-        reward_currency: "NeuCoins",
-
-        // REDEMPTION (Validated: 1 NeuCoin = ₹1 on Tata Neu)
-        value_per_unit: 1.0,
-        optimal_redemption: {
-            method: "Tata Neu App",
-            redemption_type: "cash",
-            annotation: "Redeem on Tata Neu ecosystem (BigBasket, Tata CLiQ, 1mg, etc.). 1 NeuCoin = ₹1."
-        },
-        redemption_ease_score: 1,  // Easiest - direct ecosystem wallet
-
-        // FEES (Validated)
-        joining_fee: 1499,
-        annual_fee: 1499,
-        fee_waiver: {
-            spend_threshold: 300000,
-            period: "annual",
-            notes: "Annual fee waived on ₹3L+ annual spends."
-        },
-
-        // BENEFITS (Validated)
-        lounge: {
-            domestic: 8,
-            international: 4,
-            access_type: "complimentary",
-            spend_threshold: 0,
-            network: ["Visa/RuPay", "Priority Pass"],
-            notes: "2 domestic visits per quarter (8/year) + 4 international visits per year via Priority Pass."
-        },
-
-        // FEATURES (Validated: Supports UPI)
-        supports_upi: true,
-
-        // EXCLUSIONS
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "education"]
-    },
-    {
-        // IDENTITY
-        id: "hdfc_tataneu_plus",
-        name: "Tata Neu Plus HDFC Bank Credit Card",
-        bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "upi",
-        reward_type: "neucoins",
-
-        // EARNING (Validated: 1% base NeuCoins)
-        base_rate: 0.01,
-        earning_display: "1% NeuCoins",
-        reward_currency: "NeuCoins",
-
-        // REDEMPTION (Validated: Same as Infinity)
-        value_per_unit: 1.0,
-        optimal_redemption: {
-            method: "Tata Neu App",
-            redemption_type: "cash",
-            annotation: "Redeem on Tata Neu ecosystem. 1 NeuCoin = ₹1."
-        },
+        value_per_unit: 1.0, // 1 NeuCoin = ₹1
         redemption_ease_score: 1,
-
-        // FEES (Validated)
-        joining_fee: 499,
-        annual_fee: 499,
-        fee_waiver: {
-            spend_threshold: 100000,
-            period: "annual",
-            notes: "Annual fee waived on ₹1L+ annual spends."
-        },
-
-        // BENEFITS (Validated)
+        redemption_types: [REDEMPTION_TYPES.CASH],
+        annual_fee: 1499,
+        fee_waiver_criteria: "Spend ₹3L in a year",
+        joining_bonus: null,
         lounge: {
-            domestic: 4,
-            international: 0,
-            access_type: "complimentary",
-            spend_threshold: 0,
-            network: ["Visa/RuPay"],
-            notes: "1 domestic lounge visit per quarter (4 visits/year total)."
+            domestic: LOUNGE_ACCESS_TYPES.SPEND_BASED,
+            international: LOUNGE_ACCESS_TYPES.SPEND_BASED,
+            network: ["Visa", "RuPay"],
+            guest_access: false,
+            notes: "2 domestic visits per quarter (8/year) + 1 international visit per quarter (4/year) on ₹50k spend"
         },
-
-        // FEATURES
+        network: ["Visa", "RuPay"],
         supports_upi: true,
-
-        // EXCLUSIONS
-        base_exclusions: ["fuel", "wallet", "rent", "government", "emi", "education"]
+        base_exclusions: ["fuel", "wallet", "wallet_loads", "rent", "government", "emi", "education"],
+        features: ["5% NeuCoins on Tata brands", "1.5% NeuCoins on UPI via Tata Neu", "Spend-based lounge access"]
     },
 
-    // ============================================================
-    // FUEL CARDS (1 Card)
-    // ============================================================
+    // FUEL CARDS
     {
-        // IDENTITY
         id: "hdfc_indianoil",
         name: "IndianOil HDFC Bank Credit Card",
         bank: "HDFC",
-
-        // CLASSIFICATION
-        card_tier: "fuel",
-        reward_type: "fuel_points",
-
-        // EARNING (Validated: 1 Fuel Point per ₹150)
-        base_rate: 0.0067,  // 1/150 = 0.0067
-        earning_display: "1 Fuel Point per ₹150",
-        reward_currency: "Fuel Points",
-
-        // REDEMPTION (Validated: 1 FP = ₹0.96 at IOCL)
-        value_per_unit: 0.96,
-        optimal_redemption: {
-            method: "Fuel at IndianOil Stations",
-            redemption_type: "cash",
-            annotation: "Redeem for free fuel at IndianOil outlets. 1 Fuel Point = ₹0.96 worth of fuel."
-        },
-        redemption_ease_score: 2,  // Moderate - need to redeem at IOCL
-
-        // FEES (Validated)
-        joining_fee: 500,
+        card_tier: CARD_TIERS.FUEL,
+        reward_type: REWARD_TYPES.POINTS, // Reward Points (not fuel points)
+        base_rate: 0.0067, // 1 RP per ₹150
+        earning_display: "1 Reward Point per ₹150",
+        value_per_unit: 0.96, // 1 RP = 3 XRP, 1 XRP = ₹0.32, so 1 RP = ₹0.96
+        redemption_ease_score: 2,
+        redemption_types: [REDEMPTION_TYPES.CASH],
         annual_fee: 500,
-        fee_waiver: {
-            spend_threshold: 50000,
-            period: "annual",
-            notes: "Annual fee waived on ₹50k+ annual spends."
-        },
-
-        // BENEFITS (Validated: No lounge)
+        fee_waiver_criteria: "Spend ₹50k in a year",
+        joining_bonus: "2000 Reward Points",
         lounge: {
-            domestic: 0,
-            international: 0,
-            access_type: "none",
-            spend_threshold: 0,
-            network: [],
-            notes: "No lounge access provided."
+            domestic: LOUNGE_ACCESS_TYPES.NONE,
+            international: LOUNGE_ACCESS_TYPES.NONE,
+            guest_access: false,
+            notes: "No lounge access provided"
         },
-
-        // FEATURES
-        supports_upi: false,
-
-        // EXCLUSIONS (Validated: Minimal exclusions for fuel card)
-        base_exclusions: ["rent", "education", "government", "wallet"]
+        network: ["RuPay"],
+        supports_upi: true,
+        base_exclusions: ["rent", "education", "government", "wallet", "wallet_loads", "emi", "insurance"],
+        features: ["5% cashback on fuel at IndianOil", "5% cashback on grocery/utilities", "UPI enabled"]
     }
 ];
+
+export default HDFC_CARDS;

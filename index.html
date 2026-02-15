@@ -108,159 +108,53 @@
       box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
     }
 
-    /* Floating Palette */
-    .floating-palette {
+    /* Go to Top Button - Circular Icon */
+    .go-to-top {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      background: linear-gradient(135deg, var(--brand-navy) 0%, #2c3e50 100%);
-      padding: 0.75rem 1.5rem;
-      z-index: 2000;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+      bottom: 2rem;
+      right: 2rem;
+      width: 48px;
+      height: 48px;
+      background: #2c3e50;
+      color: var(--white);
+      border: none;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 1rem;
-      transform: translateY(-101%);
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1000;
       opacity: 0;
+      transform: translateY(100px);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       pointer-events: none;
     }
 
-    .floating-palette.show {
-      transform: translateY(0);
+    .go-to-top.show {
       opacity: 1;
+      transform: translateY(0);
       pointer-events: auto;
     }
 
-    .palette-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      text-decoration: none;
-      flex-shrink: 0;
+    .go-to-top:hover {
+      background: #1a1f2e;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
     }
 
-    .palette-logo .brand-icon {
-      width: 32px;
-      height: 32px;
+    .go-to-top:active {
+      transform: translateY(0) scale(0.98);
     }
 
-    .palette-logo .brand-text {
-      font-size: 1.1rem;
-    }
-
-    .palette-search {
-      flex: 1;
-      max-width: 900px;
-      display: flex;
-      gap: 0.75rem;
-      align-items: center;
-      margin: 0 1.5rem;
-    }
-
-    .palette-input-group {
-      flex: 1;
-      min-width: 120px;
-    }
-
-    .palette-input-group label {
-      display: none;
-      /* Hidden bar labels */
-    }
-
-    .palette-input-group select,
-    .palette-input-group input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.12);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: 20px;
-      /* More rounded like Google Flights */
-      color: var(--white);
-      padding: 0.5rem 1rem;
-      font-size: 0.85rem;
-      font-weight: 500;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .palette-input-group select:hover,
-    .palette-input-group input:hover {
-      background: rgba(255, 255, 255, 0.2);
-      border-color: rgba(255, 255, 255, 0.4);
-    }
-
-    .palette-input-group select:focus,
-    .palette-input-group input:focus {
-      outline: none;
-      background: var(--white);
-      color: var(--brand-navy);
-      border-color: var(--brand-gold);
-    }
-
-    .palette-input-group select option {
-      background: var(--brand-navy);
-      color: var(--white);
-    }
-
-    .palette-input-group select:focus,
-    .palette-input-group input:focus {
-      outline: none;
-      background: rgba(255, 255, 255, 0.15);
-      border-color: var(--brand-gold);
-    }
-
-    .palette-feedback {
-      color: var(--white);
-      text-decoration: none;
-      font-size: 0.85rem;
-      font-weight: 600;
-      opacity: 0.8;
-      transition: opacity 0.2s;
-      flex-shrink: 0;
-    }
-
-    .palette-feedback:hover {
-      opacity: 1;
-      text-decoration: underline;
-    }
-
-    .palette-compare-btn {
-      background: var(--brand-gold);
-      color: var(--brand-navy);
-      border: none;
-      padding: 0.5rem 1.25rem;
-      border-radius: 20px;
-      font-size: 0.85rem;
+    .go-to-top-arrow {
+      font-size: 1.5rem;
       font-weight: 700;
-      cursor: pointer;
-      transition: all 0.2s;
-      flex-shrink: 0;
+      line-height: 1;
     }
 
-    .palette-compare-btn:hover {
-      background: #e5b68a;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(212, 165, 116, 0.3);
-    }
-
-    .palette-compare-btn:active {
-      transform: translateY(0);
-    }
-
-    .palette-feedback {
-      color: var(--white);
-      text-decoration: none;
-      font-size: 0.8rem;
-      opacity: 0.7;
-      transition: opacity 0.2s;
-      margin-left: 0.5rem;
-    }
-
-    .palette-feedback:hover {
-      opacity: 1;
-      text-decoration: underline;
+    .go-to-top-text {
+      display: none;
     }
 
     /* Transition Animation - Relocation */
@@ -773,35 +667,11 @@
 
 <body>
 
-  <!-- Floating Palette -->
-  <div class="floating-palette" id="floating-palette">
-    <a href="./" class="palette-logo">
-      <div class="brand-icon"></div>
-      <div class="brand-text">Bachat<span class="highlight">Swipe</span></div>
-    </a>
-
-    <div class="palette-search-container">
-      <div class="palette-search">
-        <div class="palette-input-group">
-          <input type="number" id="palette-amount" placeholder="Amount">
-        </div>
-        <div class="palette-input-group">
-          <select id="palette-merchant">
-            <option value="">Merchant</option>
-          </select>
-        </div>
-        <div class="palette-input-group">
-          <select id="palette-category">
-            <option value="">Category</option>
-          </select>
-        </div>
-        <div class="palette-input-group">
-          <input type="text" id="palette-card-search" list="card_list" placeholder="Card Name">
-        </div>
-        <button id="palette-compare-button" class="palette-compare-btn">Compare</button>
-      </div>
-    </div>
-  </div>
+  <!-- Go to Top Button -->
+  <button class="go-to-top" id="go-to-top" aria-label="Go to top">
+    <div class="go-to-top-arrow">↑</div>
+    <div class="go-to-top-text">Go to Top</div>
+  </button>
 
   <!-- Header Banner -->
   <div class="header-banner">
@@ -892,117 +762,25 @@
     window.app = new App();
     window.app.init();
 
-    // Floating Palette Logic
-    const floatingPalette = document.getElementById('floating-palette');
-    const searchSection = document.querySelector('.search-section');
-    const mainInputs = {
-      amount: document.getElementById('amount'),
-      merchant: document.getElementById('merchant'),
-      category: document.getElementById('category'),
-      cardSearch: document.getElementById('card_search')
-    };
-    const paletteInputs = {
-      amount: document.getElementById('palette-amount'),
-      merchant: document.getElementById('palette-merchant'),
-      category: document.getElementById('palette-category'),
-      cardSearch: document.getElementById('palette-card-search')
-    };
+    // Go to Top Button Logic
+    const goToTopBtn = document.getElementById('go-to-top');
 
-    // Dynamic Dropdown Synchronization
-    const syncOptions = (sourceId, targetId) => {
-      const source = document.getElementById(sourceId);
-      const target = document.getElementById(targetId);
-      if (!source || !target) return;
-
-      // Clear target
-      target.innerHTML = '';
-
-      const placeholderText = sourceId === 'merchant' ? 'Merchant' : 'Category';
-
-      // Rebuild options
-      Array.from(source.options).forEach((opt, index) => {
-        const newOpt = document.createElement('option');
-        newOpt.value = opt.value;
-
-        // Only use condensed placeholder if the original is a placeholder (empty value)
-        // OR if it's the specific merchant select case
-        if (opt.value === '') {
-          newOpt.textContent = placeholderText;
-        } else {
-          newOpt.textContent = opt.textContent;
-        }
-
-        if (opt.selected) newOpt.selected = true;
-        target.appendChild(newOpt);
-      });
-    };
-
-    // Initial sync
-    syncOptions('merchant', 'palette-merchant');
-    syncOptions('category', 'palette-category');
-
-    // Watch for updates (e.g. from engine)
-    const dropdownObserver = new MutationObserver((mutations) => {
-      mutations.forEach(mutation => {
-        if (mutation.type === 'childList') {
-          if (mutation.target.id === 'merchant') syncOptions('merchant', 'palette-merchant');
-          if (mutation.target.id === 'category') syncOptions('category', 'palette-category');
-        }
-      });
+    // Show/hide button based on scroll position
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 300) {
+        goToTopBtn.classList.add('show');
+      } else {
+        goToTopBtn.classList.remove('show');
+      }
     });
 
-    const merchantSelect = document.getElementById('merchant');
-    const categorySelect = document.getElementById('category');
-
-    if (merchantSelect) dropdownObserver.observe(merchantSelect, { childList: true });
-    if (categorySelect) dropdownObserver.observe(categorySelect, { childList: true });
-
-    // Synchronize inputs
-    const syncFields = (sourceType, targetType) => {
-      const source = sourceType === 'main' ? mainInputs : paletteInputs;
-      const target = sourceType === 'main' ? paletteInputs : mainInputs;
-
-      Object.keys(source).forEach(key => {
-        const triggerUpdate = () => {
-          target[key].value = source[key].value;
-          // Auto-run removed per user request: "only load upon clicking compare"
-        };
-
-        source[key].addEventListener('input', triggerUpdate);
-        source[key].addEventListener('change', triggerUpdate);
+    // Scroll to top when clicked
+    goToTopBtn.addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
       });
-    };
-
-    syncFields('main', 'palette');
-    syncFields('palette', 'main');
-
-    // Palette Compare Button Click
-    const paletteCompareBtn = document.getElementById('palette-compare-button');
-    if (paletteCompareBtn) {
-      paletteCompareBtn.addEventListener('click', () => {
-        window.app.analyze();
-      });
-    }
-
-    // Scroll Detection
-    const observerOptions = {
-      root: null,
-      threshold: 0,
-      rootMargin: '-80px 0px 0px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        // Toggle palette ONLY based on scroll, NOT forced by clicks
-        if (!entry.isIntersecting && window.scrollY > 300) {
-          floatingPalette.classList.add('show');
-        } else {
-          floatingPalette.classList.remove('show');
-        }
-      });
-    }, observerOptions);
-
-    if (searchSection) observer.observe(searchSection);
+    });
 
     // Register Service Worker
     if ('serviceWorker' in navigator) {
@@ -1126,15 +904,6 @@
         // Wait for slide-out animation to complete
         await new Promise(resolve => setTimeout(resolve, 300));
         resultsElement.classList.remove('results-slide-out');
-      }
-
-      // Transition animation for relocation
-      if (searchSection) {
-        searchSection.classList.add('relocating');
-        setTimeout(() => {
-          searchSection.classList.remove('relocating');
-          // Removed: floatingPalette.classList.add('show');
-        }, 600);
       }
 
       // Call original function to render new results

@@ -1,4 +1,4 @@
-import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES } from '../../config/bank_platforms.js';
+import { EXPENSE_CATEGORIES, BENEFIT_TYPES, RULE_TYPES, CAP_PERIODS } from '../../config/bank_platforms.js';
 
 /**
  * Axis Bank - Direct Merchant Accelerated Rewards
@@ -59,6 +59,56 @@ export const axisDirectAcceleratedRules = [
     valid_until: null,
     priority: 10,
     notes: "5x CV Points on Vistara flight bookings (direct or via website)"
+  },
+
+  //Axis IndianOil - 20 Edge Points per Rs. 100 spent on fuel at IndianOil outlets
+  {
+    id: "axis_indianoil_fuel",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
+    category: EXPENSE_CATEGORIES.FUEL,
+    merchants: [],  //IndianOil outlets only.
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multiplier_map: {
+      "axis_indianoil": 20
+    },
+    constraints: {
+      merchant: "IndianOil outlets only"
+    },
+    cap: 1000,
+    cap_period: CAP_PERIODS.MONTHLY,
+    min_transaction: 400,
+    max_transaction: 4000,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "20 Edge Points per Rs. 100 spent on fuel at IndianOil outlets"
+  },
+
+  //Axis IndianOil - 5 Edge Points per Rs. 100 spent on online spends
+  {
+    id: "axis_indianoil_online",
+    bank: "Axis Bank",
+    rule_type: RULE_TYPES.DIRECT_MERCHANT_ACCELERATED,
+    category: EXPENSE_CATEGORIES.ONLINE_SHOPPING,
+    merchants: [],
+    platform: "direct",
+    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
+    reward_multiplier_map: {
+      "axis_indianoil": 5
+    },
+    constraints: {
+      platform: "Online spends only"
+    },
+    cap: null,
+    cap_period: null,
+    min_transaction: 100,
+    max_transaction: null,
+    valid_from: "2023-01-01",
+    valid_until: null,
+    priority: 10,
+    notes: "5 Edge Points per Rs. 100 spent on online spends"
   }
 ];
 

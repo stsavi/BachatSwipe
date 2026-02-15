@@ -8,35 +8,9 @@ import { VOUCHER_MERCHANTS, BANK_PORTALS, CAP_PERIODS, BENEFIT_TYPES, RULE_TYPES
  */
 
 export const iciciVoucherRules = [
-  // Sapphiro - Amazon/Flipkart Vouchers (5x)
+  // ICICI Emerald Private Metal - Vouchers (6x)
   {
-    id: "icici_sapphiro_amazon_flipkart_vouchers",
-    bank: "ICICI Bank",
-    rule_type: RULE_TYPES.VOUCHER,
-    category: "voucher",
-    merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
-    platform: BANK_PORTALS.ICICI_PAYWITH,
-    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multiplier_map: {
-      "icici_sapphiro": 5
-    },
-    constraints: {
-      platform: "PayWith Rewards portal only"
-    },
-    voucher_denominations: [100, 500, 1000, 2000, 5000],
-    cap: 10000, // ₹10k worth/month
-    cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 100,
-    max_transaction: 10000,
-    valid_from: "2023-01-01",
-    valid_until: null,
-    priority: 10,
-    notes: "5x Reward Points on Amazon/Flipkart vouchers. Base 6 per ₹200 becomes 30 per ₹200."
-  },
-
-  // Sapphiro - Dining Vouchers (Swiggy/Zomato) (5x)
-  {
-    id: "icici_sapphiro_dining_vouchers",
+    id: "icici_emeralde_private_metal_vouchers",
     bank: "ICICI Bank",
     rule_type: RULE_TYPES.VOUCHER,
     category: "voucher",
@@ -44,74 +18,40 @@ export const iciciVoucherRules = [
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
     reward_multiplier_map: {
-      "icici_sapphiro": 5
+      "icici_emeralde_private_metal": 6
     },
-    constraints: {
-      platform: "PayWith Rewards portal only"
-    },
-    voucher_denominations: [100, 500, 1000, 2000],
-    cap: 5000, // ₹5k worth/month
+    cap: 18000, // 18k reward points/month
     cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 100,
-    max_transaction: 5000,
+    min_transaction: 200,
+    max_transaction: 18000,
     valid_from: "2023-01-01",
     valid_until: null,
     priority: 10,
-    notes: "5x Reward Points on Swiggy/Zomato vouchers."
+    notes: "6x Reward Points on brand vouchers. Base 6 reward points per ₹200 becomes 36 points per ₹200."
   },
 
-  // Coral/Rubyx - Amazon/Flipkart Vouchers (3x)
+  // Other Cards - Vouchers (6x)
   {
-    id: "icici_coral_rubyx_amazon_flipkart_vouchers",
+    id: "icici_other_credit_cards_vouchers",
     bank: "ICICI Bank",
     rule_type: RULE_TYPES.VOUCHER,
     category: "voucher",
-    merchants: [VOUCHER_MERCHANTS.AMAZON, VOUCHER_MERCHANTS.FLIPKART],
+    merchants: ["*"],
     platform: BANK_PORTALS.ICICI_PAYWITH,
     benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
     reward_multiplier_map: {
-      "icici_coral": 3,
-      "icici_rubyx": 3
+      "icici_sapphiro": 6,
+      "icici_coral": 6,
+      "icici_hpcl_super_saver": 6
     },
-    constraints: {
-      platform: "PayWith Rewards portal only"
-    },
-    voucher_denominations: [100, 500, 1000, 2000, 5000],
-    cap: 5000, // ₹5k worth/month
+    cap: 15000, // 15k reward points/month
     cap_period: CAP_PERIODS.MONTHLY,
     min_transaction: 100,
-    max_transaction: 5000,
+    max_transaction: 15000,
     valid_from: "2023-01-01",
     valid_until: null,
-    priority: 9,
-    notes: "3x Reward Points on Amazon/Flipkart vouchers. Base 4 per ₹200 becomes 12 per ₹200."
-  },
-
-  // Coral/Rubyx - Dining Vouchers (Swiggy/Zomato) (3x)
-  {
-    id: "icici_coral_rubyx_dining_vouchers",
-    bank: "ICICI Bank",
-    rule_type: RULE_TYPES.VOUCHER,
-    category: "voucher",
-    merchants: [VOUCHER_MERCHANTS.SWIGGY, VOUCHER_MERCHANTS.ZOMATO],
-    platform: BANK_PORTALS.ICICI_PAYWITH,
-    benefit_type: BENEFIT_TYPES.REWARD_MULTIPLIER,
-    reward_multiplier_map: {
-      "icici_coral": 3,
-      "icici_rubyx": 3
-    },
-    constraints: {
-      platform: "PayWith Rewards portal only"
-    },
-    voucher_denominations: [100, 500, 1000, 2000],
-    cap: 3000, // ₹3k worth/month
-    cap_period: CAP_PERIODS.MONTHLY,
-    min_transaction: 100,
-    max_transaction: 3000,
-    valid_from: "2023-01-01",
-    valid_until: null,
-    priority: 9,
-    notes: "3x Reward Points on Swiggy/Zomato vouchers."
+    priority: 10,
+    notes: "6x Reward Points on brand vouchers. Base 2 reward points per ₹100 becomes 12 points per ₹100."
   }
 ];
 
